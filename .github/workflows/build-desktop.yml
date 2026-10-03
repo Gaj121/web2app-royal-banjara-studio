@@ -1,0 +1,102 @@
+name: Build Desktop + iPhone Apps
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Windows Setup.exe
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Icon ready karo
+        shell: bash
+        run: |
+          test -f desktop/icon.png || cp pwa/icons/icon-512.png desktop/icon.png
+
+      - name: Install dependencies
+        working-directory: desktop
+        run: npm install --no-audit --no-fund
+
+      - name: Build Windows installer (NSIS .exe)
+        working-directory: desktop
+        run: npx electron-builder --win nsis --publish never
+
+      - name: Release me upload karo
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: windows-v1
+          name: "Windows App (Setup .exe)"
+          files: desktop/dist/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-mac:
+    name: Mac .dmg (universal)
+    runs-on: macos-latest
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Icon ready karo
+        run: |
+          test -f desktop/icon.png || cp pwa/icons/icon-512.png desktop/icon.png
+
+      - name: Install dependencies
+        working-directory: desktop
+        run: npm install --no-audit --no-fund
+
+      - name: Build Mac app (universal .dmg — Intel + M1/M2/M3)
+        working-directory: desktop
+        run: npx electron-builder --mac dmg --universal --publish never
+
+      - name: Release me upload karo
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: macos-v1
+          name: "Mac App (.dmg)"
+          files: desktop/dist/*.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-ios:
+    name: iPhone .ipa (sideload)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unsigned iPhone app build karo
+        run: |
+          cd ios
+          xcodebuild -project WebApp.xcodeproj -target WebApp -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" CODE_SIGN_ENTITLEMENTS="" SYMROOT="$PWD/build"
+          APP=$(find build -name "WebApp.app" -type d | head -1)
+          if [ -z "$APP" ]; then echo "WebApp.app nahi bana"; exit 1; fi
+          mkdir -p build/Payload
+          cp -R "$APP" build/Payload/
+          cd build
+          zip -qry royal-banjara-studio-unsigned.ipa Payload
+          ls -la
+
+      - name: Release me upload karo
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ios-v1
+          name: "iPhone App (.ipa — Sideloadly se install)"
+          files: ios/build/royal-banjara-studio-unsigned.ipa
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
