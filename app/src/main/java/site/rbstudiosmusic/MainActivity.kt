@@ -6,6 +6,9 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.RippleDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -14,6 +17,7 @@ import android.view.View
 import android.webkit.CookieManager
 import android.webkit.DownloadListener
 import android.webkit.URLUtil
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -27,6 +31,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
@@ -54,6 +60,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var splashOverlay: FrameLayout
     private val navIcons = mutableListOf<ImageView>()
     private val navLabels = mutableListOf<TextView>()
+    private val pillBackgrounds = mutableListOf<GradientDrawable>()
+    private var navBar: LinearLayout? = null
+    private var fileChooserCallback: ValueCallback<Array<Uri>>? = null
+    private lateinit var filePicker: ActivityResultLauncher<String>
     private val themeColorInt: Int by lazy { Color.parseColor(THEME_COLOR) }
 
     private val navEntries: Array<NavEntry> = arrayOf(
@@ -64,6 +74,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        filePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            val callback = fileChooserCallback
+            fileChooserCallback = null
+            callback?.onReceiveValue(if (uri != null) arrayOf(uri) else null)
+        }
 
         val root = FrameLayout(this)
         val content = LinearLayout(this)
@@ -87,7 +103,17 @@ class MainActivity : AppCompatActivity() {
         content.addView(swipeRefresh, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
 
         if (SHOW_NAV) {
-            content.addView(buildNavBar(), LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+            val bar = buildNavBar()
+            navBar = bar
+            val barLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM)
+            barLp.leftMargin = dp(12)
+            barLp.rightMargin = dp(12)
+            barLp.bottomMargin = dp(10)
+            root.addView(bar, barLp)
+            webView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                val dy = scrollY - oldScrollY
+                if (dy > 8) hideNavBar() else if (dy < -8) showNavBar()
+            }
         }
 
         root.addView(content, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
@@ -112,6 +138,12 @@ class MainActivity : AppCompatActivity() {
         }, 650)
     }
 
+    override fun onDestroy() {
+        fileChooserCallback?.onReceiveValue(null)
+        fileChooserCallback = null
+        super.onDestroy()
+    }
+
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
 
     private fun buildSplash(): FrameLayout {
@@ -126,26 +158,47 @@ class MainActivity : AppCompatActivity() {
     private fun buildNavBar(): LinearLayout {
         val bar = LinearLayout(this)
         bar.orientation = LinearLayout.HORIZONTAL
-        bar.setBackgroundColor(Color.WHITE)
+        bar.gravity = Gravity.CENTER
+        bar.setPadding(dp(6), dp(6), dp(6), dp(6))
+        val barBg = GradientDrawable()
+        barBg.setColor(Color.WHITE)
+        barBg.cornerRadius = dp(30).toFloat()
+        barBg.setStroke(dp(1), 0x15808080)
+        bar.background = barBg
+        bar.elevation = dp(16).toFloat()
+
         navEntries.forEachIndexed { index, entry ->
             val item = LinearLayout(this)
             item.orientation = LinearLayout.VERTICAL
             item.gravity = Gravity.CENTER
-            item.setPadding(dp(4), dp(7), dp(4), dp(7))
+            item.setPadding(dp(2), dp(4), dp(2), dp(4))
+            item.foreground = RippleDrawable(ColorStateList.valueOf(0x1F888888), null, null)
+
+            val pillHolder = FrameLayout(this)
+            val pill = GradientDrawable()
+            pill.cornerRadius = dp(17).toFloat()
+            pillHolder.background = pill
+            pillBackgrounds.add(pill)
 
             val icon = ImageView(this)
             icon.setImageResource(entry.icon)
-            icon.setColorFilter(0xFF757575.toInt())
-            icon.layoutParams = LinearLayout.LayoutParams(dp(24), dp(24))
+            icon.setColorFilter(0xFF8A8F98.toInt())
+            pillHolder.addView(icon, FrameLayout.LayoutParams(dp(22), dp(22), Gravity.CENTER))
 
             val label = TextView(this)
             label.text = entry.label
-            label.textSize = 11f
-            label.setTextColor(0xFF757575.toInt())
+            label.textSize = 10f
+            label.maxLines = 1
+            label.gravity = Gravity.CENTER
+            label.setTextColor(0xFF8A8F98.toInt())
 
-            item.addView(icon)
+            item.addView(pillHolder, LinearLayout.LayoutParams(dp(58), dp(34)))
             item.addView(label)
-            item.setOnClickListener { selectNav(index); webView.loadUrl(entry.url) }
+            item.setOnClickListener {
+                selectNav(index)
+                bounce(pillHolder)
+                webView.loadUrl(entry.url)
+            }
             navIcons.add(icon)
             navLabels.add(label)
             bar.addView(item, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
@@ -153,10 +206,29 @@ class MainActivity : AppCompatActivity() {
         return bar
     }
 
+    private fun bounce(view: View) {
+        view.animate().scaleX(1.2f).scaleY(1.2f).setDuration(110).withEndAction {
+            view.animate().scaleX(1f).scaleY(1f).setDuration(110).start()
+        }.start()
+    }
+
+    private fun hideNavBar() {
+        val bar = navBar ?: return
+        bar.animate().translationY((bar.height + dp(12)).toFloat()).setDuration(220).start()
+    }
+
+    private fun showNavBar() {
+        navBar?.animate()?.translationY(0f)?.setDuration(220)?.start()
+    }
+
     private fun selectNav(index: Int) {
         if (!SHOW_NAV) return
-        navIcons.forEachIndexed { i, icon -> icon.setColorFilter(if (i == index) themeColorInt else 0xFF757575.toInt()) }
-        navLabels.forEachIndexed { i, label -> label.setTextColor(if (i == index) themeColorInt else 0xFF757575.toInt()) }
+        navIcons.forEachIndexed { i, icon -> icon.setColorFilter(if (i == index) Color.WHITE else 0xFF8A8F98.toInt()) }
+        navLabels.forEachIndexed { i, label ->
+            label.setTextColor(if (i == index) themeColorInt else 0xFF8A8F98.toInt())
+            label.typeface = if (i == index) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+        }
+        pillBackgrounds.forEachIndexed { i, pill -> pill.setColor(if (i == index) themeColorInt else 0x00000000) }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -209,6 +281,25 @@ class MainActivity : AppCompatActivity() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 progressBar.progress = newProgress
                 progressBar.visibility = if (newProgress >= 100) View.INVISIBLE else View.VISIBLE
+            }
+
+            override fun onShowFileChooser(webView: WebView, callback: ValueCallback<Array<Uri>>, params: FileChooserParams): Boolean {
+                fileChooserCallback?.onReceiveValue(null)
+                fileChooserCallback = callback
+                val accept = params.acceptTypes?.firstOrNull { it.isNotBlank() } ?: "*/*"
+                return try {
+                    filePicker.launch(accept)
+                    true
+                } catch (e: Exception) {
+                    try {
+                        filePicker.launch("*/*")
+                        true
+                    } catch (e2: Exception) {
+                        fileChooserCallback = null
+                        Toast.makeText(this@MainActivity, "File choose karne wala app nahi mila", Toast.LENGTH_SHORT).show()
+                        false
+                    }
+                }
             }
         }
 
