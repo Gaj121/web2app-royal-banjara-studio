@@ -19,6 +19,8 @@ Website ka poora experience — ab app ke andar, tez aur aasan:
 
 • Sab kuch ek tap me — poora website app ke andar khulta hai
 • Download & save — file, photo, PDF seedha phone ke Downloads me
+• Photo/video download — Gallery me turant dikhe
+• Mere Downloads — app ke andar hi saari files ki list
 • Print / Save as PDF — kisi bhi page ka PDF banao
 • Share — page link seedha WhatsApp par bhejo
 • Neeche wala stylish menu — sab important pages ek jagah

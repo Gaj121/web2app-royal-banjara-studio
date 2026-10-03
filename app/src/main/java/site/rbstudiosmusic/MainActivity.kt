@@ -74,9 +74,9 @@ class MainActivity : AppCompatActivity() {
         const val WELCOME_ON = true
         const val WELCOME_TEXT = "Welcome to Royal Banjara Studio Music Distribution Company"
         const val TOOLS_ON = true
-        const val DOWNLOADS_ON = false
-        const val GALLERY_ON = false
-        const val DL_LIST_ON = false
+        const val DOWNLOADS_ON = true
+        const val GALLERY_ON = true
+        const val DL_LIST_ON = true
         const val PINCH_ZOOM = false
         const val KEEP_SCREEN_ON = false
         const val FULLSCREEN_ON = false
@@ -479,6 +479,7 @@ class MainActivity : AppCompatActivity() {
         val popup = PopupMenu(this, anchor)
         popup.menu.add("Share karo")
         popup.menu.add("Print / Save as PDF")
+        popup.menu.add("Mere Downloads")
         popup.menu.add("Downloads folder")
         popup.menu.add("Refresh page")
         popup.menu.add("Home page")
@@ -487,6 +488,7 @@ class MainActivity : AppCompatActivity() {
             when (item.title) {
                 "Share karo" -> sharePage()
                 "Print / Save as PDF" -> printPage()
+                "Mere Downloads" -> showDownloadsSheet()
                 "Downloads folder" -> openDownloads()
                 "Refresh page" -> webView.reload()
                 "Home page" -> webView.loadUrl(HOME_URL)
