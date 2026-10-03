@@ -2,8 +2,8 @@
 
 ## 1) .aab file lo (ban chuki hai)
 
-- Repo ke **Actions** tab me “Build Play Store AAB” workflow chalega
-- **Releases** me `playstore-v…` tag ke andar **app-release.aab** download karo
+- Repo ke **Actions** tab me **Build APK** workflow chala — usi run me **APK + .aab dono** bante hain
+- **Releases** me `app-v…` tag ke andar **app-release.aab** download karo (purane repos me `playstore-v…` tag)
 - Ya Actions run ke artifact **play-store-aab** se lo
 
 ## 2) Play Console account

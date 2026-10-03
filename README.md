@@ -9,8 +9,8 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 |---|---|
 | `app/` | Poora Android app code (WebView + menu + intro + welcome + hide engine) |
 | `app/src/main/res/mipmap-*/ic_launcher.png` | Tumhara app icon — saare sizes me |
-| `.github/workflows/build-apk.yml` | GitHub par FREE automatic APK builder |
-| `.github/workflows/build-aab.yml` | GitHub par FREE **Play Store .aab** builder (signed) |
+| `.github/workflows/build-apk.yml` | GitHub par FREE automatic builder — **APK + Play Store .aab dono** |
+| `.github/workflows/build-aab.yml` | Alag .aab builder (Actions tab se manually bhi chala sakte ho) |
 | `play-store/` | Play Store upload kit — listing text, privacy policy, icon + feature graphic |
 | `desktop/` | Windows + Mac ka asli desktop app (Setup.exe + .dmg) |
 | `.github/workflows/build-desktop.yml` | GitHub par FREE Windows/Mac/iPhone builder |
@@ -22,11 +22,8 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 
 - Poora website app ke andar khulta hai — fast WebView (JavaScript, cookies, downloads sab support)
 - File upload kaam karta hai — site par photo/PDF/audio choose karke upload kar sakte ho
-- ⋮ floating button: **Print / Save as PDF**, Share, Downloads folder — sab kuch ek stylish menu me
-- Website se koi bhi file download karo — seedha phone ke **Downloads folder me save** hota hai (notification ke saath)
-- App khulte hi **animated logo intro** — logo bada hoke aata hai, naam slide hota hai, phir app khul jaata hai
 - **Welcome slider** — app ke upar se slide hoke “Welcome to Royal Banjara Studio Music Distribution Company” ke saath stylish swagat screen (Skip / Get Started ke saath)
-- Stylish floating neeche menu bar: Home, Products, Contact — gradient pill design, scroll karo to apne aap chhup jaata hai
+- Stylish floating neeche menu bar: Home, Login , Contact, Support  — gradient pill design, scroll karo to apne aap chhup jaata hai
 - Website ka footer automatic hide
 - “Created with Kliv / Made with Wix” jaisi builder-branding automatic + permanent hide ( MutationObserver se late-load par bhi)
 - Tumhari “kya chhupana hai” list permanent hide: "Created with Kliv"
@@ -49,7 +46,7 @@ Poori step-by-step guide (photos ke saath jo kahani): **BUILD-GUIDE.md** kholo.
 
 ## 🚀 Play Store par upload — file ready hai
 
-1. Repo ke **Actions** me **Build Play Store AAB** bhi apne aap chalta hai — **Releases** me `playstore-v…` tag ke andar **app-release.aab** milega. Wahi file Play Store par upload hoti hai.
+1. Repo ke **Actions** me **Build APK** chalao — wahi run **APK + Play Store .aab dono** banata hai. **Releases** me `app-v…` tag ke andar **app-debug.apk** aur **app-release.aab** dono milengi. .aab wali file Play Store par upload hoti hai.
 2. [play.google.com/console](https://play.google.com/console) par jao → one-time $25 (~₹200) developer account banao → **Create app**
 3. **Production → Create new release** → `app-release.aab` upload karo
 4. `play-store/STORE-LISTING.md` se naam/description copy-paste karo; `play-store/icon-512.png` aur `play-store/feature-graphic-1024x500.png` graphics ke liye use karo

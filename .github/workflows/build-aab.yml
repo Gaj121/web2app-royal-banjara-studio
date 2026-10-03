@@ -1,8 +1,8 @@
 name: Build Play Store AAB
 
+# Note: AAB ab main "Build APK" workflow me hi saath me banti hai.
+# Ye workflow sirf manually chalane ke liye hai (Actions tab se).
 on:
-  push:
-    branches: [ main, master ]
   workflow_dispatch:
 
 permissions:

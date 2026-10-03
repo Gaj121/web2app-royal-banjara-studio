@@ -28,8 +28,8 @@
 
 ## 🚀 Play Store upload (.aab) — automatic
 
-1. Repo me push karte hi **Build Play Store AAB** workflow chalta hai
-2. **Releases** me `playstore-v…` tag → **app-release.aab** download karo
+1. Repo me push karte hi **Build APK** workflow APK ke saath **Play Store .aab bhi** bana deta hai
+2. **Releases** me `app-v…` tag → **app-release.aab** download karo (purane repos me `playstore-v…` tag)
 3. [play.google.com/console](https://play.google.com/console) → $25 account → Create app → Production → Create new release → .aab upload
 4. `play-store/STORE-LISTING.md` ka text listing me paste karo, `play-store/` wali images graphics me lagao
 5. Pehli release ke baad repo ke **Settings → Secrets** me apna keystore save karo (`play-store/README.md` me step-by-step) — tab har update same signature se banega

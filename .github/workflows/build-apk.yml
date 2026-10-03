@@ -26,8 +26,28 @@ jobs:
         with:
           gradle-version: '8.7'
 
-      - name: Build debug APK
-        run: gradle assembleDebug --no-daemon
+      - name: Signing keystore taiyaar karo (AAB signing ke liye)
+        run: |
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/release.keystore
+            {
+              echo "storeFile=release.keystore"
+              echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}"
+              echo "keyAlias=${{ secrets.KEY_ALIAS }}"
+              echo "keyPassword=${{ secrets.KEY_PASSWORD }}"
+            } > keystore.properties
+          else
+            keytool -genkeypair -v -keystore app/release.keystore -alias appbanao -keyalg RSA -keysize 2048 -validity 10000 -storepass appbanao123 -keypass appbanao123 -dname "CN=Royal Banjara Studio, OU=Mobile, O=Royal Banjara Studio, L=Mumbai, S=MH, C=IN"
+            {
+              echo "storeFile=release.keystore"
+              echo "storePassword=appbanao123"
+              echo "keyAlias=appbanao"
+              echo "keyPassword=appbanao123"
+            } > keystore.properties
+          fi
+
+      - name: Build APK + Play Store AAB (dono saath me)
+        run: gradle assembleDebug bundleRelease --no-daemon
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -35,11 +55,19 @@ jobs:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
-      - name: APK ko Release page par daalo (phone se seedha download)
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: play-store-aab
+          path: app/build/outputs/bundle/release/app-release.aab
+
+      - name: APK + AAB ko Release page par daalo (ek hi release me dono)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: app-v${{ github.run_number }}
-          name: "App APK build ${{ github.run_number }}"
-          files: app/build/outputs/apk/debug/app-debug.apk
+          name: "App build ${{ github.run_number }} — APK + Play Store AAB"
+          files: |
+            app/build/outputs/apk/debug/app-debug.apk
+            app/build/outputs/bundle/release/app-release.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
