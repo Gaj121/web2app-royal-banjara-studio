@@ -542,6 +542,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun buildMoreButton(): TextView {
         val btn = TextView(this)
         btn.text = "⋮"
         btn.textSize = 20f
