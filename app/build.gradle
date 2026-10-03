@@ -24,7 +24,7 @@ android {
     if (keystorePropsFile.exists()) {
         signingConfigs {
             playStore {
-                storeFile rootProject.file(keystoreProps['storeFile'])
+                storeFile file(keystoreProps['storeFile'])
                 storePassword keystoreProps['storePassword']
                 keyAlias keystoreProps['keyAlias']
                 keyPassword keystoreProps['keyPassword']
