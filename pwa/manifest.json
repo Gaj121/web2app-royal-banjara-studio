@@ -5,8 +5,8 @@
   "start_url": "https://rbstudiosmusic.kliv.site/",
   "scope": "https://rbstudiosmusic.kliv.site/",
   "display": "standalone",
-  "background_color": "#3DDC84",
-  "theme_color": "#EC4899",
+  "background_color": "#0C0F14",
+  "theme_color": "#3DDC84",
   "icons": [
     {
       "src": "icons/icon-192.png",

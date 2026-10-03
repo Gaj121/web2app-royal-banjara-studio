@@ -22,11 +22,13 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 
 - Poora website app ke andar khulta hai — fast WebView (JavaScript, cookies, downloads sab support)
 - File upload kaam karta hai — site par photo/PDF/audio choose karke upload kar sakte ho
+- ⋮ floating button: **Print / Save as PDF**, Share, Downloads folder — sab kuch ek stylish menu me
+- Website se koi bhi file download karo — seedha phone ke **Downloads folder me save** hota hai (notification ke saath)
+- App khulte hi **animated logo intro** — logo bada hoke aata hai, naam slide hota hai, phir app khul jaata hai
 - **Welcome slider** — app ke upar se slide hoke “Welcome to Royal Banjara Studio Music Distribution Company” ke saath stylish swagat screen (Skip / Get Started ke saath)
-- Stylish floating neeche menu bar: Home, Login , Contact, Support  — gradient pill design, scroll karo to apne aap chhup jaata hai
+- Stylish floating neeche menu bar: Home, Products, Contact — gradient pill design, scroll karo to apne aap chhup jaata hai
 - Website ka footer automatic hide
 - “Created with Kliv / Made with Wix” jaisi builder-branding automatic + permanent hide ( MutationObserver se late-load par bhi)
-- Tumhari “kya chhupana hai” list permanent hide: "Created with Kliv"
 - Neeche khinch kar refresh (pull-to-refresh)
 - Internet band hone par friendly “No Internet” page
 - Bahar ke links phone ke browser me khulte hain, user app me nahi fas-ta

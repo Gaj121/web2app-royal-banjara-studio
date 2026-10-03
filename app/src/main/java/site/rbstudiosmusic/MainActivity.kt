@@ -3,6 +3,7 @@ package site.rbstudiosmusic
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DownloadManager
+import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -14,6 +15,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -39,6 +41,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ViewFlipper
@@ -48,6 +51,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import java.io.File
 
 class NavEntry(val label: String, val url: String, val icon: Int)
 
@@ -57,8 +61,8 @@ class MainActivity : AppCompatActivity() {
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio"
-        const val THEME_COLOR = "#EC4899"
-        const val SPLASH_COLOR = "#3DDC84"
+        const val THEME_COLOR = "#3DDC84"
+        const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -66,10 +70,13 @@ class MainActivity : AppCompatActivity() {
         const val OPEN_EXTERNAL = true
         const val OFFLINE_PAGE = true
         const val PULL_REFRESH = true
-        const val INTRO_ON = false
+        const val INTRO_ON = true
         const val WELCOME_ON = true
         const val WELCOME_TEXT = "Welcome to Royal Banjara Studio Music Distribution Company"
-        const val TOOLS_ON = false
+        const val TOOLS_ON = true
+        const val DOWNLOADS_ON = false
+        const val GALLERY_ON = false
+        const val DL_LIST_ON = false
         const val PINCH_ZOOM = false
         const val KEEP_SCREEN_ON = false
         const val FULLSCREEN_ON = false
@@ -89,15 +96,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var filePicker: ActivityResultLauncher<String>
     private var pendingDownload: Array<String>? = null
     private var lastDownloadId: Long = -1L
+    private val downloadIds = mutableSetOf<Long>()
+    private val downloadMimes = mutableMapOf<Long, String>()
+    private val downloadMimes = mutableMapOf<Long, String>()
     private var downloadReceiver: BroadcastReceiver? = null
     private val themeColorInt: Int by lazy { Color.parseColor(THEME_COLOR) }
     private val splashColorInt: Int by lazy { Color.parseColor(SPLASH_COLOR) }
 
     private val navEntries: Array<NavEntry> = arrayOf(
         NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
-        NavEntry("Login ", "https://rbstudiosmusic.kliv.site/login", R.drawable.ic_nav_user),
-        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone),
-        NavEntry("Support ", "https://rbstudiosmusic.raiseaticket.com/support/#/login", R.drawable.ic_nav_chat)
+        NavEntry("Products", "https://rbstudiosmusic.kliv.site/products", R.drawable.ic_nav_grid),
+        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -527,6 +536,8 @@ class MainActivity : AppCompatActivity() {
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
             lastDownloadId = (getSystemService(DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+            downloadIds.add(lastDownloadId)
+            downloadMimes[lastDownloadId] = mimeType
             Toast.makeText(this, "Download shuru — " + fileName, Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             openExternal(Uri.parse(url))
@@ -551,7 +562,10 @@ class MainActivity : AppCompatActivity() {
             override fun onReceive(context: Context, intent: Intent) {
                 val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
                 if (id != -1L && id == lastDownloadId) {
-                    Toast.makeText(this@MainActivity, "Download complete — Downloads folder me save ho gaya", Toast.LENGTH_LONG).show()
+                    val media = isMediaMime(downloadMimes[id])
+                    if (GALLERY_ON && media) saveToGalleryIfMedia(id)
+                    val msg = if (GALLERY_ON && media) "Download complete — Gallery aur Downloads folder me save ho gaya" else "Download complete — Downloads folder me save ho gaya"
+                    Toast.makeText(this@MainActivity, msg, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -562,6 +576,265 @@ class MainActivity : AppCompatActivity() {
         } else {
             registerReceiver(receiver, filter)
         }
+    }
+
+    private fun isMediaMime(mime: String?): Boolean {
+        val m = (mime ?: "").lowercase()
+        return m.startsWith("image/") || m.startsWith("video/")
+    }
+
+    private fun downloadTitle(id: Long): String {
+        return try {
+            val dm = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            val cursor = dm.query(DownloadManager.Query().setFilterById(id))
+            cursor?.use {
+                val tIdx = it.getColumnIndex(DownloadManager.COLUMN_TITLE)
+                if (it.moveToFirst() && tIdx >= 0) return it.getString(tIdx) ?: "file"
+            }
+            "file"
+        } catch (e: Exception) {
+            "file"
+        }
+    }
+
+    private fun saveToGalleryIfMedia(id: Long) {
+        val mime = (downloadMimes[id] ?: "").lowercase()
+        if (!mime.startsWith("image/") && !mime.startsWith("video/")) return
+        try {
+            val dm = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            val source = dm.getUriForDownloadedFile(id) ?: return
+            val fileName = downloadTitle(id)
+            if (Build.VERSION.SDK_INT >= 29) {
+                val values = android.content.ContentValues()
+                values.put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                values.put(android.provider.MediaStore.MediaColumns.MIME_TYPE, mime)
+                values.put(android.provider.MediaStore.MediaColumns.IS_PENDING, 1)
+                val collection = if (mime.startsWith("video/")) {
+                    android.provider.MediaStore.Video.Media.getContentUri(android.provider.MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                } else {
+                    android.provider.MediaStore.Images.Media.getContentUri(android.provider.MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                }
+                val dest = contentResolver.insert(collection, values) ?: return
+                contentResolver.openInputStream(source)?.use { input ->
+                    contentResolver.openOutputStream(dest)?.use { output -> input.copyTo(output) }
+                }
+                val done = android.content.ContentValues()
+                done.put(android.provider.MediaStore.MediaColumns.IS_PENDING, 0)
+                contentResolver.update(dest, done, null, null)
+            } else {
+                val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_NAME)
+                if (!dir.exists()) dir.mkdirs()
+                val destFile = File(dir, fileName)
+                contentResolver.openInputStream(source)?.use { input ->
+                    destFile.outputStream().use { output -> input.copyTo(output) }
+                }
+                MediaScannerConnection.scanFile(this, arrayOf(destFile.absolutePath), arrayOf(mime), null)
+            }
+        } catch (e: Exception) {
+            // Gallery copy fail — file phir bhi Downloads folder me safe hai
+        }
+    }
+
+    private fun humanSize(bytes: Long): String {
+        if (bytes <= 0) return ""
+        val kb = bytes / 1024.0
+        val mb = kb / 1024.0
+        return when {
+            mb >= 1 -> String.format("%.1f MB", mb)
+            kb >= 1 -> String.format("%.0f KB", kb)
+            else -> bytes.toString() + " B"
+        }
+    }
+
+    private fun openDownloadedFile(dm: DownloadManager, id: Long) {
+        try {
+            val uri = dm.getUriForDownloadedFile(id)
+            if (uri == null) {
+                Toast.makeText(this, "File nahi mili — shayad delete ho chuki hai", Toast.LENGTH_SHORT).show()
+                return
+            }
+            val intent = Intent(Intent.ACTION_VIEW)
+            val mime = downloadMimes[id]
+            if (mime.isNullOrBlank()) intent.data = uri else intent.setDataAndType(uri, mime)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, "Is file ko kholne wala app nahi mila", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "File nahi khul payi", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun shareDownloadedFile(dm: DownloadManager, id: Long, name: String) {
+        try {
+            val uri = dm.getUriForDownloadedFile(id) ?: return
+            val send = Intent(Intent.ACTION_SEND)
+            val mime = downloadMimes[id]
+            send.setType(if (mime.isNullOrBlank()) "*/*" else mime)
+            send.putExtra(Intent.EXTRA_STREAM, uri)
+            send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(Intent.createChooser(send, "Share karo — " + name))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Share nahi ho payi", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun buildDownloadRow(dialog: Dialog, dm: DownloadManager, id: Long, name: String, size: Long): View {
+        val row = LinearLayout(this)
+        row.orientation = LinearLayout.HORIZONTAL
+        row.gravity = Gravity.CENTER_VERTICAL
+        row.setPadding(dp(12), dp(10), dp(10), dp(10))
+        val card = GradientDrawable()
+        card.setColor(0xFFF3F5F7.toInt())
+        card.cornerRadius = dp(14).toFloat()
+        row.background = card
+        row.foreground = RippleDrawable(ColorStateList.valueOf(0x1F888888), null, null)
+        val rowLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        rowLp.topMargin = dp(8)
+        row.layoutParams = rowLp
+
+        val info = LinearLayout(this)
+        info.orientation = LinearLayout.VERTICAL
+
+        val label = TextView(this)
+        label.text = name
+        label.textSize = 14f
+        label.typeface = Typeface.DEFAULT_BOLD
+        label.setTextColor(0xFF1B1F24.toInt())
+        label.maxLines = 2
+        info.addView(label)
+
+        val meta = TextView(this)
+        val sizeText = humanSize(size)
+        meta.text = if (sizeText.isBlank()) "Tap karke kholo" else sizeText + " • tap karke kholo"
+        meta.textSize = 11f
+        meta.setTextColor(0xFF6B7280.toInt())
+        info.addView(meta)
+
+        val share = TextView(this)
+        share.text = "Share"
+        share.textSize = 12f
+        share.typeface = Typeface.DEFAULT_BOLD
+        share.setTextColor(themeColorInt)
+        val shareBg = GradientDrawable()
+        shareBg.setColor(shade(themeColorInt, 0.88f))
+        shareBg.cornerRadius = dp(12).toFloat()
+        share.background = shareBg
+        share.setPadding(dp(12), dp(6), dp(12), dp(6))
+        share.setOnClickListener {
+            bounce(share)
+            shareDownloadedFile(dm, id, name)
+        }
+
+        row.addView(info, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        val shareLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        shareLp.leftMargin = dp(8)
+        row.addView(share, shareLp)
+
+        row.setOnClickListener { openDownloadedFile(dm, id) }
+        row.setOnLongClickListener {
+            if (downloadIds.contains(id)) {
+                try {
+                    dm.remove(id)
+                    downloadIds.remove(id)
+                    Toast.makeText(this, "Delete ho gayi — " + name, Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                    showDownloadsSheet()
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Delete nahi ho payi", Toast.LENGTH_SHORT).show()
+                }
+                true
+            } else {
+                Toast.makeText(this, "Ye file kisi aur app ne download ki hai — delete nahi ho sakti", Toast.LENGTH_SHORT).show()
+                true
+            }
+        }
+        return row
+    }
+
+    private fun showDownloadsSheet() {
+        val dm = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+        val dialog = Dialog(this)
+        val sheet = LinearLayout(this)
+        sheet.orientation = LinearLayout.VERTICAL
+        val pad = dp(16)
+        sheet.setPadding(pad, pad, pad, dp(12))
+        val bg = GradientDrawable()
+        bg.setColor(Color.WHITE)
+        bg.cornerRadius = dp(22).toFloat()
+        sheet.background = bg
+
+        val title = TextView(this)
+        title.text = "Mere Downloads"
+        title.textSize = 18f
+        title.typeface = Typeface.DEFAULT_BOLD
+        title.setTextColor(0xFF1B1F24.toInt())
+        sheet.addView(title)
+
+        val sub = TextView(this)
+        sub.text = "Tap = kholo • Share bhejo • dabaye rakho = delete"
+        sub.textSize = 12f
+        sub.setTextColor(0xFF6B7280.toInt())
+        val subLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        subLp.topMargin = dp(2)
+        sheet.addView(sub, subLp)
+
+        val scroll = ScrollView(this)
+        val list = LinearLayout(this)
+        list.orientation = LinearLayout.VERTICAL
+        scroll.addView(list, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        var rows = 0
+        try {
+            val cursor = dm.query(DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_SUCCESSFUL))
+            cursor?.use {
+                val iIdx = it.getColumnIndex(DownloadManager.COLUMN_ID)
+                val tIdx = it.getColumnIndex(DownloadManager.COLUMN_TITLE)
+                val sIdx = it.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+                while (it.moveToNext()) {
+                    if (iIdx < 0) break
+                    val id = it.getLong(iIdx)
+                    val name = if (tIdx >= 0) (it.getString(tIdx) ?: "file") else "file"
+                    val size = if (sIdx >= 0 && !it.isNull(sIdx)) it.getLong(sIdx) else 0L
+                    list.addView(buildDownloadRow(dialog, dm, id, name, size))
+                    rows++
+                }
+            }
+        } catch (e: Exception) {
+            // list na mile to neeche empty message dikhega
+        }
+        if (rows == 0) {
+            val empty = TextView(this)
+            empty.text = "Abhi koi download nahi hui — website se koi file download karo, wo yahan dikhegi"
+            empty.textSize = 13f
+            empty.setTextColor(0xFF6B7280.toInt())
+            val eLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            eLp.topMargin = dp(14)
+            list.addView(empty, eLp)
+        }
+        sheet.addView(scroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
+
+        val openFolder = TextView(this)
+        openFolder.text = "Downloads folder kholo"
+        openFolder.textSize = 14f
+        openFolder.typeface = Typeface.DEFAULT_BOLD
+        openFolder.gravity = Gravity.CENTER
+        openFolder.setTextColor(Color.WHITE)
+        val btnBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, 0.35f), themeColorInt))
+        btnBg.cornerRadius = dp(14).toFloat()
+        openFolder.background = btnBg
+        openFolder.setPadding(dp(14), dp(11), dp(14), dp(11))
+        openFolder.setOnClickListener {
+            bounce(openFolder)
+            dialog.dismiss()
+            openDownloads()
+        }
+        val btnLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        btnLp.topMargin = dp(12)
+        sheet.addView(openFolder, btnLp)
+
+        dialog.setContentView(sheet)
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92).toInt(), (resources.displayMetrics.heightPixels * 0.72).toInt())
+        dialog.show()
     }
 
     private fun buildNavBar(): LinearLayout {
@@ -725,6 +998,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         webView.setDownloadListener(DownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
+            if (!DOWNLOADS_ON) {
+                openExternal(Uri.parse(url))
+                return@DownloadListener
+            }
             if (Build.VERSION.SDK_INT <= 28 && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 pendingDownload = arrayOf(url, userAgent, contentDisposition ?: "", mimeType ?: "")
                 requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 4001)
