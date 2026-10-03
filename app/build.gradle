@@ -3,6 +3,12 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+def keystorePropsFile = rootProject.file('keystore.properties')
+def keystoreProps = new Properties()
+if (keystorePropsFile.exists()) {
+    keystorePropsFile.withInputStream { stream -> keystoreProps.load(stream) }
+}
+
 android {
     namespace 'site.rbstudiosmusic'
     compileSdk 34
@@ -15,10 +21,22 @@ android {
         versionName "1.0"
     }
 
+    if (keystorePropsFile.exists()) {
+        signingConfigs {
+            playStore {
+                storeFile rootProject.file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig keystorePropsFile.exists() ? signingConfigs.playStore : signingConfigs.debug
         }
     }
     compileOptions {
