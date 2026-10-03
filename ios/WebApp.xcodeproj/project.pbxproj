@@ -7,23 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2A0000000000000000000B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0000000000000000000D1 /* AppDelegate.swift */};
-		2A0000000000000000000B2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0000000000000000000D2 /* SceneDelegate.swift */};
-		2A0000000000000000000B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0000000000000000000D3 /* ViewController.swift */};
-		2A0000000000000000000B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A0000000000000000000D5 /* Assets.xcassets */};
+		2A00000000000000000000B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A00000000000000000000D1 /* AppDelegate.swift */};
+		2A00000000000000000000B2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A00000000000000000000D2 /* SceneDelegate.swift */};
+		2A00000000000000000000B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A00000000000000000000D3 /* ViewController.swift */};
+		2A00000000000000000000B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A00000000000000000000D5 /* Assets.xcassets */};
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2A0000000000000000000C1 /* WebApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WebApp.app"; sourceTree = BUILT_PRODUCTS_DIR;};
-		2A0000000000000000000D1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>";};
-		2A0000000000000000000D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>";};
-		2A0000000000000000000D3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>";};
-		2A0000000000000000000D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>";};
-		2A0000000000000000000D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>";};
+		2A00000000000000000000C1 /* WebApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WebApp.app"; sourceTree = BUILT_PRODUCTS_DIR;};
+		2A00000000000000000000D1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>";};
+		2A00000000000000000000D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>";};
+		2A00000000000000000000D3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>";};
+		2A00000000000000000000D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>";};
+		2A00000000000000000000D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>";};
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		2A000000000000000000012 /* Frameworks */ = {
+		2A0000000000000000000012 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,30 +33,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2A0000000000000000000E1 = {
+		2A00000000000000000000E1 = {
 			isa = PBXGroup;
 			children = (
-				2A0000000000000000000E2 /* WebApp */,
-				2A0000000000000000000E3 /* Products */,
+				2A00000000000000000000E2 /* WebApp */,
+				2A00000000000000000000E3 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		2A0000000000000000000E2 /* WebApp */ = {
+		2A00000000000000000000E2 /* WebApp */ = {
 			isa = PBXGroup;
 			children = (
-				2A0000000000000000000D1 /* AppDelegate.swift */,
-				2A0000000000000000000D2 /* SceneDelegate.swift */,
-				2A0000000000000000000D3 /* ViewController.swift */,
-				2A0000000000000000000D4 /* Info.plist */,
-				2A0000000000000000000D5 /* Assets.xcassets */,
+				2A00000000000000000000D1 /* AppDelegate.swift */,
+				2A00000000000000000000D2 /* SceneDelegate.swift */,
+				2A00000000000000000000D3 /* ViewController.swift */,
+				2A00000000000000000000D4 /* Info.plist */,
+				2A00000000000000000000D5 /* Assets.xcassets */,
 			);
 			path = WebApp;
 			sourceTree = "<group>";
 		};
-		2A0000000000000000000E3 /* Products */ = {
+		2A00000000000000000000E3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2A0000000000000000000C1 /* WebApp.app */,
+				2A00000000000000000000C1 /* WebApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -64,13 +64,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2A0000000000000000000F1 /* WebApp */ = {
+		2A00000000000000000000F1 /* WebApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2A000000000000000000031 /* Build configuration list for PBXNativeTarget "WebApp" */;
+			buildConfigurationList = 2A0000000000000000000031 /* Build configuration list for PBXNativeTarget "WebApp" */;
 			buildPhases = (
-				2A000000000000000000011 /* Sources */,
-				2A000000000000000000012 /* Frameworks */,
-				2A000000000000000000013 /* Resources */,
+				2A0000000000000000000011 /* Sources */,
+				2A0000000000000000000012 /* Frameworks */,
+				2A0000000000000000000013 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -80,23 +80,23 @@
 			packageProductDependencies = (
 			);
 			productName = WebApp;
-			productReference = 2A0000000000000000000C1 /* WebApp.app */;
+			productReference = 2A00000000000000000000C1 /* WebApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		2A0000000000000000000F2 /* Project object */ = {
+		2A00000000000000000000F2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				TargetAttributes = {
-					2A0000000000000000000F1 = {
+					2A00000000000000000000F1 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
-			buildConfigurationList = 2A000000000000000000021 /* Build configuration list for PBXProject "WebApp" */;
+			buildConfigurationList = 2A0000000000000000000021 /* Build configuration list for PBXProject "WebApp" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -104,42 +104,42 @@
 				en,
 				Base,
 			);
-			mainGroup = 2A0000000000000000000E1;
-			productRefGroup = 2A0000000000000000000E3 /* Products */;
+			mainGroup = 2A00000000000000000000E1;
+			productRefGroup = 2A00000000000000000000E3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2A0000000000000000000F1 /* WebApp */,
+				2A00000000000000000000F1 /* WebApp */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		2A000000000000000000013 /* Resources */ = {
+		2A0000000000000000000013 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A0000000000000000000B4 /* Assets.xcassets in Resources */,
+				2A00000000000000000000B4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		2A000000000000000000011 /* Sources */ = {
+		2A0000000000000000000011 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A0000000000000000000B1 /* AppDelegate.swift in Sources */,
-				2A0000000000000000000B2 /* SceneDelegate.swift in Sources */,
-				2A0000000000000000000B3 /* ViewController.swift in Sources */,
+				2A00000000000000000000B1 /* AppDelegate.swift in Sources */,
+				2A00000000000000000000B2 /* SceneDelegate.swift in Sources */,
+				2A00000000000000000000B3 /* ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		2A000000000000000000022 /* Debug */ = {
+		2A0000000000000000000022 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -155,7 +155,7 @@
 			};
 			name = Debug;
 		};
-		2A000000000000000000023 /* Release */ = {
+		2A0000000000000000000023 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -172,7 +172,7 @@
 			};
 			name = Release;
 		};
-		2A000000000000000000032 /* Debug */ = {
+		2A0000000000000000000032 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -199,7 +199,7 @@
 			};
 			name = Debug;
 		};
-		2A000000000000000000033 /* Release */ = {
+		2A0000000000000000000033 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -228,25 +228,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2A000000000000000000021 /* Build configuration list for PBXProject "WebApp" */ = {
+		2A0000000000000000000021 /* Build configuration list for PBXProject "WebApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2A000000000000000000022 /* Debug */,
-				2A000000000000000000023 /* Release */,
+				2A0000000000000000000022 /* Debug */,
+				2A0000000000000000000023 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2A000000000000000000031 /* Build configuration list for PBXNativeTarget "WebApp" */ = {
+		2A0000000000000000000031 /* Build configuration list for PBXNativeTarget "WebApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2A000000000000000000032 /* Debug */,
-				2A000000000000000000033 /* Release */,
+				2A0000000000000000000032 /* Debug */,
+				2A0000000000000000000033 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 2A0000000000000000000F2 /* Project object */;
+	rootObject = 2A00000000000000000000F2 /* Project object */;
 }
