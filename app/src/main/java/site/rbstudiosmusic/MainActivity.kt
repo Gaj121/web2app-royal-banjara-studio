@@ -313,7 +313,7 @@ class MainActivity : AppCompatActivity() {
         card.setOnClickListener { }
 
         val flipper = ViewFlipper(this)
-        flipper.autoStart = true
+        flipper.isAutoStart = true
         flipper.flipInterval = 3600
         val inAnim = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 1f, Animation.RELATIVE_TO_PARENT, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f)
         inAnim.duration = 420
