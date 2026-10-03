@@ -17,7 +17,8 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 ## ✅ Built-in features
 
 - Poora website app ke andar khulta hai — fast WebView (JavaScript, cookies, downloads sab support)
-- Neeche icon menu: Home, Products, Contact — tap par seedha us page par
+- File upload kaam karta hai — site par photo/PDF/audio choose karke upload kar sakte ho
+- Stylish floating neeche menu bar: Home, Contact , Login , Support  — gol pill design, scroll karo to apne aap chhup jaata hai
 - Website ka footer automatic hide
 - “Created with Kliv / Made with Wix” jaisi builder-branding automatic + permanent hide ( MutationObserver se late-load par bhi)
 - Tumhari “kya chhupana hai” list permanent hide: "Created with Kliv"
