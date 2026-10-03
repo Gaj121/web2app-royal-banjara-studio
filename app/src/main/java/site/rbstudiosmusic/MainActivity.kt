@@ -98,7 +98,6 @@ class MainActivity : AppCompatActivity() {
     private var lastDownloadId: Long = -1L
     private val downloadIds = mutableSetOf<Long>()
     private val downloadMimes = mutableMapOf<Long, String>()
-    private val downloadMimes = mutableMapOf<Long, String>()
     private var downloadReceiver: BroadcastReceiver? = null
     private val themeColorInt: Int by lazy { Color.parseColor(THEME_COLOR) }
     private val splashColorInt: Int by lazy { Color.parseColor(SPLASH_COLOR) }
