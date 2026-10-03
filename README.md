@@ -31,6 +31,7 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 - Stylish floating neeche menu bar: Home, Products, Contact — gradient pill design, scroll karo to apne aap chhup jaata hai
 - Website ka footer automatic hide
 - “Created with Kliv / Made with Wix” jaisi builder-branding automatic + permanent hide ( MutationObserver se late-load par bhi)
+- Tumhari “kya chhupana hai” list permanent hide: "Created with Kliv"
 - Neeche khinch kar refresh (pull-to-refresh)
 - Internet band hone par friendly “No Internet” page
 - Bahar ke links phone ke browser me khulte hain, user app me nahi fas-ta
