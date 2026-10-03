@@ -18,7 +18,11 @@
     "appId": "site.rbstudiosmusic.desktop",
     "productName": "Royal Banjara Studio",
     "asar": true,
-    "files": ["main.js", "icon.png", "package.json"],
+    "files": [
+      "main.js",
+      "icon.png",
+      "package.json"
+    ],
     "directories": {
       "output": "dist"
     },
@@ -26,7 +30,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "icon.png"
@@ -40,11 +46,13 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["universal"]
+          "arch": [
+            "universal"
+          ]
         }
       ],
       "icon": "icon.png",
-      "category": "public.app-category.music",
+      "category": "public.app-category.utilities",
       "identity": null
     }
   }

@@ -7,9 +7,13 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 
 | File / Folder | Kya hai |
 |---|---|
-| `app/` | Poora Android app code (WebView + menu + branding hide engine) |
+| `app/` | Poora Android app code (WebView + menu + intro + welcome + hide engine) |
 | `app/src/main/res/mipmap-*/ic_launcher.png` | Tumhara app icon — saare sizes me |
 | `.github/workflows/build-apk.yml` | GitHub par FREE automatic APK builder |
+| `.github/workflows/build-aab.yml` | GitHub par FREE **Play Store .aab** builder (signed) |
+| `play-store/` | Play Store upload kit — listing text, privacy policy, icon + feature graphic |
+| `desktop/` | Windows + Mac ka asli desktop app (Setup.exe + .dmg) |
+| `.github/workflows/build-desktop.yml` | GitHub par FREE Windows/Mac/iPhone builder |
 | `ios/` | iPhone + Mac ka Xcode project (asli iOS app) |
 | `pwa/` | Website ko install-able web app (PWA) banane ka kit |
 | `BUILD-GUIDE.md` | Poori Hindi guide — APK, iPhone, Mac, Play Store |
@@ -18,7 +22,11 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 
 - Poora website app ke andar khulta hai — fast WebView (JavaScript, cookies, downloads sab support)
 - File upload kaam karta hai — site par photo/PDF/audio choose karke upload kar sakte ho
-- Stylish floating neeche menu bar: Home, Contact , Login , Support  — gol pill design, scroll karo to apne aap chhup jaata hai
+- ⋮ floating button: **Print / Save as PDF**, Share, Downloads folder — sab kuch ek stylish menu me
+- Website se koi bhi file download karo — seedha phone ke **Downloads folder me save** hota hai (notification ke saath)
+- App khulte hi **animated logo intro** — logo bada hoke aata hai, naam slide hota hai, phir app khul jaata hai
+- **Welcome slider** — app ke upar se slide hoke “Welcome to Royal Banjara Studio Music Distribution Company” ke saath stylish swagat screen (Skip / Get Started ke saath)
+- Stylish floating neeche menu bar: Home, Products, Contact — gradient pill design, scroll karo to apne aap chhup jaata hai
 - Website ka footer automatic hide
 - “Created with Kliv / Made with Wix” jaisi builder-branding automatic + permanent hide ( MutationObserver se late-load par bhi)
 - Tumhari “kya chhupana hai” list permanent hide: "Created with Kliv"
@@ -39,6 +47,16 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 
 Poori step-by-step guide (photos ke saath jo kahani): **BUILD-GUIDE.md** kholo.
 
+## 🚀 Play Store par upload — file ready hai
+
+1. Repo ke **Actions** me **Build Play Store AAB** bhi apne aap chalta hai — **Releases** me `playstore-v…` tag ke andar **app-release.aab** milega. Wahi file Play Store par upload hoti hai.
+2. [play.google.com/console](https://play.google.com/console) par jao → one-time $25 (~₹200) developer account banao → **Create app**
+3. **Production → Create new release** → `app-release.aab` upload karo
+4. `play-store/STORE-LISTING.md` se naam/description copy-paste karo; `play-store/icon-512.png` aur `play-store/feature-graphic-1024x500.png` graphics ke liye use karo
+5. Privacy policy: `play-store/PRIVACY-POLICY.md` ko apni website par daal kar uska URL Console me do
+
+> ⚠️ Signature ka note: jab tak GitHub Secrets me `KEYSTORE_BASE64` set nahi hota, har build naya signing key banata hai — pehli upload ke **baad** secrets set kar lena taaki updates same key se jaayein. Pura tarika `play-store/README.md` me.
+
 ## 💻 Android Studio se (full control)
 
 1. [Android Studio](https://developer.android.com/studio) free download karke install karo
@@ -52,15 +70,9 @@ Poori step-by-step guide (photos ke saath jo kahani): **BUILD-GUIDE.md** kholo.
 iPhone connect karke Run dabao. Mac par bhi chalta hai (“My Mac” destination).
 Details: `ios/README.md`
 
-## 🚀 Play Store par upload
-
-1. [play.google.com/console](https://play.google.com/console) par jao → one-time $25 (~₹200) developer account banao
-2. Android Studio me: **Build → Generate Signed Bundle / APK → APK** → naya keystore banao (backup zaroor rakho!)
-3. Play Console me **Create app** → signed APK upload karo → listing details bharo → Submit
-
 ## 💡 Notes
 
-- Debug APK direct install ke liye bilkul theek hai; **Play Store ke liye signed release APK** hi bhejna.
+- Debug APK direct install ke liye bilkul theek hai; **Play Store ke liye .aab** (upar dekho) hi bhejna.
 - Branding-hide engine `MainActivity.kt` ke `HIDE_JS` me hai — badalna ho to wahan edit karke dobara build karo.
 - App ka naam/package badalna ho to `app/build.gradle` me `applicationId` aur `res/values/strings.xml` me `app_name` edit karo.
 

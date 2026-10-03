@@ -1,19 +1,29 @@
 package site.rbstudiosmusic
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.ActivityNotFoundException
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.print.PrintManager
 import android.view.Gravity
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.OvershootInterpolator
+import android.view.animation.TranslateAnimation
 import android.webkit.CookieManager
 import android.webkit.DownloadListener
 import android.webkit.URLUtil
@@ -30,10 +40,12 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ViewFlipper
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class NavEntry(val label: String, val url: String, val icon: Int)
@@ -43,8 +55,9 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
-        const val THEME_COLOR = "#EC4899"
-        const val SPLASH_COLOR = "#3DDC84"
+        const val APP_NAME = "Royal Banjara Studio"
+        const val THEME_COLOR = "#3DDC84"
+        const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -52,25 +65,34 @@ class MainActivity : AppCompatActivity() {
         const val OPEN_EXTERNAL = true
         const val OFFLINE_PAGE = true
         const val PULL_REFRESH = true
+        const val INTRO_ON = true
+        const val WELCOME_ON = true
+        const val WELCOME_TEXT = "Welcome to Royal Banjara Studio Music Distribution Company"
+        const val TOOLS_ON = true
     }
 
     private lateinit var webView: WebView
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var progressBar: ProgressBar
-    private lateinit var splashOverlay: FrameLayout
+    private var navBar: LinearLayout? = null
+    private var introOverlay: FrameLayout? = null
+    private var welcomeOverlay: FrameLayout? = null
     private val navIcons = mutableListOf<ImageView>()
     private val navLabels = mutableListOf<TextView>()
+    private val pillHolders = mutableListOf<FrameLayout>()
     private val pillBackgrounds = mutableListOf<GradientDrawable>()
-    private var navBar: LinearLayout? = null
     private var fileChooserCallback: ValueCallback<Array<Uri>>? = null
     private lateinit var filePicker: ActivityResultLauncher<String>
+    private var pendingDownload: Array<String>? = null
+    private var lastDownloadId: Long = -1L
+    private var downloadReceiver: BroadcastReceiver? = null
     private val themeColorInt: Int by lazy { Color.parseColor(THEME_COLOR) }
+    private val splashColorInt: Int by lazy { Color.parseColor(SPLASH_COLOR) }
 
     private val navEntries: Array<NavEntry> = arrayOf(
-        NavEntry("Home", "https://rbstudiosmusic.site", R.drawable.ic_nav_home),
-        NavEntry("Contact ", "https://rbstudiosmusic.site/page-contact-us/contact-us", R.drawable.ic_nav_phone),
-        NavEntry("Login ", "https://rbstudiosmusic.kliv.site/login", R.drawable.ic_nav_user),
-        NavEntry("Support ", "https://rbstudiosmusic.raiseaticket.com/support/#/login", R.drawable.ic_nav_chat)
+        NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
+        NavEntry("Products", "https://rbstudiosmusic.kliv.site/products", R.drawable.ic_nav_grid),
+        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,29 +139,59 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        if (TOOLS_ON) {
+            val fab = buildMoreButton()
+            val fabLp = FrameLayout.LayoutParams(dp(46), dp(46), Gravity.BOTTOM or Gravity.END)
+            fabLp.rightMargin = dp(14)
+            fabLp.bottomMargin = if (SHOW_NAV) dp(98) else dp(22)
+            root.addView(fab, fabLp)
+        }
+
         root.addView(content, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
-        splashOverlay = buildSplash()
-        root.addView(splashOverlay, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        if (INTRO_ON) {
+            val intro = buildIntro()
+            introOverlay = intro
+            root.addView(intro, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        }
+
+        if (WELCOME_ON) {
+            val welcome = buildWelcomeSlider()
+            welcomeOverlay = welcome
+            welcome.translationY = -resources.displayMetrics.heightPixels.toFloat()
+            welcome.alpha = 0f
+            root.addView(welcome, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+            welcome.postDelayed({ showWelcome() }, if (INTRO_ON) 1950L else 350L)
+        }
 
         setContentView(root)
 
         setupWebView()
         selectNav(0)
         webView.loadUrl(HOME_URL)
+        registerDownloadReceiver()
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                val welcome = welcomeOverlay
+                if (welcome != null && welcome.visibility == View.VISIBLE) {
+                    dismissWelcome()
+                    return
+                }
                 if (webView.canGoBack()) webView.goBack() else finish()
             }
         })
-
-        swipeRefresh.postDelayed({
-            splashOverlay.animate().alpha(0f).setDuration(350).withEndAction { splashOverlay.visibility = View.GONE }
-        }, 650)
     }
 
     override fun onDestroy() {
+        downloadReceiver?.let {
+            try {
+                unregisterReceiver(it)
+            } catch (e: Exception) {
+                // pehle se hat chuka tha
+            }
+        }
+        downloadReceiver = null
         fileChooserCallback?.onReceiveValue(null)
         fileChooserCallback = null
         super.onDestroy()
@@ -147,13 +199,356 @@ class MainActivity : AppCompatActivity() {
 
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
 
-    private fun buildSplash(): FrameLayout {
+    private fun shade(color: Int, factor: Float): Int {
+        val r = Color.red(color)
+        val g = Color.green(color)
+        val b = Color.blue(color)
+        fun mix(c: Int): Int = if (factor >= 0f) (c + ((255 - c) * factor).toInt()) else (c * (1f + factor)).toInt()
+        return Color.rgb(mix(r).coerceIn(0, 255), mix(g).coerceIn(0, 255), mix(b).coerceIn(0, 255))
+    }
+
+    private fun buildIntro(): FrameLayout {
         val overlay = FrameLayout(this)
-        overlay.setBackgroundColor(Color.parseColor(SPLASH_COLOR))
-        val icon = ImageView(this)
-        icon.setImageResource(R.mipmap.ic_launcher)
-        overlay.addView(icon, FrameLayout.LayoutParams(dp(96), dp(96), Gravity.CENTER))
+        val bg = GradientDrawable(
+            GradientDrawable.Orientation.TL_BR,
+            intArrayOf(shade(splashColorInt, -0.3f), splashColorInt, shade(themeColorInt, -0.5f))
+        )
+        overlay.background = bg
+
+        val stack = LinearLayout(this)
+        stack.orientation = LinearLayout.VERTICAL
+        stack.gravity = Gravity.CENTER
+
+        val logoCard = FrameLayout(this)
+        val cardBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(Color.WHITE, shade(themeColorInt, 0.7f)))
+        cardBg.cornerRadius = dp(32).toFloat()
+        logoCard.background = cardBg
+        logoCard.elevation = dp(22).toFloat()
+        logoCard.setPadding(dp(12), dp(12), dp(12), dp(12))
+        val logo = ImageView(this)
+        logo.setImageResource(R.mipmap.ic_launcher)
+        logoCard.addView(logo, FrameLayout.LayoutParams(dp(104), dp(104), Gravity.CENTER))
+
+        val name = TextView(this)
+        name.text = APP_NAME
+        name.textSize = 21f
+        name.setTextColor(Color.WHITE)
+        name.typeface = Typeface.DEFAULT_BOLD
+        name.gravity = Gravity.CENTER
+        name.letterSpacing = 0.06f
+
+        val tagline = TextView(this)
+        tagline.text = "Loading ho raha hai..."
+        tagline.textSize = 13f
+        tagline.setTextColor(0xB3FFFFFF.toInt())
+        tagline.gravity = Gravity.CENTER
+
+        val spinner = ProgressBar(this)
+        spinner.indeterminateTintList = ColorStateList.valueOf(themeColorInt)
+
+        stack.addView(logoCard, LinearLayout.LayoutParams(dp(128), dp(128)))
+        val nameLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        nameLp.topMargin = dp(22)
+        stack.addView(name, nameLp)
+        val tagLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        tagLp.topMargin = dp(6)
+        stack.addView(tagline, tagLp)
+        val spLp = LinearLayout.LayoutParams(dp(38), dp(38))
+        spLp.topMargin = dp(18)
+        stack.addView(spinner, spLp)
+
+        overlay.addView(stack, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+
+        logoCard.scaleX = 0.35f
+        logoCard.scaleY = 0.35f
+        logoCard.alpha = 0f
+        name.alpha = 0f
+        name.translationY = dp(16).toFloat()
+        tagline.alpha = 0f
+
+        logoCard.animate().scaleX(1f).scaleY(1f).alpha(1f).setDuration(480).setInterpolator(OvershootInterpolator(1.5f)).start()
+        logoCard.postDelayed({
+            name.animate().alpha(1f).translationY(0f).setDuration(380).start()
+            tagline.animate().alpha(1f).setDuration(380).start()
+        }, 320)
+
+        overlay.postDelayed({
+            overlay.animate().translationY(-overlay.height.toFloat()).alpha(0f).setDuration(450)
+                .withEndAction { overlay.visibility = View.GONE }.start()
+        }, 1500)
+
         return overlay
+    }
+
+    private fun showWelcome() {
+        val ov = welcomeOverlay ?: return
+        ov.alpha = 1f
+        ov.visibility = View.VISIBLE
+        ov.animate().translationY(0f).setDuration(560).setInterpolator(OvershootInterpolator(0.8f)).start()
+    }
+
+    private fun dismissWelcome() {
+        val ov = welcomeOverlay ?: return
+        ov.animate().translationY(-ov.height.toFloat()).alpha(0f).setDuration(400)
+            .withEndAction { ov.visibility = View.GONE }.start()
+    }
+
+    private fun buildWelcomeSlider(): FrameLayout {
+        val overlay = FrameLayout(this)
+        val scrim = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(shade(splashColorInt, -0.4f), splashColorInt, shade(splashColorInt, -0.55f))
+        )
+        overlay.background = scrim
+
+        val card = LinearLayout(this)
+        card.orientation = LinearLayout.VERTICAL
+        card.gravity = Gravity.CENTER_HORIZONTAL
+        card.setPadding(dp(26), dp(30), dp(26), dp(26))
+        val cardBg = GradientDrawable()
+        cardBg.setColor(Color.WHITE)
+        cardBg.cornerRadius = dp(30).toFloat()
+        card.background = cardBg
+        card.elevation = dp(24).toFloat()
+        card.setOnClickListener { }
+
+        val flipper = ViewFlipper(this)
+        flipper.autoStart = true
+        flipper.flipInterval = 3600
+        val inAnim = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 1f, Animation.RELATIVE_TO_PARENT, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f)
+        inAnim.duration = 420
+        val outAnim = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0f, Animation.RELATIVE_TO_PARENT, -1f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f)
+        outAnim.duration = 420
+        flipper.inAnimation = inAnim
+        flipper.outAnimation = outAnim
+
+        val slides = listOf(
+            Triple("👋", WELCOME_TEXT, "Aapka poora website — ab ek asli app me"),
+            Triple("⬇️", "Download & Save", "File, photo, PDF seedha phone ke Downloads folder me save"),
+            Triple("🖨️", "Print & Share", "⋮ button se page print karo ya PDF bana kar bhejo")
+        )
+
+        slides.forEach { slideData ->
+            val slide = LinearLayout(this)
+            slide.orientation = LinearLayout.VERTICAL
+            slide.gravity = Gravity.CENTER
+            val bigIcon = TextView(this)
+            bigIcon.text = slideData.first
+            bigIcon.textSize = 42f
+            bigIcon.gravity = Gravity.CENTER
+            val title = TextView(this)
+            title.text = slideData.second
+            title.textSize = 19f
+            title.typeface = Typeface.DEFAULT_BOLD
+            title.setTextColor(0xFF17181C.toInt())
+            title.gravity = Gravity.CENTER
+            title.setPadding(dp(4), 0, dp(4), 0)
+            val sub = TextView(this)
+            sub.text = slideData.third
+            sub.textSize = 13f
+            sub.setTextColor(0xFF6B7078.toInt())
+            sub.gravity = Gravity.CENTER
+            sub.setPadding(dp(10), 0, dp(10), 0)
+            slide.addView(bigIcon)
+            val titleLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            titleLp.topMargin = dp(10)
+            slide.addView(title, titleLp)
+            val subLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            subLp.topMargin = dp(4)
+            slide.addView(sub, subLp)
+            flipper.addView(slide, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        }
+
+        val dots = mutableListOf<TextView>()
+        val dotsRow = LinearLayout(this)
+        dotsRow.orientation = LinearLayout.HORIZONTAL
+        dotsRow.gravity = Gravity.CENTER_HORIZONTAL
+        repeat(slides.size) {
+            val dot = TextView(this)
+            dot.text = "•"
+            dot.textSize = 18f
+            dot.setTextColor(0xFFC9CDD4.toInt())
+            dots.add(dot)
+            val dotLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            dotLp.setMargins(dp(6), 0, dp(6), 0)
+            dotsRow.addView(dot, dotLp)
+        }
+
+        fun updateDots(index: Int) {
+            dots.forEachIndexed { i, d ->
+                d.setTextColor(if (i == index) themeColorInt else 0xFFC9CDD4.toInt())
+                d.textSize = if (i == index) 26f else 18f
+            }
+        }
+
+        val startBtn = TextView(this)
+        startBtn.text = "Get Started"
+        startBtn.textSize = 15f
+        startBtn.setTextColor(Color.WHITE)
+        startBtn.typeface = Typeface.DEFAULT_BOLD
+        startBtn.gravity = Gravity.CENTER
+        startBtn.setPadding(dp(34), dp(13), dp(34), dp(13))
+        val btnBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, 0.3f), themeColorInt))
+        btnBg.cornerRadius = dp(26).toFloat()
+        startBtn.background = btnBg
+        startBtn.elevation = dp(8).toFloat()
+
+        val flipLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(190))
+        card.addView(flipper, flipLp)
+        val dotsLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        dotsLp.topMargin = dp(14)
+        card.addView(dotsRow, dotsLp)
+        val startLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        startLp.topMargin = dp(20)
+        card.addView(startBtn, startLp)
+
+        overlay.addView(card, FrameLayout.LayoutParams(dp(330), FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER))
+
+        val skip = TextView(this)
+        skip.text = "Skip"
+        skip.setTextColor(Color.WHITE)
+        skip.textSize = 13f
+        skip.setPadding(dp(12), dp(6), dp(12), dp(6))
+        skip.background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), null, null)
+        val skipLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END)
+        skipLp.topMargin = dp(20)
+        skipLp.rightMargin = dp(18)
+        overlay.addView(skip, skipLp)
+
+        val dismiss: () -> Unit = { dismissWelcome() }
+        startBtn.setOnClickListener {
+            bounce(startBtn)
+            dismiss()
+        }
+        skip.setOnClickListener { dismiss() }
+        overlay.setOnClickListener { dismiss() }
+
+        updateDots(0)
+        val sync = object : Runnable {
+            override fun run() {
+                if (overlay.visibility == View.VISIBLE) {
+                    updateDots(flipper.displayedChild)
+                    flipper.postDelayed(this, 3600)
+                }
+            }
+        }
+        flipper.postDelayed(sync, 3600)
+
+        return overlay
+    }
+
+    private fun buildMoreButton(): TextView {
+        val btn = TextView(this)
+        btn.text = "⋮"
+        btn.textSize = 20f
+        btn.setTextColor(Color.WHITE)
+        btn.typeface = Typeface.DEFAULT_BOLD
+        btn.gravity = Gravity.CENTER
+        val bg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, 0.35f), themeColorInt, shade(themeColorInt, -0.25f)))
+        bg.shape = GradientDrawable.OVAL
+        bg.setStroke(dp(2), Color.WHITE)
+        btn.background = bg
+        btn.elevation = dp(12).toFloat()
+        btn.setOnClickListener { anchor -> showToolsMenu(anchor) }
+        return btn
+    }
+
+    private fun showToolsMenu(anchor: View) {
+        val popup = PopupMenu(this, anchor)
+        popup.menu.add("Share karo")
+        popup.menu.add("Print / Save as PDF")
+        popup.menu.add("Downloads folder")
+        popup.menu.add("Refresh page")
+        popup.menu.add("Home page")
+        popup.menu.add("Browser me kholo")
+        popup.setOnMenuItemClickListener { item ->
+            when (item.title) {
+                "Share karo" -> sharePage()
+                "Print / Save as PDF" -> printPage()
+                "Downloads folder" -> openDownloads()
+                "Refresh page" -> webView.reload()
+                "Home page" -> webView.loadUrl(HOME_URL)
+                "Browser me kholo" -> openExternal(Uri.parse(webView.url ?: HOME_URL))
+            }
+            true
+        }
+        popup.show()
+    }
+
+    private fun sharePage() {
+        try {
+            val send = Intent(Intent.ACTION_SEND)
+            send.type = "text/plain"
+            send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " — " + (webView.url ?: HOME_URL))
+            startActivity(Intent.createChooser(send, "Share karo"))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Share karne wala app nahi mila", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun printPage() {
+        try {
+            val printManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
+            printManager.print(APP_NAME, webView.createPrintDocumentAdapter(APP_NAME), null)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Print option is phone par nahi mila", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openDownloads() {
+        try {
+            startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Downloads folder nahi khul paya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun startDownload(url: String, userAgent: String, contentDisposition: String, mimeType: String) {
+        try {
+            val fileName = URLUtil.guessFileName(url, contentDisposition, mimeType)
+            val request = DownloadManager.Request(Uri.parse(url))
+            request.setMimeType(mimeType)
+            request.addRequestHeader("User-Agent", userAgent)
+            request.setTitle(fileName)
+            request.setDescription(APP_NAME)
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            lastDownloadId = (getSystemService(DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+            Toast.makeText(this, "Download shuru — " + fileName, Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            openExternal(Uri.parse(url))
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 4001) {
+            val pending = pendingDownload
+            pendingDownload = null
+            if (pending != null && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startDownload(pending[0], pending[1], pending[2], pending[3])
+            } else {
+                Toast.makeText(this, "Storage permission chahiye file save karne ke liye", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun registerDownloadReceiver() {
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
+                if (id != -1L && id == lastDownloadId) {
+                    Toast.makeText(this@MainActivity, "Download complete — Downloads folder me save ho gaya", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        downloadReceiver = receiver
+        val filter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        if (Build.VERSION.SDK_INT >= 33) {
+            registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(receiver, filter)
+        }
     }
 
     private fun buildNavBar(): LinearLayout {
@@ -163,10 +558,10 @@ class MainActivity : AppCompatActivity() {
         bar.setPadding(dp(6), dp(6), dp(6), dp(6))
         val barBg = GradientDrawable()
         barBg.setColor(Color.WHITE)
-        barBg.cornerRadius = dp(30).toFloat()
-        barBg.setStroke(dp(1), 0x15808080)
+        barBg.cornerRadius = dp(32).toFloat()
+        barBg.setStroke(dp(1), 0x18808080)
         bar.background = barBg
-        bar.elevation = dp(16).toFloat()
+        bar.elevation = dp(18).toFloat()
 
         navEntries.forEachIndexed { index, entry ->
             val item = LinearLayout(this)
@@ -177,23 +572,25 @@ class MainActivity : AppCompatActivity() {
 
             val pillHolder = FrameLayout(this)
             val pill = GradientDrawable()
-            pill.cornerRadius = dp(17).toFloat()
+            pill.cornerRadius = dp(19).toFloat()
             pillHolder.background = pill
             pillBackgrounds.add(pill)
+            pillHolders.add(pillHolder)
 
             val icon = ImageView(this)
             icon.setImageResource(entry.icon)
             icon.setColorFilter(0xFF8A8F98.toInt())
-            pillHolder.addView(icon, FrameLayout.LayoutParams(dp(22), dp(22), Gravity.CENTER))
+            pillHolder.addView(icon, FrameLayout.LayoutParams(dp(24), dp(24), Gravity.CENTER))
 
             val label = TextView(this)
             label.text = entry.label
             label.textSize = 10f
             label.maxLines = 1
             label.gravity = Gravity.CENTER
+            label.letterSpacing = 0.02f
             label.setTextColor(0xFF8A8F98.toInt())
 
-            item.addView(pillHolder, LinearLayout.LayoutParams(dp(58), dp(34)))
+            item.addView(pillHolder, LinearLayout.LayoutParams(dp(62), dp(38)))
             item.addView(label)
             item.setOnClickListener {
                 selectNav(index)
@@ -208,8 +605,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bounce(view: View) {
-        view.animate().scaleX(1.2f).scaleY(1.2f).setDuration(110).withEndAction {
-            view.animate().scaleX(1f).scaleY(1f).setDuration(110).start()
+        view.animate().scaleX(1.22f).scaleY(1.22f).setDuration(120).setInterpolator(OvershootInterpolator(1.4f)).withEndAction {
+            view.animate().scaleX(1f).scaleY(1f).setDuration(140).start()
         }.start()
     }
 
@@ -229,7 +626,15 @@ class MainActivity : AppCompatActivity() {
             label.setTextColor(if (i == index) themeColorInt else 0xFF8A8F98.toInt())
             label.typeface = if (i == index) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
         }
-        pillBackgrounds.forEachIndexed { i, pill -> pill.setColor(if (i == index) themeColorInt else 0x00000000) }
+        pillBackgrounds.forEachIndexed { i, pill ->
+            pill.orientation = GradientDrawable.Orientation.TL_BR
+            if (i == index) {
+                pill.setColors(intArrayOf(shade(themeColorInt, 0.35f), themeColorInt))
+            } else {
+                pill.setColor(0x00000000)
+            }
+        }
+        pillHolders.forEachIndexed { i, holder -> holder.elevation = if (i == index) dp(6).toFloat() else 0f }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -305,18 +710,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         webView.setDownloadListener(DownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
-            try {
-                val fileName = URLUtil.guessFileName(url, contentDisposition, mimeType)
-                val request = DownloadManager.Request(Uri.parse(url))
-                request.setMimeType(mimeType)
-                request.addRequestHeader("User-Agent", userAgent)
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-                (getSystemService(DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
-                Toast.makeText(this@MainActivity, "Download shuru...", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                openExternal(Uri.parse(url))
+            if (Build.VERSION.SDK_INT <= 28 && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                pendingDownload = arrayOf(url, userAgent, contentDisposition ?: "", mimeType ?: "")
+                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 4001)
+                return@DownloadListener
             }
+            startDownload(url, userAgent, contentDisposition ?: "", mimeType ?: "")
         })
     }
 

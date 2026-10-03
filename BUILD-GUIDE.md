@@ -1,4 +1,4 @@
-# 📱 Poori Build Guide — APK, iPhone, Mac
+# 📱 Poori Build Guide — APK, iPhone, Mac, Play Store
 
 ## ✅ Android APK — asli installable file
 
@@ -12,13 +12,27 @@
 
 > Phone se hi sab kuch ho sakta hai — GitHub ka website mobile browser me poora chalta hai.
 
-### Tarika 2 — Android Studio se (full control + Play Store signing)
+### Tarika 2 — Android Studio se (full control)
 
 1. [Android Studio](https://developer.android.com/studio) install karo (free)
 2. **Open** se is project ka folder kholo → Gradle sync hone do
 3. **Build → Build Bundle(s)/APK(s) → Build APK(s)**
 4. APK: `app/build/outputs/apk/debug/app-debug.apk`
-5. Play Store ke liye: **Build → Generate Signed Bundle/APK** → apna keystore banao → [play.google.com/console](https://play.google.com/console) par upload
+5. Play Store ke liye: niche wala .aab section dekho
+
+## 🛒 App ke andar print / download kaise hota hai
+
+- Website se koi file (PDF, photo, song, zip) download karo — app use **phone ke Downloads folder** me save karta hai aur notification deta hai
+- Screen par **⋮ gol button** dabao → **Print / Save as PDF** se page print ya PDF ban sakta hai
+- Wahi menu me **Share karo**, **Downloads folder**, **Refresh** aur **Home** bhi hai
+
+## 🚀 Play Store upload (.aab) — automatic
+
+1. Repo me push karte hi **Build Play Store AAB** workflow chalta hai
+2. **Releases** me `playstore-v…` tag → **app-release.aab** download karo
+3. [play.google.com/console](https://play.google.com/console) → $25 account → Create app → Production → Create new release → .aab upload
+4. `play-store/STORE-LISTING.md` ka text listing me paste karo, `play-store/` wali images graphics me lagao
+5. Pehli release ke baad repo ke **Settings → Secrets** me apna keystore save karo (`play-store/README.md` me step-by-step) — tab har update same signature se banega
 
 ## 🍎 iPhone (ipa) aur Mac
 
@@ -34,6 +48,15 @@ Is ZIP ka `ios/` folder **asli Xcode project** hai — apne iPhone par 10 minute
 **Mac par:** Xcode me destination “My Mac (Designed for iPad)” / “My Mac (Catalyst)” choose karke Run.
 
 **App Store:** [developer.apple.com](https://developer.apple.com) par $99/saal account → Xcode me **Product → Archive → Distribute App**.
+
+## 🖥️ Windows / Mac / iPhone ke liye automatic builds
+
+Repo me `.github/workflows/build-desktop.yml` bhi hai — push hone par GitHub khud teeno banata hai:
+- **Windows**: `windows-v1` release me `*-Setup.exe` — double-click se install
+- **Mac**: `macos-v1` release me universal `.dmg` (Intel + M1/M2/M3) — kholo, app ko Applications me drag karo
+- **iPhone**: `ios-v1` release me `.ipa` — [Sideloadly](https://sideloadly.net) se apne Apple ID par install (free, 7 din)
+
+Repo ke **Releases** tab me jaake seedha download karo.
 
 ## ❓ APK browser me kyun nahi banta?
 

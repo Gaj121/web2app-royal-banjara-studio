@@ -61,7 +61,7 @@ jobs:
         working-directory: desktop
         run: npm install --no-audit --no-fund
 
-      - name: Build Mac app (universal .dmg — Intel + M1/M2/M3)
+      - name: Build Mac app (universal .dmg)
         working-directory: desktop
         run: npx electron-builder --mac dmg --universal --publish never
 

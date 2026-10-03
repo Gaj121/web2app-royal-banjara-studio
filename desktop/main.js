@@ -23,8 +23,8 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: true
-    }
+      sandbox: true,
+    },
   });
 
   Menu.setApplicationMenu(null);
