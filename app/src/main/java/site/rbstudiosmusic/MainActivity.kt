@@ -1,6 +1,8 @@
 package site.rbstudiosmusic
 
 import android.Manifest
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.app.Dialog
@@ -9,8 +11,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -25,6 +25,8 @@ import android.os.Environment
 import android.print.PrintManager
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.OvershootInterpolator
@@ -51,11 +53,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import java.io.File
 
 class NavEntry(val label: String, val url: String, val icon: Int)
+
+class ToolItem(val icon: String, val label: String, val sub: String, val action: () -> Unit)
 
 class MainActivity : AppCompatActivity() {
 
@@ -63,8 +66,8 @@ class MainActivity : AppCompatActivity() {
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio"
-        const val THEME_COLOR = "#EC4899"
-        const val SPLASH_COLOR = "#F8FAFC"
+        const val THEME_COLOR = "#3DDC84"
+        const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -79,18 +82,17 @@ class MainActivity : AppCompatActivity() {
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
         const val DL_LIST_ON = true
-        const val PINCH_ZOOM = true
-        const val KEEP_SCREEN_ON = true
-        const val FULLSCREEN_ON = true
-        const val WHATSAPP_ON = true
-        const val WHATSAPP_NUMBER = "919370612297"
+        const val PINCH_ZOOM = false
+        const val KEEP_SCREEN_ON = false
+        const val FULLSCREEN_ON = false
+        const val WHATSAPP_ON = false
+        const val WHATSAPP_NUMBER = ""
         const val WHATSAPP_MESSAGE = "Hello! Mujhe jaankari chahiye"
         const val NIGHT_MODE_ON = true
         const val TEXT_SIZE_ON = true
-        const val COPY_LINK_ON = true
         const val BACK_TWICE_ON = true
         const val CLEAR_CACHE_ON = true
-        const val EXIT_ITEM_ON = true
+        const val EXIT_ITEM_ON = false
     }
 
     private lateinit var webView: WebView
@@ -111,6 +113,7 @@ class MainActivity : AppCompatActivity() {
     private val downloadMimes = mutableMapOf<Long, String>()
     private var downloadReceiver: BroadcastReceiver? = null
     private val themeColorInt: Int by lazy { Color.parseColor(THEME_COLOR) }
+    private val prefs by lazy { getSharedPreferences("app_prefs", Context.MODE_PRIVATE) }
     private val splashColorInt: Int by lazy { Color.parseColor(SPLASH_COLOR) }
     private var nightOn = false
     private var textZoomLevel = 100
@@ -119,7 +122,7 @@ class MainActivity : AppCompatActivity() {
 
     private val navEntries: Array<NavEntry> = arrayOf(
         NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
-        NavEntry("Login ", "https://rbstudiosmusic.kliv.site/login", R.drawable.ic_nav_user),
+        NavEntry("Products", "https://rbstudiosmusic.kliv.site/products", R.drawable.ic_nav_grid),
         NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone)
     )
 
@@ -212,6 +215,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(root)
 
         setupWebView()
+        if (NIGHT_MODE_ON && prefs.getBoolean("night_on", false)) {
+            nightOn = true
+            applyNight(true)
+        }
+        textZoomLevel = prefs.getInt("text_zoom", 100)
+        if (textZoomLevel != 100) webView.settings.textZoom = textZoomLevel
         selectNav(0)
         webView.loadUrl(HOME_URL)
         registerDownloadReceiver()
@@ -494,18 +503,31 @@ class MainActivity : AppCompatActivity() {
 
     private fun buildWhatsappButton(): FrameLayout {
         val holder = FrameLayout(this)
-        val label = TextView(this)
-        label.text = "\uD83D\uDFE9"
-        label.textSize = 24f
-        label.gravity = Gravity.CENTER
-        val circle = GradientDrawable()
+        val circle = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(Color.parseColor("#3BE477"), Color.parseColor("#25D366"), Color.parseColor("#128C7E")))
         circle.shape = GradientDrawable.OVAL
-        circle.setColor(Color.parseColor("#25D366"))
-        circle.setStroke(dp(2), Color.WHITE)
         holder.background = circle
         holder.elevation = dp(12).toFloat()
-        holder.addView(label, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-        holder.setOnClickListener { anchor -> bounce(holder); openWhatsapp() }
+
+        val logo = ImageView(this)
+        logo.setImageResource(R.drawable.ic_whatsapp)
+        logo.setPadding(dp(12), dp(12), dp(12), dp(12))
+        holder.addView(logo, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+
+        val pulse = ObjectAnimator.ofPropertyValuesHolder(
+            holder,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.08f, 1f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.08f, 1f)
+        )
+        pulse.duration = 900
+        pulse.repeatCount = 1
+        pulse.startDelay = 700
+        pulse.start()
+
+        holder.setOnClickListener { bounce(holder); openWhatsapp() }
+        holder.setOnLongClickListener {
+            Toast.makeText(this, "Tap karo — seedha WhatsApp chat khulega", Toast.LENGTH_SHORT).show()
+            true
+        }
         return holder
     }
 
@@ -513,16 +535,20 @@ class MainActivity : AppCompatActivity() {
         try {
             val num = WHATSAPP_NUMBER
             val text = Uri.encode(WHATSAPP_MESSAGE)
-            val appUri = Uri.parse("https://api.whatsapp.com/send?phone=" + num + "&text=" + text)
-            openExternal(appUri)
+            try {
+                val appUri = Uri.parse("whatsapp://send?phone=" + num + "&text=" + text)
+                startActivity(Intent(Intent.ACTION_VIEW, appUri))
+            } catch (e: ActivityNotFoundException) {
+                val webUri = Uri.parse("https://api.whatsapp.com/send?phone=" + num + "&text=" + text)
+                openExternal(webUri)
+            }
         } catch (e: Exception) {
             Toast.makeText(this, "WhatsApp nahi khul paya", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun toggleNightMode() {
-        nightOn = !nightOn
-        if (nightOn) {
+    private fun applyNight(on: Boolean) {
+        if (on) {
             webView.settings.forceDark = android.webkit.WebSettings.FORCE_DARK_ON
             if (Build.VERSION.SDK_INT >= 29) {
                 val alg = webView.settings
@@ -533,28 +559,25 @@ class MainActivity : AppCompatActivity() {
                     // purane device par forceDark kaafi hai
                 }
             }
-            Toast.makeText(this, "Night mode ON", Toast.LENGTH_SHORT).show()
         } else {
             webView.settings.forceDark = android.webkit.WebSettings.FORCE_DARK_OFF
-            Toast.makeText(this, "Night mode OFF", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun toggleNightMode() {
+        nightOn = !nightOn
+        prefs.edit().putBoolean("night_on", nightOn).apply()
+        applyNight(nightOn)
+        Toast.makeText(this, if (nightOn) "Night mode ON" else "Night mode OFF", Toast.LENGTH_SHORT).show()
     }
 
     private fun changeTextSize(delta: Int) {
         textZoomLevel = (textZoomLevel + delta).coerceIn(70, 180)
+        prefs.edit().putInt("text_zoom", textZoomLevel).apply()
         webView.settings.textZoom = textZoomLevel
         Toast.makeText(this, "Text size: " + textZoomLevel + "%", Toast.LENGTH_SHORT).show()
     }
 
-    private fun copyPageLink() {
-        try {
-            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-            cm.setPrimaryClip(android.content.ClipData.newPlainText("link", webView.url ?: HOME_URL))
-            Toast.makeText(this, "Link copy ho gaya ✓", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Toast.makeText(this, "Link copy nahi ho paya", Toast.LENGTH_SHORT).show()
-        }
-    }
     private fun clearAppCache() {
         try {
             webView.clearCache(true)
@@ -580,57 +603,170 @@ class MainActivity : AppCompatActivity() {
         bg.setStroke(dp(2), Color.WHITE)
         btn.background = bg
         btn.elevation = dp(12).toFloat()
-        btn.setOnClickListener { anchor -> showToolsMenu(anchor) }
+        btn.setOnClickListener { showToolsMenu() }
+
         return btn
     }
 
-    private fun showToolsMenu(anchor: View) {
-        val popup = PopupMenu(this, anchor)
-        popup.menu.add("Share karo")
-        popup.menu.add("Print / Save as PDF")
-        popup.menu.add("Mere Downloads")
-        popup.menu.add("Downloads folder")
-        popup.menu.add("Refresh page")
-        popup.menu.add("Home page")
-        popup.menu.add("Browser me kholo")
-        popup.menu.add("Link copy karo")
-        popup.menu.add(if (nightOn) "Night mode OFF karo" else "Night mode ON karo")
-        popup.menu.add("Text bada karo (A+)")
-        popup.menu.add("Text chhota karo (A-)")
-        popup.menu.add("Cache clear karo")
-        popup.menu.add("App band karo")
-        popup.setOnMenuItemClickListener { item ->
-            when {
-                item.title.toString().startsWith("Share karo") -> sharePage()
-                item.title.toString().startsWith("Print") -> printPage()
-                item.title.toString() == "Mere Downloads" -> showDownloadsSheet()
-                item.title.toString().startsWith("Downloads folder") -> openDownloads()
-                item.title.toString().startsWith("Refresh") -> webView.reload()
-                item.title.toString().startsWith("Home page") -> webView.loadUrl(HOME_URL)
-                item.title.toString().startsWith("Browser") -> openExternal(Uri.parse(webView.url ?: HOME_URL))
-                item.title.toString().startsWith("Link copy") -> copyPageLink()
-                item.title.toString().startsWith("Night mode") -> toggleNightMode()
-                item.title.toString().contains("A+") -> changeTextSize(15)
-                item.title.toString().contains("A-") -> changeTextSize(-15)
-                item.title.toString().startsWith("Cache clear") -> clearAppCache()
-                item.title.toString().startsWith("App band") -> finishAffinity()
-                else -> {}
+    private fun showToolsMenu() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCanceledOnTouchOutside(true)
+
+        val sheet = LinearLayout(this)
+        sheet.orientation = LinearLayout.VERTICAL
+        val sheetBg = GradientDrawable()
+        sheetBg.setColor(Color.WHITE)
+        sheetBg.cornerRadius = dp(28).toFloat()
+        sheet.background = sheetBg
+        sheet.elevation = dp(18).toFloat()
+        sheet.setPadding(dp(18), dp(10), dp(18), dp(18))
+
+        val handle = View(this)
+        val handleBg = GradientDrawable()
+        handleBg.setColor(0xFFDCE1E8.toInt())
+        handleBg.cornerRadius = dp(3).toFloat()
+        handle.background = handleBg
+        val handleLp = LinearLayout.LayoutParams(dp(44), dp(6))
+        handleLp.gravity = Gravity.CENTER_HORIZONTAL
+        sheet.addView(handle, handleLp)
+
+        val header = LinearLayout(this)
+        header.orientation = LinearLayout.HORIZONTAL
+        header.gravity = Gravity.CENTER_VERTICAL
+        val headLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        headLp.topMargin = dp(10)
+        headLp.bottomMargin = dp(4)
+        sheet.addView(header, headLp)
+
+        val headBlock = LinearLayout(this)
+        headBlock.orientation = LinearLayout.VERTICAL
+        val sheetTitle = TextView(this)
+        sheetTitle.text = "Quick Tools"
+        sheetTitle.textSize = 19f
+        sheetTitle.typeface = Typeface.DEFAULT_BOLD
+        sheetTitle.setTextColor(0xFF111827.toInt())
+        headBlock.addView(sheetTitle)
+        val sheetSub = TextView(this)
+        sheetSub.text = APP_NAME + " ke kaam ke tools"
+        sheetSub.textSize = 12f
+        sheetSub.setTextColor(0xFF6B7280.toInt())
+        headBlock.addView(sheetSub)
+        header.addView(headBlock, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+
+        val close = TextView(this)
+        close.text = "✕"
+        close.textSize = 15f
+        close.typeface = Typeface.DEFAULT_BOLD
+        close.setTextColor(0xFF374151.toInt())
+        close.gravity = Gravity.CENTER
+        val closeBg = GradientDrawable()
+        closeBg.shape = GradientDrawable.OVAL
+        closeBg.setColor(0xFFF1F3F6.toInt())
+        close.background = closeBg
+        close.setOnClickListener { dialog.dismiss() }
+        header.addView(close, LinearLayout.LayoutParams(dp(34), dp(34)))
+
+        val items = buildToolItems()
+        val grid = LinearLayout(this)
+        grid.orientation = LinearLayout.VERTICAL
+        var row = LinearLayout(this)
+        row.orientation = LinearLayout.HORIZONTAL
+        items.forEachIndexed { index, item ->
+            if (index > 0 && index % 2 == 0) {
+                grid.addView(row, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+                row = LinearLayout(this)
+                row.orientation = LinearLayout.HORIZONTAL
             }
-            true
+            val card = buildToolCard(dialog, item)
+            val cardLp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            if (index % 2 == 0) cardLp.rightMargin = dp(5) else cardLp.leftMargin = dp(5)
+            row.addView(card, cardLp)
         }
-        popup.show()
+        if (items.isNotEmpty()) {
+            grid.addView(row, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        }
+        sheet.addView(grid, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+
+        dialog.setContentView(sheet)
+        val window = dialog.window
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent)
+            window.setGravity(Gravity.BOTTOM)
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+        sheet.translationY = dp(320).toFloat()
+        sheet.alpha = 0f
+        dialog.show()
+        sheet.animate().translationY(0f).alpha(1f).setDuration(280).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
-    private fun sharePage() {
-        try {
-            val send = Intent(Intent.ACTION_SEND)
-            send.type = "text/plain"
-            send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " — " + (webView.url ?: HOME_URL))
-            startActivity(Intent.createChooser(send, "Share karo"))
-        } catch (e: Exception) {
-            Toast.makeText(this, "Share karne wala app nahi mila", Toast.LENGTH_SHORT).show()
-        }
+    private fun buildToolItems(): List<ToolItem> {
+        val items = mutableListOf<ToolItem>()
+        items.add(ToolItem("🖨️", "Print / PDF", "page ya PDF banao") { printPage() })
+        items.add(ToolItem("📥", "Mere Downloads", "app ki hi list") { showDownloadsSheet() })
+        items.add(ToolItem("📂", "Downloads folder", "phone ka folder") { openDownloads() })
+        items.add(ToolItem("🔄", "Refresh page", "dobara load") { webView.reload() })
+        items.add(ToolItem("🏠", "Home page", "shuruati page") { webView.loadUrl(HOME_URL) })
+        items.add(ToolItem(if (nightOn) "☀️" else "🌙", if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram") { toggleNightMode() })
+        items.add(ToolItem("A+", "Text bada karo", "padhna aasan") { changeTextSize(15) })
+        items.add(ToolItem("A−", "Text chhota karo", "compact view") { changeTextSize(-15) })
+        items.add(ToolItem("🧹", "Cache clear", "speed badhao") { clearAppCache() })
+        return items
     }
+
+    private fun buildToolCard(dialog: Dialog, item: ToolItem): View {
+        val card = LinearLayout(this)
+        card.orientation = LinearLayout.VERTICAL
+        card.gravity = Gravity.CENTER_HORIZONTAL
+        card.setPadding(dp(10), dp(14), dp(10), dp(12))
+        val cardBg = GradientDrawable()
+        cardBg.setColor(0xFFF4F6FA.toInt())
+        cardBg.cornerRadius = dp(18).toFloat()
+        card.background = cardBg
+        card.foreground = RippleDrawable(ColorStateList.valueOf(0x2258606E), null, null)
+        card.elevation = dp(2).toFloat()
+
+        val iconCircle = FrameLayout(this)
+        val circleBg = GradientDrawable()
+        circleBg.shape = GradientDrawable.OVAL
+        circleBg.setColor(shade(themeColorInt, 0.90f))
+        iconCircle.background = circleBg
+        val icon = TextView(this)
+        icon.text = item.icon
+        icon.textSize = 21f
+        icon.typeface = Typeface.DEFAULT_BOLD
+        icon.gravity = Gravity.CENTER
+        iconCircle.addView(icon, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        card.addView(iconCircle, LinearLayout.LayoutParams(dp(48), dp(48)))
+
+        val label = TextView(this)
+        label.text = item.label
+        label.textSize = 12.5f
+        label.typeface = Typeface.DEFAULT_BOLD
+        label.setTextColor(0xFF111827.toInt())
+        label.gravity = Gravity.CENTER
+        label.maxLines = 2
+        val labelLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        labelLp.topMargin = dp(8)
+        card.addView(label, labelLp)
+
+        val sub = TextView(this)
+        sub.text = item.sub
+        sub.textSize = 10.5f
+        sub.setTextColor(0xFF6B7280.toInt())
+        sub.gravity = Gravity.CENTER
+        sub.maxLines = 1
+        card.addView(sub, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+
+        card.setOnClickListener {
+            bounce(card)
+            dialog.dismiss()
+            item.action()
+        }
+        return card
+    }
+
 
     private fun printPage() {
         try {

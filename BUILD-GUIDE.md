@@ -25,7 +25,7 @@
 - Website se koi file (PDF, photo, song, zip) download karo — app use **phone ke Downloads folder** me save karta hai aur notification deta hai
 - Photo/video download hone par wo **Gallery me bhi** dikhti hai — file manager (Downloads) aur Gallery dono jagah milti hai
 - ⋮ gol button dabao → **Mere Downloads** — app ke andar hi download files ki list: tap karke kholo, Share bhejo, dabaye rakho = delete
-- Wahi menu me **Print / Save as PDF** se page print ya PDF ban sakta hai, **Share karo**, **Downloads folder**, **Refresh** aur **Home** bhi hai
+- Wahi menu ek stylish **Quick Tools sheet** kholta hai — **Print / PDF**, **Mere Downloads**, **Downloads folder**, **Refresh**, **Home**, **Night mode**, **Text A+/A−**, **Cache clear** aur **App band** — sab icon-cards me
 
 ## 🚀 Play Store upload (.aab) — automatic
 
