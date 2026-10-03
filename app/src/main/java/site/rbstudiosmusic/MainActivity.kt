@@ -9,6 +9,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -61,8 +63,8 @@ class MainActivity : AppCompatActivity() {
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio"
-        const val THEME_COLOR = "#EC4899"
-        const val SPLASH_COLOR = "#3DDC84"
+        const val THEME_COLOR = "#3DDC84"
+        const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -70,16 +72,22 @@ class MainActivity : AppCompatActivity() {
         const val OPEN_EXTERNAL = true
         const val OFFLINE_PAGE = true
         const val PULL_REFRESH = true
-        const val INTRO_ON = false
+        const val INTRO_ON = true
         const val WELCOME_ON = true
         const val WELCOME_TEXT = "Welcome to Royal Banjara Studio Music Distribution Company"
-        const val TOOLS_ON = false
+        const val TOOLS_ON = true
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
         const val DL_LIST_ON = true
-        const val PINCH_ZOOM = false
+        const val PINCH_ZOOM = true
         const val KEEP_SCREEN_ON = true
-        const val FULLSCREEN_ON = false
+        const val FULLSCREEN_ON = true
+        const val WHATSAPP_ON = true
+        const val WHATSAPP_NUMBER = ""
+        const val WHATSAPP_MESSAGE = "Hello! Mujhe jaankari chahiye"
+        const val NIGHT_MODE_ON = true
+        const val TEXT_SIZE_ON = true
+        const val COPY_LINK_ON = true
     }
 
     private lateinit var webView: WebView
@@ -101,13 +109,14 @@ class MainActivity : AppCompatActivity() {
     private var downloadReceiver: BroadcastReceiver? = null
     private val themeColorInt: Int by lazy { Color.parseColor(THEME_COLOR) }
     private val splashColorInt: Int by lazy { Color.parseColor(SPLASH_COLOR) }
+    private var nightOn = false
+    private var textZoomLevel = 100
+    private var whatsappFab: FrameLayout? = null
 
     private val navEntries: Array<NavEntry> = arrayOf(
         NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
-        NavEntry("Login ", "https://rbstudiosmusic.kliv.site/login", R.drawable.ic_nav_user),
-        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone),
-        NavEntry("Support ", "https://rbstudiosmusic.raiseaticket.com/support/#/login", R.drawable.ic_nav_chat),
-        NavEntry("Signup ", "https://rbstudiosmusic.kliv.site/signup", R.drawable.ic_nav_user)
+        NavEntry("Products", "https://rbstudiosmusic.kliv.site/products", R.drawable.ic_nav_grid),
+        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -168,6 +177,15 @@ class MainActivity : AppCompatActivity() {
             fabLp.rightMargin = dp(14)
             fabLp.bottomMargin = if (SHOW_NAV) dp(98) else dp(22)
             root.addView(fab, fabLp)
+        }
+
+        if (WHATSAPP_ON) {
+            val wa = buildWhatsappButton()
+            whatsappFab = wa
+            val waLp = FrameLayout.LayoutParams(dp(52), dp(52), Gravity.BOTTOM or Gravity.END)
+            waLp.rightMargin = dp(14)
+            waLp.bottomMargin = if (TOOLS_ON) dp(156) else if (SHOW_NAV) dp(98) else dp(22)
+            root.addView(wa, waLp)
         }
 
         root.addView(content, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
@@ -460,7 +478,70 @@ class MainActivity : AppCompatActivity() {
         return overlay
     }
 
-    private fun buildMoreButton(): TextView {
+    private fun buildWhatsappButton(): FrameLayout {
+        val holder = FrameLayout(this)
+        val label = TextView(this)
+        label.text = "\uD83D\uDFE9"
+        label.textSize = 24f
+        label.gravity = Gravity.CENTER
+        val circle = GradientDrawable()
+        circle.shape = GradientDrawable.OVAL
+        circle.setColor(Color.parseColor("#25D366"))
+        circle.setStroke(dp(2), Color.WHITE)
+        holder.background = circle
+        holder.elevation = dp(12).toFloat()
+        holder.addView(label, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        holder.setOnClickListener { anchor -> bounce(holder); openWhatsapp() }
+        return holder
+    }
+
+    private fun openWhatsapp() {
+        try {
+            val num = WHATSAPP_NUMBER
+            val text = Uri.encode(WHATSAPP_MESSAGE)
+            val appUri = Uri.parse("https://api.whatsapp.com/send?phone=" + num + "&text=" + text)
+            openExternal(appUri)
+        } catch (e: Exception) {
+            Toast.makeText(this, "WhatsApp nahi khul paya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun toggleNightMode() {
+        nightOn = !nightOn
+        if (nightOn) {
+            webView.settings.forceDark = android.webkit.WebSettings.FORCE_DARK_ON
+            if (Build.VERSION.SDK_INT >= 29) {
+                val alg = webView.settings
+                try {
+                    val m = alg.javaClass.getMethod("setAlgorithmicDarkeningAllowed", Boolean::class.javaPrimitiveType)
+                    m.invoke(alg, true)
+                } catch (e: Exception) {
+                    // purane device par forceDark kaafi hai
+                }
+            }
+            Toast.makeText(this, "Night mode ON", Toast.LENGTH_SHORT).show()
+        } else {
+            webView.settings.forceDark = android.webkit.WebSettings.FORCE_DARK_OFF
+            Toast.makeText(this, "Night mode OFF", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun changeTextSize(delta: Int) {
+        textZoomLevel = (textZoomLevel + delta).coerceIn(70, 180)
+        webView.settings.textZoom = textZoomLevel
+        Toast.makeText(this, "Text size: " + textZoomLevel + "%", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun copyPageLink() {
+        try {
+            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            cm.setPrimaryClip(android.content.ClipData.newPlainText("link", webView.url ?: HOME_URL))
+            Toast.makeText(this, "Link copy ho gaya ✓", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Link copy nahi ho paya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
         val btn = TextView(this)
         btn.text = "⋮"
         btn.textSize = 20f
@@ -485,15 +566,24 @@ class MainActivity : AppCompatActivity() {
         popup.menu.add("Refresh page")
         popup.menu.add("Home page")
         popup.menu.add("Browser me kholo")
+        popup.menu.add("Link copy karo")
+        popup.menu.add(if (nightOn) "Night mode OFF karo" else "Night mode ON karo")
+        popup.menu.add("Text bada karo (A+)")
+        popup.menu.add("Text chhota karo (A-)")
         popup.setOnMenuItemClickListener { item ->
-            when (item.title) {
-                "Share karo" -> sharePage()
-                "Print / Save as PDF" -> printPage()
-                "Mere Downloads" -> showDownloadsSheet()
-                "Downloads folder" -> openDownloads()
-                "Refresh page" -> webView.reload()
-                "Home page" -> webView.loadUrl(HOME_URL)
-                "Browser me kholo" -> openExternal(Uri.parse(webView.url ?: HOME_URL))
+            when {
+                item.title.toString().startsWith("Share karo") -> sharePage()
+                item.title.toString().startsWith("Print") -> printPage()
+                item.title.toString() == "Mere Downloads" -> showDownloadsSheet()
+                item.title.toString().startsWith("Downloads folder") -> openDownloads()
+                item.title.toString().startsWith("Refresh") -> webView.reload()
+                item.title.toString().startsWith("Home page") -> webView.loadUrl(HOME_URL)
+                item.title.toString().startsWith("Browser") -> openExternal(Uri.parse(webView.url ?: HOME_URL))
+                item.title.toString().startsWith("Link copy") -> copyPageLink()
+                item.title.toString().startsWith("Night mode") -> toggleNightMode()
+                item.title.toString().contains("A+") -> changeTextSize(15)
+                item.title.toString().contains("A-") -> changeTextSize(-15)
+                else -> {}
             }
             true
         }
