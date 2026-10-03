@@ -5,7 +5,7 @@ import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.ColorStateList
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
