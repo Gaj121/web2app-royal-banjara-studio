@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         const val KEEP_SCREEN_ON = true
         const val FULLSCREEN_ON = true
         const val WHATSAPP_ON = true
-        const val WHATSAPP_NUMBER = ""
+        const val WHATSAPP_NUMBER = "919370612297"
         const val WHATSAPP_MESSAGE = "Hello! Mujhe jaankari chahiye"
         const val NIGHT_MODE_ON = true
         const val TEXT_SIZE_ON = true
