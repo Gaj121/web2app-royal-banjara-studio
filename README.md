@@ -22,8 +22,7 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 
 - Poora website app ke andar khulta hai — fast WebView (JavaScript, cookies, downloads sab support)
 - File upload kaam karta hai — site par photo/PDF/audio choose karke upload kar sakte ho
-- ⋮ floating button: **Print / Save as PDF**, Share, Downloads folder — sab kuch ek stylish menu me
-- Website se koi bhi file download karo — seedha phone ke **Downloads folder me save** hota hai (notification ke saath)
+- ⋮ floating button: **Print / Save as PDF**, Share, Downloads — sab kuch ek stylish menu me
 - App khulte hi **animated logo intro** — logo bada hoke aata hai, naam slide hota hai, phir app khul jaata hai
 - **Welcome slider** — app ke upar se slide hoke “Welcome to Royal Banjara Studio Music Distribution Company” ke saath stylish swagat screen (Skip / Get Started ke saath)
 - Stylish floating neeche menu bar: Home, Products, Contact — gradient pill design, scroll karo to apne aap chhup jaata hai
