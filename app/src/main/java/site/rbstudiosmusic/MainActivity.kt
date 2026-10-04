@@ -97,6 +97,12 @@ class MainActivity : AppCompatActivity() {
         const val AUTO_REFRESH_ON = true
         const val IMAGE_SAVE_ON = true
         const val QR_TOOL_ON = true
+        const val DATA_SAVER_ON = true
+        const val VIDEO_BLOCK_ON = true
+        const val ADBLOCK_TOOL_ON = true
+        const val PAGE_SHARE_ON = true
+        const val DATA_SAVER_JS = "(function(){try{\nvar q=function(t,f){var l=document.querySelectorAll(t);for(var i=0;i<l.length;i++)f(l[i])};\nq('video',function(v){try{v.removeAttribute('autoplay');v.autoplay=false;v.preload='none';if(!v.paused)v.pause()}catch(e){}});\nq('iframe',function(f){var u=(f.src||'').toLowerCase();if(/(doubleclick|googlesyndication|facebook|hotjar|clarity|analytics)/.test(u)){try{f.style.display='none'}catch(e){}});\nq('script',function(s){var u=(s.src||'').toLowerCase();if(/(googletagmanager|google-analytics|googlesyndication|doubleclick|facebook.net|fbq|hotjar|clarity.ms|mixpanel|amplitude|segment.io|adsystem)/.test(u)){try{s.remove()}catch(e){}});\nq('img',function(im){try{if(!im.loading)im.loading='lazy'}catch(e){}});\n}catch(e){}})();"
+        const val VIDEO_BLOCK_JS = "(function(){try{\nvar q=function(t,f){var l=document.querySelectorAll(t);for(var i=0;i<l.length;i++)f(l[i])};\nq('video',function(v){try{v.removeAttribute('autoplay');v.autoplay=false;v.preload='none';v.pause()}catch(e){}});\nif(!window.__rbVidObs){window.__rbVidObs=new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var ns=ms[i].addedNodes;for(var j=0;j<ns.length;j++){var n=ns[j];if(n&&n.tagName==='VIDEO'){try{n.autoplay=false;n.preload='none';n.pause()}catch(e){}}}}});window.__rbVidObs.observe(document.documentElement,{childList:true,subtree:true})}\n}catch(e){}})();"
         const val THEME_COLOR = "#3DDC84"
         const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
@@ -153,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         const val DATA_SAVE_ON = true
         const val URL_TOOL_ON = true
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
-        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF", "Ink Blue|#1A237E", "Terracotta Mitti|#C0563B", "Spearmint Green|#00C853", "Bubblegum Pink|#FF69B4", "Bright Sky|#00B0FF", "Deep Teal|#00695C", "Sunrise Peach|#FF8A65", "Velvet Night|#311B92", "Leaf Green|#43A047", "Desert Sand|#C2A878")
+        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF", "Ink Blue|#1A237E", "Terracotta Mitti|#C0563B", "Spearmint Green|#00C853", "Bubblegum Pink|#FF69B4", "Bright Sky|#00B0FF", "Deep Teal|#00695C", "Sunrise Peach|#FF8A65", "Velvet Night|#311B92", "Leaf Green|#43A047", "Desert Sand|#C2A878", "Sindoor Red|#E53935", "Nilkamal Blue|#3949AB", "Kesar Saffron|#FF9800", "Jamun Purple|#6A1B9A", "Amaltas Yellow|#FBC02D", "Moong Green|#7CB342", "Mehendi Green|#558B2F", "Rani Pink|#D81B60", "Badal Grey Blue|#546E7A", "Chandan Brown|#8D6E63")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         const val BLOB_HOOK_JS = "(function(){\nif (window.__appbanaoDl) return; window.__appbanaoDl = 1;\nvar CH = 262144;\nfunction sendBlob(blob, name, mime) {\n  try {\n    var total = blob.size;\n    var off = 0;\n    var fr = new FileReader();\n    window.AndroidDownloads && window.AndroidDownloads.blobSaveStart(name || 'download.bin', (mime || blob.type || 'application/octet-stream').split(',')[0]);\n    fr.onload = function() {\n      try {\n        var arr = new Uint8Array(fr.result);\n        var s = '';\n        for (var i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);\n        window.AndroidDownloads && window.AndroidDownloads.blobSaveChunk(btoa(s));\n      } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); return; }\n      off += CH;\n      if (off < total) fr.readAsArrayBuffer(blob.slice(off, off + CH));\n      else window.AndroidDownloads && window.AndroidDownloads.blobSaveDone();\n    };\n    fr.onerror = function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); };\n    fr.readAsArrayBuffer(blob.slice(0, CH));\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nfunction grab(url, name) {\n  try {\n    fetch(url).then(function(r) { return r.blob(); }).then(function(b) { sendBlob(b, name, b.type); }).catch(function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); });\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nwindow.__appbanaoGrab = grab;\ndocument.addEventListener('click', function(e) {\n  var t = e.target;\n  while (t && t.tagName !== 'A') t = t.parentElement;\n  if (!t) return;\n  var href = t.getAttribute('href') || '';\n  if (href.indexOf('blob:') === 0 || href.indexOf('data:') === 0) {\n    e.preventDefault(); e.stopPropagation();\n    var nm = t.getAttribute('download') || (document.title ? document.title.replace(/[\\\\/:*?\"<>|]/g, '').slice(0, 40) : 'download.bin');\n    grab(href, nm);\n  }\n}, true);\n})();"
     }
@@ -199,6 +205,9 @@ class MainActivity : AppCompatActivity() {
     private var readingModeOn = false
     private var muted = false
     private var dataSaveOn = false
+    private var dataSaverCacheOn = DATA_SAVER_ON
+    private var videoBlockOn = VIDEO_BLOCK_ON
+    private var adBlockOn = AD_BLOCK_ON
 
     private val navEntries: Array<NavEntry> = arrayOf(
         NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
@@ -1753,7 +1762,7 @@ class MainActivity : AppCompatActivity() {
         iv.adjustViewBounds = true
         iv.maxHeight = dp(360)
         val hint = TextView(this)
-        hint.text = "Is page ka QR — dusre phone me scan karke kholo"
+        hint.text = "Is page ka QR — scan karke kholo · " + friendlyPath(url)
         hint.textSize = 13f
         hint.setPadding(dp(20), dp(16), dp(20), 0)
         hint.setTextColor(0xFF64748B.toInt())
@@ -1778,6 +1787,43 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("Ho gaya", null)
             .show()
     }
+    // — Internet bachao: cache se kholo + trackers band — data ka kharch bahut kam —
+    private fun toggleDataSaver() {
+        dataSaverCacheOn = !dataSaverCacheOn
+        webView.settings.cacheMode = if (dataSaverCacheOn) WebSettings.LOAD_CACHE_ELSE_NETWORK else WebSettings.LOAD_DEFAULT
+        if (dataSaverCacheOn) webView.evaluateJavascript(DATA_SAVER_JS, null)
+        Toast.makeText(this, if (dataSaverCacheOn) "Internet bachao on — cache se khulega, data kam lagega" else "Internet bachao off — normal mode", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Video autoplay band: video khud nahi chalega (tool se on/off) —
+    private fun toggleVideoBlock() {
+        videoBlockOn = !videoBlockOn
+        if (videoBlockOn) webView.evaluateJavascript(VIDEO_BLOCK_JS, null)
+        else webView.evaluateJavascript("(function(){try{if(window.__rbVidObs){window.__rbVidObs.disconnect();window.__rbVidObs=null}}catch(e){}})()", null)
+        Toast.makeText(this, if (videoBlockOn) "Video autoplay band — video khud nahi chalega" else "Video autoplay chalu", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Ads band karo: app me hi on/off —
+    private fun toggleAdBlock() {
+        adBlockOn = !adBlockOn
+        if (adBlockOn) injectAdBlock(webView)
+        else webView.evaluateJavascript("(function(){try{document.querySelectorAll('[data-w2a-ad]').forEach(function(e){e.style.display=''})}catch(e){}})()", null)
+        Toast.makeText(this, if (adBlockOn) "Ads band on — banner ads chhupenge" else "Ads dikhne lagenge", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Page share: khula page WhatsApp/link par bhejo —
+    private fun shareCurrentPage() {
+        val url = webView.url ?: HOME_URL
+        val send = Intent(Intent.ACTION_SEND)
+        send.type = "text/plain"
+        send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " — " + SITE_LABEL + "\n" + url)
+        try {
+            startActivity(Intent.createChooser(send, "Page share karo"))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Share karne wali app nahi mili", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     // Saare Quick Tools — sections me grouped: Padhai sabse upar, phir Screen, Page, Files, App, Madad
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
@@ -1801,6 +1847,8 @@ class MainActivity : AppCompatActivity() {
         items.add(ToolItem(if (nightOn) R.drawable.ic_tool_sun else R.drawable.ic_tool_moon, if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram", 0xFF1E293B.toInt(), "Screen ke Tools") { toggleNightMode() })
         if (MUTE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_mute, if (muted) "Aawaz chalu karo" else "Aawaz band karo", "site ki awaaz", 0xFFDB2777.toInt(), "Screen ke Tools") { toggleMute() })
         if (DATA_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_datasave, if (dataSaveOn) "Photo chalu karo" else "Data save karo", "photo band, data bacho", 0xFF059669.toInt(), "Screen ke Tools") { toggleDataSave() })
+        if (VIDEO_BLOCK_ON) items.add(ToolItem(R.drawable.ic_tool_videoblock, if (videoBlockOn) "Video autoplay chalu" else "Video autoplay band", "video khud na chale, data bacho", 0xFF0F766E.toInt(), "Screen ke Tools") { toggleVideoBlock() })
+        if (ADBLOCK_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_adblock, if (adBlockOn) "Ads chalu karo" else "Ads band karo", "banner ads chhupao", 0xFFB91C1C.toInt(), "Screen ke Tools") { toggleAdBlock() })
         if (SCREENSHOT_ON) items.add(ToolItem(R.drawable.ic_tool_camera, "Screenshot lo", "page ki photo", 0xFFDC2626.toInt(), "Screen ke Tools") { takeScreenshot() })
         if (FULLSCREEN_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_fullscreen, if (fullScreenOn) "Full screen band" else "Full screen karo", "poora screen app ka", 0xFF7C3AED.toInt(), "Screen ke Tools") { toggleFullScreen() })
         if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
@@ -1813,17 +1861,20 @@ class MainActivity : AppCompatActivity() {
         if (URL_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_globe, "Kholo (URL likho)", "seedha page kholo", 0xFF0284C7.toInt(), "Page ke Tools") { openUrlDialog() })
         if (AUTO_REFRESH_ON) items.add(ToolItem(R.drawable.ic_tool_autorefresh, if (autoRefreshOn) "Auto refresh band" else "Auto refresh karo", "har 30s update", 0xFF3F6212.toInt(), "Page ke Tools") { toggleAutoRefresh() })
         if (QR_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_qr, "QR banao", "page ka QR code", 0xFF374151.toInt(), "Page ke Tools") { showQrDialog() })
+        if (PAGE_SHARE_ON) items.add(ToolItem(R.drawable.ic_tool_share, "Page share karo", "page ka link bhejo", 0xFF2563EB.toInt(), "Page ke Tools") { shareCurrentPage() })
         if (HISTORY_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_history, "Mera History", "khole hue pages", 0xFF64748B.toInt(), "Page ke Tools") { showHistorySheet() })
         items.add(ToolItem(R.drawable.ic_tool_print, "Print / PDF", "page ya PDF banao", 0xFF111827.toInt(), "Files aur Print") { printPage() })
         if (DL_LIST_ON) items.add(ToolItem(R.drawable.ic_tool_download, "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
         items.add(ToolItem(R.drawable.ic_tool_folder, "Downloads folder", "phone ka folder", 0xFF059669.toInt(), "Files aur Print") { openDownloads() })
         if (IMAGE_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_images, "Photo save karo", "page ki photo chuno", 0xFF86198F.toInt(), "Files aur Print") { showImagesSheet() })
         if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
+        if (DATA_SAVER_ON) items.add(ToolItem(R.drawable.ic_tool_internetbachao, if (dataSaverCacheOn) "Internet bachao band" else "Internet bachao", "cache se kholo, data kam", 0xFF15803D.toInt(), "App") { toggleDataSaver() })
         if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
         if (COOKIES_CLEAR_ON) items.add(ToolItem(R.drawable.ic_tool_cookie, "Cookies clear", "login data saaf", 0xFFB45309.toInt(), "App") { clearCookiesNow() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         return items
     }
+
 
 
     // — Tool row: poora chauda row — icon chip + naam + sub + arrow. Poora naam ek line me — text kabhi nahi katta —
@@ -2843,8 +2894,8 @@ class MainActivity : AppCompatActivity() {
         webView.settings.setSupportZoom(PINCH_ZOOM)
         webView.settings.builtInZoomControls = PINCH_ZOOM
         webView.settings.displayZoomControls = false
-        webView.settings.mediaPlaybackRequiresUserGesture = false
-        webView.settings.cacheMode = WebSettings.LOAD_DEFAULT
+        webView.settings.mediaPlaybackRequiresUserGesture = VIDEO_BLOCK_ON
+        webView.settings.cacheMode = if (DATA_SAVER_ON) WebSettings.LOAD_CACHE_ELSE_NETWORK else WebSettings.LOAD_DEFAULT
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         webView.settings.javaScriptCanOpenWindowsAutomatically = true
         webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
@@ -2903,7 +2954,9 @@ class MainActivity : AppCompatActivity() {
                 swipeRefresh.isRefreshing = false
                 if (HIDE_ON) injectHideEngine(view)
                 if (REPLACE_JS.isNotEmpty()) view.evaluateJavascript(REPLACE_JS, null)
-                if (AD_BLOCK_ON) injectAdBlock(view)
+                if (DATA_SAVER_JS.isNotEmpty() && dataSaverCacheOn) view.evaluateJavascript(DATA_SAVER_JS, null)
+                if (VIDEO_BLOCK_JS.isNotEmpty() && videoBlockOn) view.evaluateJavascript(VIDEO_BLOCK_JS, null)
+                if (adBlockOn) injectAdBlock(view)
                 if (DOWNLOADS_ON || LONGPRESS_DL_ON) {
                     view.evaluateJavascript(BLOB_HOOK_JS, null)
                     view.postDelayed({ view.evaluateJavascript(BLOB_HOOK_JS, null) }, 600)
