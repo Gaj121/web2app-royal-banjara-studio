@@ -965,6 +965,170 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // — Padh ke sunao: page ka text Hindi/English voice me bolke padhta hai —
+    private fun ensureTts() {
+        if (tts == null) {
+            tts = TextToSpeech(this) { status ->
+                ttsReady = status == TextToSpeech.SUCCESS
+                if (ttsReady) {
+                    try {
+                        val hi = Locale("hi", "IN")
+                        if ((tts?.isLanguageAvailable(hi) ?: -2) >= 0) tts?.language = hi else tts?.language = Locale.US
+                    } catch (e: Exception) {
+                    }
+                }
+            }
+        }
+    }
+
+    private fun readAloud() {
+        if (tts?.isSpeaking == true) {
+            tts?.stop()
+            Toast.makeText(this, "Padhana band ho gaya", Toast.LENGTH_SHORT).show()
+            return
+        }
+        ensureTts()
+        Toast.makeText(this, "Page bolke padha rahe hain...", Toast.LENGTH_SHORT).show()
+        webView.evaluateJavascript("(document.body ? (document.body.innerText||'') : '').slice(0,4000)") { v ->
+            val raw = v ?: ""
+            val text = raw.removeSurrounding("\"").replace("\\n", " ").replace("\\t", " ").trim()
+            if (!ttsReady || text.isBlank()) {
+                Toast.makeText(this, "Awaaz taiyaar nahi hui ya page khaali hai", Toast.LENGTH_SHORT).show()
+                return@evaluateJavascript
+            }
+            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "app_page")
+        }
+    }
+
+    // — Bookmarks: page save karo aur baad me ek tap me kholo —
+    private fun bookmarkEntries(): MutableList<String> {
+        val raw = prefs.getString("bookmarks", "") ?: ""
+        return raw.split("||").filter { it.isNotBlank() }.toMutableList()
+    }
+
+    private fun saveBookmarkEntries(list: List<String>) {
+        prefs.edit().putString("bookmarks", list.take(30).joinToString("||")).apply()
+    }
+
+    private fun bookmarkCurrentPage() {
+        val url = webView.url ?: HOME_URL
+        webView.evaluateJavascript("(document.title||'').slice(0,80)") { t ->
+            val name = (t ?: "").removeSurrounding("\"").replace("|", " ").ifBlank { url }
+            val entry = url + "|" + name
+            val list = bookmarkEntries()
+            if (list.any { it.startsWith(url + "|") }) {
+                Toast.makeText(this, "Ye page pehle se bookmark me hai", Toast.LENGTH_SHORT).show()
+            } else {
+                list.add(0, entry)
+                saveBookmarkEntries(list)
+                Toast.makeText(this, "Bookmark save ho gaya — Mere Bookmarks me dekho", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun showBookmarksSheet() {
+        val list = bookmarkEntries()
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCanceledOnTouchOutside(true)
+        val sheet = LinearLayout(this)
+        sheet.orientation = LinearLayout.VERTICAL
+        val sheetBg = GradientDrawable()
+        sheetBg.setColor(Color.WHITE)
+        sheetBg.cornerRadius = dp(28).toFloat()
+        sheet.background = sheetBg
+        sheet.elevation = dp(18).toFloat()
+        sheet.setPadding(dp(18), dp(10), dp(18), dp(18))
+        val handle = View(this)
+        val handleBg = GradientDrawable()
+        handleBg.setColor(0xFFDCE1E8.toInt())
+        handleBg.cornerRadius = dp(3).toFloat()
+        handle.background = handleBg
+        sheet.addView(handle, LinearLayout.LayoutParams(dp(44), dp(6)).also { it.gravity = Gravity.CENTER_HORIZONTAL })
+        val bmTitle = TextView(this)
+        bmTitle.text = "Mere Bookmarks"
+        bmTitle.textSize = 18f
+        bmTitle.typeface = Typeface.DEFAULT_BOLD
+        bmTitle.setTextColor(0xFF111827.toInt())
+        val bmLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        bmLp.topMargin = dp(10)
+        sheet.addView(bmTitle, bmLp)
+        val bmSub = TextView(this)
+        bmSub.text = "jin pages ko tumne star kiya hai — tap karke kholo"
+        bmSub.textSize = 11.5f
+        bmSub.setTextColor(0xFF6B7280.toInt())
+        sheet.addView(bmSub, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        val scroll = ScrollView(this)
+        scroll.isVerticalScrollBarEnabled = false
+        val listLayout = LinearLayout(this)
+        listLayout.orientation = LinearLayout.VERTICAL
+        scroll.addView(listLayout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        if (list.isEmpty()) {
+            val empty = TextView(this)
+            empty.text = "Abhi koi bookmark nahi — kisi page par Bookmark karo dabao"
+            empty.textSize = 13f
+            empty.setTextColor(0xFF6B7280.toInt())
+            val eLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            eLp.topMargin = dp(14)
+            listLayout.addView(empty, eLp)
+        }
+        list.forEach { entry ->
+            val parts = entry.split("|", limit = 2)
+            val url = parts.getOrNull(0) ?: return@forEach
+            val name = parts.getOrNull(1) ?: url
+            val row = LinearLayout(this)
+            row.orientation = LinearLayout.HORIZONTAL
+            row.gravity = Gravity.CENTER_VERTICAL
+            val rowBg = GradientDrawable()
+            rowBg.setColor(0xFFF6F8FB.toInt())
+            rowBg.cornerRadius = dp(14).toFloat()
+            row.background = rowBg
+            row.setPadding(dp(12), dp(10), dp(8), dp(10))
+            row.foreground = RippleDrawable(ColorStateList.valueOf(0x1F888888), null, null)
+            val block = LinearLayout(this)
+            block.orientation = LinearLayout.VERTICAL
+            val nm = TextView(this)
+            nm.text = name
+            nm.textSize = 13.5f
+            nm.typeface = Typeface.DEFAULT_BOLD
+            nm.setTextColor(0xFF111827.toInt())
+            nm.maxLines = 1
+            block.addView(nm)
+            val ur = TextView(this)
+            ur.text = url
+            ur.textSize = 10.5f
+            ur.setTextColor(0xFF8A94A6.toInt())
+            ur.maxLines = 1
+            block.addView(ur)
+            row.addView(block, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            val del = TextView(this)
+            del.text = "✕"
+            del.textSize = 14f
+            del.typeface = Typeface.DEFAULT_BOLD
+            del.setTextColor(0xFFB91C1C.toInt())
+            del.gravity = Gravity.CENTER
+            del.setPadding(dp(10), dp(6), dp(10), dp(6))
+            del.setOnClickListener {
+                saveBookmarkEntries(bookmarkEntries().filterNot { it == entry })
+                dialog.dismiss()
+                showBookmarksSheet()
+            }
+            row.addView(del)
+            row.setOnClickListener {
+                bounce(row)
+                dialog.dismiss()
+                webView.loadUrl(url)
+            }
+            val rLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            rLp.topMargin = dp(8)
+            listLayout.addView(row, rLp)
+        }
+        sheet.addView(scroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
+        dialog.setContentView(sheet)
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92).toInt(), (resources.displayMetrics.heightPixels * 0.62).toInt())
+        dialog.show()
+    }
+
     private fun findInPage() {
         val input = EditText(this)
         input.hint = "kya dhoondna hai?"
