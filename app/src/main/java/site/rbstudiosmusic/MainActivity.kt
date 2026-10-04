@@ -82,6 +82,12 @@ class MainActivity : AppCompatActivity() {
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio"
+        // App me dikhne wala site ka naam (jaise www.mysite.com) — Quick Tools header aur share text me
+        const val SITE_LABEL = "www.rbstudiosmusic.site"
+        const val REPLACE_JS = "(function(){\nvar FROM=\"rbstudiosmusic.kliv.site\",TO=\"www.rbstudiosmusic.site\";\nfunction rp(s){return s.split(FROM).join(TO);}\nfunction fix(root){try{\n if(!root){return;}\n var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);\n var n,b=[];\n while((n=w.nextNode())){if(n.nodeValue&&n.nodeValue.indexOf(FROM)!==-1){b.push(n);}}\n for(var i=0;i<b.length;i++){b[i].nodeValue=rp(b[i].nodeValue);}\n if(root.querySelectorAll){var els=root.querySelectorAll('[placeholder],[title],[alt],[aria-label]');\n  for(var j=0;j<els.length;j++){var el=els[j];var ats=['placeholder','title','alt','aria-label'];\n   for(var k=0;k<ats.length;k++){var v=el.getAttribute(ats[k]);if(v&&v.indexOf(FROM)!==-1){el.setAttribute(ats[k],rp(v));}}}}\n}catch(err){}}\nfix(document.body);\ntry{if(document.title&&document.title.indexOf(FROM)!==-1){document.title=rp(document.title);}}catch(err){}\ntry{\n if(window.__rbTxtObs){window.__rbTxtObs.disconnect();}\n window.__rbTxtObs=new MutationObserver(function(ms){\n  for(var i=0;i<ms.length;i++){var ad=ms[i].addedNodes;\n   for(var j=0;j<ad.length;j++){var nd=ad[j];\n    if(nd.nodeType===3){if(nd.nodeValue&&nd.nodeValue.indexOf(FROM)!==-1){nd.nodeValue=rp(nd.nodeValue);}}\n    else{fix(nd);}}}});\n window.__rbTxtObs.observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\n})();"
+        const val KEEPCR_ON = true
+        const val BRIGHTNESS_ON = true
+        const val AUTOSCROLL_ON = true
         const val THEME_COLOR = "#3DDC84"
         const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
@@ -1482,7 +1488,7 @@ class MainActivity : AppCompatActivity() {
         sheetTitle.setTextColor(Color.WHITE)
         headBlock.addView(sheetTitle)
         val sheetSub = TextView(this)
-        sheetSub.text = APP_NAME + " ke kaam ke tools"
+        sheetSub.text = SITE_LABEL + " ke kaam ke tools"
         sheetSub.textSize = 12f
         sheetSub.setTextColor(0xE6FFFFFF.toInt())
         headBlock.addView(sheetSub)
@@ -1502,6 +1508,20 @@ class MainActivity : AppCompatActivity() {
         close.setOnClickListener { dialog.dismiss() }
         header.addView(close, LinearLayout.LayoutParams(dp(34), dp(34)))
 
+        // — Tool dhoondo box: likhte hi list neeche filter hoti hai —
+        val search = EditText(this)
+        search.hint = "Tool dhoondo — jaise: night, pdf, scroll"
+        search.textSize = 13f
+        search.setSingleLine(true)
+        search.inputType = InputType.TYPE_CLASS_TEXT
+        val searchBg = GradientDrawable()
+        searchBg.setColor(0xFFF1F4F9.toInt())
+        searchBg.cornerRadius = dp(14).toFloat()
+        search.background = searchBg
+        search.setPadding(dp(14), dp(10), dp(14), dp(10))
+        search.elevation = dp(1).toFloat()
+        sheet.addView(search, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(10) })
+
         // Scrollable area — jitne bhi tools hon, sab yahan scroll karke dikhte hain
         val scroll = ScrollView(this)
         scroll.isVerticalScrollBarEnabled = false
@@ -1510,41 +1530,62 @@ class MainActivity : AppCompatActivity() {
         scroll.addView(content, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
 
         val items = buildToolItems()
-        var lastSection = ""
-        items.forEachIndexed { index, item ->
-            if (item.section != lastSection) {
-                lastSection = item.section
-                val secHead = LinearLayout(this)
-                secHead.orientation = LinearLayout.HORIZONTAL
-                secHead.gravity = Gravity.CENTER_VERTICAL
-                val dot = View(this)
-                val dotBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(accentColor, 0.35f), accentColor))
-                dotBg.shape = GradientDrawable.OVAL
-                dot.background = dotBg
-                secHead.addView(dot, LinearLayout.LayoutParams(dp(7), dp(7)))
-                val st = TextView(this)
-                st.text = lastSection.uppercase()
-                st.textSize = 10.5f
-                st.typeface = Typeface.DEFAULT_BOLD
-                st.letterSpacing = 0.10f
-                st.setTextColor(0xFF4B5563.toInt())
-                secHead.addView(st, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(6) })
-                val cnt = TextView(this)
-                cnt.text = "· " + items.count { it.section == lastSection }
-                cnt.textSize = 10f
-                cnt.typeface = Typeface.DEFAULT_BOLD
-                cnt.setTextColor(0xFF9CA3AF.toInt())
-                secHead.addView(cnt, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(8) })
-                val stLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                stLp.topMargin = if (index == 0) dp(4) else dp(13)
-                stLp.bottomMargin = dp(7)
-                content.addView(secHead, stLp)
+        fun renderTools(filterRaw: String) {
+            content.removeAllViews()
+            val filter = filterRaw.trim().lowercase()
+            val shown = items.filter { filter.isEmpty() || it.label.lowercase().contains(filter) || it.sub.lowercase().contains(filter) || it.section.lowercase().contains(filter) }
+            if (shown.isEmpty()) {
+                val none = TextView(this)
+                none.text = "Koi tool nahi mila — kuch aur likho"
+                none.textSize = 12.5f
+                none.gravity = Gravity.CENTER
+                none.setTextColor(0xFF9CA3AF.toInt())
+                none.setPadding(0, dp(18), 0, dp(18))
+                content.addView(none, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+                return
             }
-            val toolRow = buildToolRow(dialog, item)
-            val rowLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            rowLp.bottomMargin = dp(8)
-            content.addView(toolRow, rowLp)
+            var lastSection = ""
+            shown.forEachIndexed { index, item ->
+                if (item.section != lastSection) {
+                    lastSection = item.section
+                    val secHead = LinearLayout(this)
+                    secHead.orientation = LinearLayout.HORIZONTAL
+                    secHead.gravity = Gravity.CENTER_VERTICAL
+                    val dot = View(this)
+                    val dotBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(accentColor, 0.35f), accentColor))
+                    dotBg.shape = GradientDrawable.OVAL
+                    dot.background = dotBg
+                    secHead.addView(dot, LinearLayout.LayoutParams(dp(7), dp(7)))
+                    val st = TextView(this)
+                    st.text = lastSection.uppercase()
+                    st.textSize = 10.5f
+                    st.typeface = Typeface.DEFAULT_BOLD
+                    st.letterSpacing = 0.10f
+                    st.setTextColor(0xFF4B5563.toInt())
+                    secHead.addView(st, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(6) })
+                    val cnt = TextView(this)
+                    cnt.text = "· " + shown.count { it.section == lastSection }
+                    cnt.textSize = 10f
+                    cnt.typeface = Typeface.DEFAULT_BOLD
+                    cnt.setTextColor(0xFF9CA3AF.toInt())
+                    secHead.addView(cnt, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(8) })
+                    val stLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    stLp.topMargin = if (index == 0) dp(4) else dp(13)
+                    stLp.bottomMargin = dp(7)
+                    content.addView(secHead, stLp)
+                }
+                val toolRow = buildToolRow(dialog, item)
+                val rowLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                rowLp.bottomMargin = dp(8)
+                content.addView(toolRow, rowLp)
+            }
         }
+        renderTools("")
+        search.addTextChangedListener(object : android.text.TextWatcher {
+            override fun afterTextChanged(s: android.text.Editable?) { renderTools(s?.toString() ?: "") }
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+        })
         // Scroll height fix — sheet screen se bahar na jaye, neeche ke options bhi poore dikhen
         val screenH = resources.displayMetrics.heightPixels
         val maxScroll = (screenH * 0.60f).toInt()
@@ -1565,6 +1606,63 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
+    // — Screen band na ho: padhai/video dekhte waqt screen jalta rahe —
+    private fun toggleKeepScreenOn() {
+        val on = (window.attributes.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0
+        if (on) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            Toast.makeText(this, "Screen ab wapas band ho sakta hai", Toast.LENGTH_SHORT).show()
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            Toast.makeText(this, "Screen jalta rahega — band nahi hoga", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Roshni (brightness): slider ghumao, aankhon ko aaram —
+    private fun showBrightnessDialog() {
+        val cur = window.attributes.screenBrightness
+        val start = ((if (cur < 0f) 0.6f else cur) * 100).toInt().coerceIn(5, 100)
+        val seek = android.widget.SeekBar(this)
+        seek.max = 100
+        seek.progress = start
+        seek.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(s: android.widget.SeekBar?, p: Int, fromUser: Boolean) {
+                val lp = window.attributes
+                lp.screenBrightness = (p / 100f).coerceAtLeast(0.06f)
+                window.attributes = lp
+            }
+            override fun onStartTrackingTouch(s: android.widget.SeekBar?) {}
+            override fun onStopTrackingTouch(s: android.widget.SeekBar?) {}
+        })
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.setPadding(dp(20), dp(6), dp(20), 0)
+        wrap.addView(seek, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("Roshni set karo")
+            .setMessage("Slider ghumao — screen ki roshni turant badlegi")
+            .setView(wrap)
+            .setPositiveButton("Ho gaya", null)
+            .show()
+    }
+
+    // — Auto scroll: page khud dheere-dheere chalega, aaram se padho —
+    private fun autoScrollDialog() {
+        val speeds = arrayOf("Dheema — aaram se", "Normal", "Tez — fast")
+        AlertDialog.Builder(this)
+            .setTitle("Auto scroll")
+            .setMessage("Speed chuno — page khud scroll karega")
+            .setItems(speeds) { _, which ->
+                val px = intArrayOf(2, 3, 6)[which]
+                webView.evaluateJavascript("(function(){if(window.__rbScroll){clearInterval(window.__rbScroll)}window.__rbScroll=setInterval(function(){window.scrollBy(0," + px + ");if((window.innerHeight+window.scrollY)>=document.body.scrollHeight){clearInterval(window.__rbScroll);window.__rbScroll=null}},50)})()", null)
+                Toast.makeText(this, "Auto scroll chalu — rokne ke liye dobara yahi tool dabao", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Scroll roko") { _, _ ->
+                webView.evaluateJavascript("(function(){if(window.__rbScroll){clearInterval(window.__rbScroll);window.__rbScroll=null}})()", null)
+                Toast.makeText(this, "Auto scroll band ho gaya", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
     // Saare Quick Tools — sections me grouped: Padhai sabse upar, phir Screen, Page, Files, App, Madad
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
@@ -1577,6 +1675,9 @@ class MainActivity : AppCompatActivity() {
         if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_star, "Bookmark karo", "page save karo", 0xFFEAB308.toInt(), "Padhai ke Tools") { bookmarkCurrentPage() })
         if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_book, "Mere Bookmarks", "save kiye page", 0xFFD97706.toInt(), "Padhai ke Tools") { showBookmarksSheet() })
         if (OFFLINE_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_save, "Page save karo", "offline padho baad me", 0xFF0369A1.toInt(), "Padhai ke Tools") { savePageOffline() })
+        if (AUTOSCROLL_ON) items.add(ToolItem(R.drawable.ic_tool_autoscroll, "Auto scroll karo", "page khud chalega", 0xFF92400E.toInt(), "Padhai ke Tools") { autoScrollDialog() })
+        if (KEEPCR_ON) items.add(ToolItem(R.drawable.ic_tool_screenon, if ((window.attributes.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0) "Screen band hone do" else "Screen band na ho", "padhai/video me jalta rahe", 0xFF0D9488.toInt(), "Screen ke Tools") { toggleKeepScreenOn() })
+        if (BRIGHTNESS_ON) items.add(ToolItem(R.drawable.ic_tool_brightness, "Roshni set karo", "screen ki brightness", 0xFFCA8A04.toInt(), "Screen ke Tools") { showBrightnessDialog() })
         items.add(ToolItem(if (nightOn) R.drawable.ic_tool_sun else R.drawable.ic_tool_moon, if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram", 0xFF1E293B.toInt(), "Screen ke Tools") { toggleNightMode() })
         if (MUTE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_mute, if (muted) "Aawaz chalu karo" else "Aawaz band karo", "site ki awaaz", 0xFFDB2777.toInt(), "Screen ke Tools") { toggleMute() })
         if (DATA_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_datasave, if (dataSaveOn) "Photo chalu karo" else "Data save karo", "photo band, data bacho", 0xFF059669.toInt(), "Screen ke Tools") { toggleDataSave() })
@@ -1585,7 +1686,6 @@ class MainActivity : AppCompatActivity() {
         if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
         if (THEME_PICKER_ON) items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen ke Tools") { showThemeSheet() })
         if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
-        if (ROTATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen ke Tools") { toggleRotation() })
         items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
         items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
         items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
@@ -1597,13 +1697,10 @@ class MainActivity : AppCompatActivity() {
         items.add(ToolItem(R.drawable.ic_tool_folder, "Downloads folder", "phone ka folder", 0xFF059669.toInt(), "Files aur Print") { openDownloads() })
         if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
         if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
-        if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
-        if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
-        items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
-        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         return items
     }
+
 
     // — Tool row: poora chauda row — icon chip + naam + sub + arrow. Poora naam ek line me — text kabhi nahi katta —
     private fun buildToolRow(dialog: Dialog, item: ToolItem): View {
@@ -2543,6 +2640,7 @@ class MainActivity : AppCompatActivity() {
                 super.onPageFinished(view, url)
                 swipeRefresh.isRefreshing = false
                 if (HIDE_ON) injectHideEngine(view)
+                if (REPLACE_JS.isNotEmpty()) view.evaluateJavascript(REPLACE_JS, null)
                 if (AD_BLOCK_ON) injectAdBlock(view)
                 if (DOWNLOADS_ON || LONGPRESS_DL_ON) {
                     view.evaluateJavascript(BLOB_HOOK_JS, null)
