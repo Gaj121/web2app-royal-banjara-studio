@@ -135,6 +135,7 @@ class MainActivity : AppCompatActivity() {
     private var welcomeOverlay: FrameLayout? = null
     private var welcomeCenter: LinearLayout? = null
     private var welcomeHeader: LinearLayout? = null
+    private var welcomeBottom: LinearLayout? = null
     private var accentColor = 0
     private var moreBtn: TextView? = null
     private var tts: TextToSpeech? = null
