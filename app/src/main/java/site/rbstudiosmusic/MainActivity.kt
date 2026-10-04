@@ -1626,86 +1626,6 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
-    // — URL se sirf path — Bookmarks/History me site ka domain (jaise rbstudiosmusic.kliv.site) kabhi nahi dikhta —
-    private fun friendlyPath(raw: String): String {
-        var p = raw
-        val scheme = p.indexOf("://")
-        if (scheme >= 0) p = p.substring(scheme + 3)
-        val slash = p.indexOf("/")
-        val path = if (slash >= 0) p.substring(slash) else "/"
-        val clean = path.substringBefore('?').substringBefore('#').trimEnd('/')
-        return if (clean.isBlank()) "Home page" else clean
-    }
-
-    // — Site me dhoondo: Google se sirf is site ke andar search —
-    private fun siteSearchDialog() {
-        val input = EditText(this)
-        input.hint = "kya dhoondna hai is site me?"
-        input.inputType = InputType.TYPE_CLASS_TEXT
-        input.setSingleLine(true)
-        val wrap = FrameLayout(this)
-        wrap.setPadding(dp(16), dp(10), dp(16), 0)
-        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
-        AlertDialog.Builder(this)
-            .setTitle("Site me dhoondo")
-            .setView(wrap)
-            .setPositiveButton("Dhoondo") { _, _ ->
-                val q = input.text.toString().trim()
-                if (q.isNotEmpty()) {
-                    val host = Uri.parse(HOME_URL).host ?: ""
-                    webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q + " site:" + host, "UTF-8"))
-                }
-            }
-            .setNegativeButton("Band", null)
-            .show()
-    }
-
-    // — Shabd ka matlab: kisi bhi shabd ka Hindi meaning —
-    private fun dictDialog() {
-        val input = EditText(this)
-        input.hint = "shabd likho — matlab milega"
-        input.inputType = InputType.TYPE_CLASS_TEXT
-        input.setSingleLine(true)
-        val wrap = FrameLayout(this)
-        wrap.setPadding(dp(16), dp(10), dp(16), 0)
-        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
-        AlertDialog.Builder(this)
-            .setTitle("Shabd ka matlab")
-            .setView(wrap)
-            .setPositiveButton("Dekho") { _, _ ->
-                val q = input.text.toString().trim()
-                if (q.isNotEmpty()) {
-                    webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q + " meaning in hindi", "UTF-8"))
-                }
-            }
-            .setNegativeButton("Band", null)
-            .show()
-    }
-
-    // — Sunne ki raftaar: Padh ke sunao ki awaaz dheemi/tez —
-    private fun ttsSpeedDialog() {
-        val speeds = arrayOf("Dheemi — 0.75x", "Normal — 1x", "Tez — 1.25x", "Bahut tez — 1.5x")
-        AlertDialog.Builder(this)
-            .setTitle("Sunne ki raftaar")
-            .setMessage("Padh ke sunao wali awaaz ki speed chuno")
-            .setItems(speeds) { _, which ->
-                val rate = floatArrayOf(0.75f, 1f, 1.25f, 1.5f)[which]
-                tts?.setSpeechRate(rate)
-                Toast.makeText(this, "Awaaz ki raftaar set ho gayi", Toast.LENGTH_SHORT).show()
-            }
-            .show()
-    }
-
-    // — Cookies clear: login data saaf karke privacy —
-    private fun clearCookiesNow() {
-        try {
-            CookieManager.getInstance().removeAllCookies(null)
-            CookieManager.getInstance().flush()
-            Toast.makeText(this, "Cookies saaf ho gaye — privacy lock lag gaya", Toast.LENGTH_LONG).show()
-        } catch (e: Exception) {
-            Toast.makeText(this, "Cookies clear nahi ho paye", Toast.LENGTH_SHORT).show()
-        }
-    }
     // Saare Quick Tools — sections me grouped: Padhai sabse upar, phir Screen, Page, Files, App, Madad
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
@@ -1732,6 +1652,7 @@ class MainActivity : AppCompatActivity() {
         if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
         if (THEME_PICKER_ON) items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen ke Tools") { showThemeSheet() })
         if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
+        if (ROTATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen ke Tools") { toggleRotation() })
         items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
         items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
         items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
@@ -1744,10 +1665,13 @@ class MainActivity : AppCompatActivity() {
         if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
         if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
         if (COOKIES_CLEAR_ON) items.add(ToolItem(R.drawable.ic_tool_cookie, "Cookies clear", "login data saaf", 0xFFB45309.toInt(), "App") { clearCookiesNow() })
+        if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
+        if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
+        items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
+        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         return items
     }
-
 
     // — Tool row: poora chauda row — icon chip + naam + sub + arrow. Poora naam ek line me — text kabhi nahi katta —
     private fun buildToolRow(dialog: Dialog, item: ToolItem): View {
@@ -1861,6 +1785,86 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Auto scroll band ho gaya", Toast.LENGTH_SHORT).show()
             }
             .show()
+    }
+    // — URL se sirf path — Bookmarks/History me site ka domain (jaise rbstudiosmusic.kliv.site) kabhi nahi dikhta —
+    private fun friendlyPath(raw: String): String {
+        var p = raw
+        val scheme = p.indexOf("://")
+        if (scheme >= 0) p = p.substring(scheme + 3)
+        val slash = p.indexOf("/")
+        val path = if (slash >= 0) p.substring(slash) else "/"
+        val clean = path.substringBefore('?').substringBefore('#').trimEnd('/')
+        return if (clean.isBlank()) "Home page" else clean
+    }
+
+    // — Site me dhoondo: Google se sirf is site ke andar search —
+    private fun siteSearchDialog() {
+        val input = EditText(this)
+        input.hint = "kya dhoondna hai is site me?"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        input.setSingleLine(true)
+        val wrap = FrameLayout(this)
+        wrap.setPadding(dp(16), dp(10), dp(16), 0)
+        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("Site me dhoondo")
+            .setView(wrap)
+            .setPositiveButton("Dhoondo") { _, _ ->
+                val q = input.text.toString().trim()
+                if (q.isNotEmpty()) {
+                    val host = Uri.parse(HOME_URL).host ?: ""
+                    webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q + " site:" + host, "UTF-8"))
+                }
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Shabd ka matlab: kisi bhi shabd ka Hindi meaning —
+    private fun dictDialog() {
+        val input = EditText(this)
+        input.hint = "shabd likho — matlab milega"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        input.setSingleLine(true)
+        val wrap = FrameLayout(this)
+        wrap.setPadding(dp(16), dp(10), dp(16), 0)
+        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("Shabd ka matlab")
+            .setView(wrap)
+            .setPositiveButton("Dekho") { _, _ ->
+                val q = input.text.toString().trim()
+                if (q.isNotEmpty()) {
+                    webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q + " meaning in hindi", "UTF-8"))
+                }
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Sunne ki raftaar: Padh ke sunao ki awaaz dheemi/tez —
+    private fun ttsSpeedDialog() {
+        val speeds = arrayOf("Dheemi — 0.75x", "Normal — 1x", "Tez — 1.25x", "Bahut tez — 1.5x")
+        AlertDialog.Builder(this)
+            .setTitle("Sunne ki raftaar")
+            .setMessage("Padh ke sunao wali awaaz ki speed chuno")
+            .setItems(speeds) { _, which ->
+                val rate = floatArrayOf(0.75f, 1f, 1.25f, 1.5f)[which]
+                tts?.setSpeechRate(rate)
+                Toast.makeText(this, "Awaaz ki raftaar set ho gayi", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
+
+    // — Cookies clear: login data saaf karke privacy —
+    private fun clearCookiesNow() {
+        try {
+            CookieManager.getInstance().removeAllCookies(null)
+            CookieManager.getInstance().flush()
+            Toast.makeText(this, "Cookies saaf ho gaye — privacy lock lag gaya", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Cookies clear nahi ho paye", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // — Padhai mode: sirf text — image, video, ad sab chhup jaate hain — aaram se padho —
