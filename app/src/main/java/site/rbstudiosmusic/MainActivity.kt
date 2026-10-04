@@ -133,6 +133,10 @@ class MainActivity : AppCompatActivity() {
         const val HISTORY_NAV_ON = true
         const val OFFLINE_SAVE_ON = true
         const val AUTO_NIGHT_ON = true
+        const val READING_MODE_ON = true
+        const val MUTE_TOOL_ON = true
+        const val DATA_SAVE_ON = true
+        const val URL_TOOL_ON = true
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
         val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
@@ -177,6 +181,9 @@ class MainActivity : AppCompatActivity() {
     private var blobMime = "application/octet-stream"
     private var desktopView = false
     private var baseUa = ""
+    private var readingModeOn = false
+    private var muted = false
+    private var dataSaveOn = false
 
     private val navEntries: Array<NavEntry> = arrayOf(
         NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
@@ -1503,12 +1510,9 @@ class MainActivity : AppCompatActivity() {
         scroll.addView(content, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
 
         val items = buildToolItems()
-        val cards = mutableListOf<View>()
         var lastSection = ""
-        var row: LinearLayout? = null
         items.forEachIndexed { index, item ->
-            if (row == null || item.section != lastSection) {
-                row?.let { r -> content.addView(r, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)) }
+            if (item.section != lastSection) {
                 lastSection = item.section
                 val secHead = LinearLayout(this)
                 secHead.orientation = LinearLayout.HORIZONTAL
@@ -1525,24 +1529,22 @@ class MainActivity : AppCompatActivity() {
                 st.letterSpacing = 0.10f
                 st.setTextColor(0xFF4B5563.toInt())
                 secHead.addView(st, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(6) })
+                val cnt = TextView(this)
+                cnt.text = "· " + items.count { it.section == lastSection }
+                cnt.textSize = 10f
+                cnt.typeface = Typeface.DEFAULT_BOLD
+                cnt.setTextColor(0xFF9CA3AF.toInt())
+                secHead.addView(cnt, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(8) })
                 val stLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                stLp.topMargin = dp(14)
-                stLp.bottomMargin = dp(6)
+                stLp.topMargin = if (index == 0) dp(4) else dp(13)
+                stLp.bottomMargin = dp(7)
                 content.addView(secHead, stLp)
-                val nr = LinearLayout(this)
-                nr.orientation = LinearLayout.HORIZONTAL
-                row = nr
             }
-            val r = row
-            if (r != null) {
-                val card = buildToolCard(dialog, item)
-                cards.add(card)
-                val cardLp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                if (r.childCount % 2 == 0) cardLp.rightMargin = dp(5) else cardLp.leftMargin = dp(5)
-                r.addView(card, cardLp)
-            }
+            val toolRow = buildToolRow(dialog, item)
+            val rowLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            rowLp.bottomMargin = dp(8)
+            content.addView(toolRow, rowLp)
         }
-        row?.let { r -> content.addView(r, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)) }
         // Scroll height fix — sheet screen se bahar na jaye, neeche ke options bhi poore dikhen
         val screenH = resources.displayMetrics.heightPixels
         val maxScroll = (screenH * 0.60f).toInt()
@@ -1571,10 +1573,13 @@ class MainActivity : AppCompatActivity() {
         if (TRANSLATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_translate, "Hindi me padho", "page translate", 0xFF0F766E.toInt(), "Padhai ke Tools") { translatePage() })
         items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text bada karo", "padhna aasan", 0xFF0EA5E9.toInt(), "Padhai ke Tools") { changeTextSize(15) })
         items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text chhota karo", "compact view", 0xFF38BDF8.toInt(), "Padhai ke Tools") { changeTextSize(-15) })
+        if (READING_MODE_ON) items.add(ToolItem(R.drawable.ic_tool_bookopen, if (readingModeOn) "Padhai mode band" else "Padhai mode on", "sirf text, aaram se", 0xFFB45309.toInt(), "Padhai ke Tools") { toggleReadingMode() })
         if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_star, "Bookmark karo", "page save karo", 0xFFEAB308.toInt(), "Padhai ke Tools") { bookmarkCurrentPage() })
         if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_book, "Mere Bookmarks", "save kiye page", 0xFFD97706.toInt(), "Padhai ke Tools") { showBookmarksSheet() })
         if (OFFLINE_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_save, "Page save karo", "offline padho baad me", 0xFF0369A1.toInt(), "Padhai ke Tools") { savePageOffline() })
         items.add(ToolItem(if (nightOn) R.drawable.ic_tool_sun else R.drawable.ic_tool_moon, if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram", 0xFF1E293B.toInt(), "Screen ke Tools") { toggleNightMode() })
+        if (MUTE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_mute, if (muted) "Aawaz chalu karo" else "Aawaz band karo", "site ki awaaz", 0xFFDB2777.toInt(), "Screen ke Tools") { toggleMute() })
+        if (DATA_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_datasave, if (dataSaveOn) "Photo chalu karo" else "Data save karo", "photo band, data bacho", 0xFF059669.toInt(), "Screen ke Tools") { toggleDataSave() })
         if (SCREENSHOT_ON) items.add(ToolItem(R.drawable.ic_tool_camera, "Screenshot lo", "page ki photo", 0xFFDC2626.toInt(), "Screen ke Tools") { takeScreenshot() })
         if (FULLSCREEN_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_fullscreen, if (fullScreenOn) "Full screen band" else "Full screen karo", "poora screen app ka", 0xFF7C3AED.toInt(), "Screen ke Tools") { toggleFullScreen() })
         if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
@@ -1585,6 +1590,7 @@ class MainActivity : AppCompatActivity() {
         items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
         items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
         items.add(ToolItem(R.drawable.ic_tool_home, "Home page", "shuruati page", 0xFF111827.toInt(), "Page ke Tools") { webView.loadUrl(HOME_URL) })
+        if (URL_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_globe, "Kholo (URL likho)", "seedha page kholo", 0xFF0284C7.toInt(), "Page ke Tools") { openUrlDialog() })
         if (HISTORY_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_history, "Mera History", "khole hue pages", 0xFF64748B.toInt(), "Page ke Tools") { showHistorySheet() })
         items.add(ToolItem(R.drawable.ic_tool_print, "Print / PDF", "page ya PDF banao", 0xFF111827.toInt(), "Files aur Print") { printPage() })
         if (DL_LIST_ON) items.add(ToolItem(R.drawable.ic_tool_download, "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
@@ -1598,56 +1604,110 @@ class MainActivity : AppCompatActivity() {
         return items
     }
 
-    private fun buildToolCard(dialog: Dialog, item: ToolItem): View {
-        val card = LinearLayout(this)
-        card.orientation = LinearLayout.VERTICAL
-        card.gravity = Gravity.CENTER_HORIZONTAL
-        card.setPadding(dp(10), dp(14), dp(10), dp(12))
-        val cardBg = GradientDrawable()
-        cardBg.setColor(0xFFF8FAFC.toInt())
-        cardBg.cornerRadius = dp(22).toFloat()
-        cardBg.setStroke(dp(1), shade(item.accent, 0.86f))
-        card.background = cardBg
-        card.foreground = RippleDrawable(ColorStateList.valueOf(shade(item.accent, 0.82f)), null, null)
-        card.elevation = dp(3).toFloat()
+    // — Tool row: poora chauda row — icon chip + naam + sub + arrow. Poora naam ek line me — text kabhi nahi katta —
+    private fun buildToolRow(dialog: Dialog, item: ToolItem): View {
+        val row = LinearLayout(this)
+        row.orientation = LinearLayout.HORIZONTAL
+        row.gravity = Gravity.CENTER_VERTICAL
+        row.setPadding(dp(10), dp(9), dp(12), dp(9))
+        val rowBg = GradientDrawable()
+        rowBg.setColor(0xFFF7F9FC.toInt())
+        rowBg.cornerRadius = dp(16).toFloat()
+        rowBg.setStroke(dp(1), shade(item.accent, 0.90f))
+        row.background = RippleDrawable(ColorStateList.valueOf(shade(item.accent, 0.86f)), rowBg, null)
+        row.elevation = dp(2).toFloat()
 
         val chip = FrameLayout(this)
         val chipBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(item.accent, 0.30f), item.accent))
-        chipBg.cornerRadius = dp(18).toFloat()
+        chipBg.cornerRadius = dp(13).toFloat()
         chip.background = chipBg
-        chip.elevation = dp(4).toFloat()
+        chip.elevation = dp(3).toFloat()
         val icon = ImageView(this)
         icon.setImageResource(item.icon)
-        chip.addView(icon, FrameLayout.LayoutParams(dp(28), dp(28), Gravity.CENTER))
-        card.addView(chip, LinearLayout.LayoutParams(dp(54), dp(54)))
+        chip.addView(icon, FrameLayout.LayoutParams(dp(21), dp(21), Gravity.CENTER))
+        row.addView(chip, LinearLayout.LayoutParams(dp(42), dp(42)))
 
+        val textBlock = LinearLayout(this)
+        textBlock.orientation = LinearLayout.VERTICAL
         val label = TextView(this)
         label.text = item.label
-        label.textSize = 12.5f
+        label.textSize = 13.5f
         label.typeface = Typeface.DEFAULT_BOLD
         label.setTextColor(0xFF111827.toInt())
-        label.gravity = Gravity.CENTER
-        label.maxLines = 2
-        val labelLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        labelLp.topMargin = dp(9)
-        card.addView(label, labelLp)
-
+        label.maxLines = 1
+        textBlock.addView(label, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
         val sub = TextView(this)
         sub.text = item.sub
-        sub.textSize = 10.5f
+        sub.textSize = 11f
         sub.setTextColor(0xFF6B7280.toInt())
-        sub.gravity = Gravity.CENTER
         sub.maxLines = 1
-        card.addView(sub, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        textBlock.addView(sub, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        row.addView(textBlock, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply { leftMargin = dp(11) })
 
-        card.setOnClickListener {
-            bounce(card)
+        val arrow = TextView(this)
+        arrow.text = "›"
+        arrow.textSize = 18f
+        arrow.typeface = Typeface.DEFAULT_BOLD
+        arrow.setTextColor(shade(item.accent, 0.55f))
+        row.addView(arrow, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(4) })
+
+        row.setOnClickListener {
+            bounce(row)
             dialog.dismiss()
             item.action()
         }
-        return card
+        return row
     }
 
+
+    // — Padhai mode: sirf text — image, video, ad sab chhup jaate hain — aaram se padho —
+    private fun toggleReadingMode() {
+        readingModeOn = !readingModeOn
+        if (readingModeOn) {
+            webView.evaluateJavascript("(function(){var s=document.getElementById('rb-read');if(!s){s=document.createElement('style');s.id='rb-read';s.textContent='img,video,iframe,svg,canvas{display:none!important}body{background:#FFFFFF!important}body,body *{background-image:none!important;color:#222222!important;line-height:1.85!important;font-family:Georgia,serif!important}';document.head.appendChild(s)}})()", null)
+            Toast.makeText(this, "Padhai mode on — sirf text dikhega", Toast.LENGTH_SHORT).show()
+        } else {
+            webView.evaluateJavascript("(function(){var s=document.getElementById('rb-read');if(s){s.remove()}})()", null)
+            Toast.makeText(this, "Padhai mode band", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun toggleMute() {
+        muted = !muted
+        webView.setVolume(if (muted) 0f else 1f)
+        Toast.makeText(this, if (muted) "Site ki aawaz band ho gayi" else "Aawaz wapas chalu", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun toggleDataSave() {
+        dataSaveOn = !dataSaveOn
+        webView.settings.blockNetworkImage = dataSaveOn
+        webView.reload()
+        Toast.makeText(this, if (dataSaveOn) "Data save on — photo band, page halka" else "Photo wapas dikhenge", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun openUrlDialog() {
+        val input = EditText(this)
+        input.hint = "https://example.com"
+        input.inputType = InputType.TYPE_TEXT_VARIATION_URI
+        input.setSingleLine(true)
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.setPadding(dp(18), dp(8), dp(18), 0)
+        wrap.addView(input, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("Kya kholna hai?")
+            .setMessage("Website ka pura address likho")
+            .setView(wrap)
+            .setPositiveButton("Kholo") { _, _ ->
+                var u = input.text.toString().trim()
+                if (u.isNotBlank()) {
+                    if (!u.startsWith("http")) u = "https://" + u
+                    webView.loadUrl(u)
+                }
+            }
+            .setNegativeButton("Rehne do", null)
+            .show()
+    }
 
     private fun toggleFullScreen() {
         fullScreenOn = !fullScreenOn
