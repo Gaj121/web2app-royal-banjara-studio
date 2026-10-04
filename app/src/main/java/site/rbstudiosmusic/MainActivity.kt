@@ -122,6 +122,7 @@ class MainActivity : AppCompatActivity() {
     private var introOverlay: FrameLayout? = null
     private var welcomeOverlay: FrameLayout? = null
     private var welcomeCenter: LinearLayout? = null
+    private var welcomeBottom: LinearLayout? = null
     private var welcomeHeader: LinearLayout? = null
     private var accentColor = 0
     private var moreBtn: TextView? = null
@@ -902,8 +903,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun buildMoreButton(): TextView {
-        val btn = TextView(this)
-
         val btn = TextView(this)
         btn.text = "⋮"
         btn.textSize = 20f
