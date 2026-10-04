@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         const val INTRO_ON = true
         const val WELCOME_ON = true
         const val WELCOME_TEXT = "Welcome to Royal Banjara Studio Music Distribution Company"
-        const val VERSION_NAME = "1.0"
+        const val VERSION_NAME = "1.1"
         const val TOOLS_ON = true
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
@@ -122,7 +122,6 @@ class MainActivity : AppCompatActivity() {
     private var introOverlay: FrameLayout? = null
     private var welcomeOverlay: FrameLayout? = null
     private var welcomeCenter: LinearLayout? = null
-    private var welcomeBottom: LinearLayout? = null
     private var welcomeHeader: LinearLayout? = null
     private var accentColor = 0
     private var moreBtn: TextView? = null
@@ -374,7 +373,8 @@ class MainActivity : AppCompatActivity() {
         logoCard.elevation = dp(24).toFloat()
         logoCard.setPadding(dp(14), dp(14), dp(14), dp(14))
         val logo = ImageView(this)
-        logo.setImageResource(R.mipmap.ic_launcher)
+        val fullRes = resources.getIdentifier("ic_brand_full", "drawable", packageName)
+        logo.setImageResource(if (fullRes != 0) fullRes else R.mipmap.ic_launcher)
         logoCard.addView(logo, FrameLayout.LayoutParams(dp(104), dp(104), Gravity.CENTER))
 
         // — shine sweep — logo ke upar se roshani ka pass jata hai
@@ -902,7 +902,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun buildMoreButton(): TextView {
-
+        val btn = TextView(this)
 
         val btn = TextView(this)
         btn.text = "⋮"
@@ -943,12 +943,6 @@ class MainActivity : AppCompatActivity() {
         handleLp.gravity = Gravity.CENTER_HORIZONTAL
         sheet.addView(handle, handleLp)
 
-        val header = LinearLayout(this)
-        header.orientation = LinearLayout.HORIZONTAL
-        header.gravity = Gravity.CENTER_VERTICAL
-        val headLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        headLp.topMargin = dp(8)
-        headLp.bottomMargin = dp(2)
         val strip = View(this)
         val stripBg = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(shade(accentColor, 0.4f), accentColor, shade(accentColor, -0.3f)))
         stripBg.cornerRadius = dp(4).toFloat()
@@ -956,6 +950,13 @@ class MainActivity : AppCompatActivity() {
         val stripLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(4))
         stripLp.topMargin = dp(8)
         sheet.addView(strip, stripLp)
+
+        val header = LinearLayout(this)
+        header.orientation = LinearLayout.HORIZONTAL
+        header.gravity = Gravity.CENTER_VERTICAL
+        val headLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        headLp.topMargin = dp(8)
+        headLp.bottomMargin = dp(2)
         sheet.addView(header, headLp)
 
         val headBlock = LinearLayout(this)
@@ -986,6 +987,7 @@ class MainActivity : AppCompatActivity() {
         close.setOnClickListener { dialog.dismiss() }
         header.addView(close, LinearLayout.LayoutParams(dp(34), dp(34)))
 
+        // Scrollable area — jitne bhi tools hon, sab yahan scroll karke dikhte hain
         val scroll = ScrollView(this)
         scroll.isVerticalScrollBarEnabled = false
         val content = LinearLayout(this)
@@ -1070,26 +1072,27 @@ class MainActivity : AppCompatActivity() {
         val card = LinearLayout(this)
         card.orientation = LinearLayout.VERTICAL
         card.gravity = Gravity.CENTER_HORIZONTAL
-        card.setPadding(dp(10), dp(14), dp(10), dp(12))
+        card.setPadding(dp(10), dp(13), dp(10), dp(11))
         val cardBg = GradientDrawable()
-        cardBg.setColor(0xFFF4F6FA.toInt())
-        cardBg.cornerRadius = dp(18).toFloat()
+        cardBg.setColor(0xFFFFFFFF.toInt())
+        cardBg.cornerRadius = dp(20).toFloat()
+        cardBg.setStroke(dp(1), shade(item.accent, 0.90f))
         card.background = cardBg
-        card.foreground = RippleDrawable(ColorStateList.valueOf(0x2258606E), null, null)
+        card.foreground = RippleDrawable(ColorStateList.valueOf(shade(item.accent, 0.86f)), null, null)
         card.elevation = dp(2).toFloat()
 
-        val iconCircle = FrameLayout(this)
-        val circleBg = GradientDrawable()
-        circleBg.shape = GradientDrawable.OVAL
-        circleBg.setColor(shade(themeColorInt, 0.90f))
-        iconCircle.background = circleBg
+        val chip = FrameLayout(this)
+        val chipBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(item.accent, 0.30f), item.accent))
+        chipBg.cornerRadius = dp(16).toFloat()
+        chip.background = chipBg
+        chip.elevation = dp(3).toFloat()
         val icon = TextView(this)
         icon.text = item.icon
-        icon.textSize = 21f
+        icon.textSize = 20f
         icon.typeface = Typeface.DEFAULT_BOLD
         icon.gravity = Gravity.CENTER
-        iconCircle.addView(icon, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-        card.addView(iconCircle, LinearLayout.LayoutParams(dp(48), dp(48)))
+        chip.addView(icon, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        card.addView(chip, LinearLayout.LayoutParams(dp(46), dp(46)))
 
         val label = TextView(this)
         label.text = item.label
@@ -1099,7 +1102,7 @@ class MainActivity : AppCompatActivity() {
         label.gravity = Gravity.CENTER
         label.maxLines = 2
         val labelLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        labelLp.topMargin = dp(8)
+        labelLp.topMargin = dp(9)
         card.addView(label, labelLp)
 
         val sub = TextView(this)
@@ -1118,6 +1121,152 @@ class MainActivity : AppCompatActivity() {
         return card
     }
 
+
+    private fun toggleFullScreen() {
+        fullScreenOn = !fullScreenOn
+        if (fullScreenOn) {
+            supportActionBar?.hide()
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            Toast.makeText(this, "Full screen on ho gaya", Toast.LENGTH_SHORT).show()
+        } else {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+            Toast.makeText(this, "Full screen band ho gaya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun goToTop() {
+        webView.evaluateJavascript("window.scrollTo({top:0,behavior:'smooth'})", null)
+    }
+
+    private fun toggleRotation() {
+        if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+            Toast.makeText(this, "Screen ghumane ke liye unlock ho gayi", Toast.LENGTH_SHORT).show()
+        } else {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            Toast.makeText(this, "Portrait lock ho gaya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showThemeSheet() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCanceledOnTouchOutside(true)
+
+        val sheet = LinearLayout(this)
+        sheet.orientation = LinearLayout.VERTICAL
+        val sheetBg = GradientDrawable()
+        sheetBg.setColor(Color.WHITE)
+        sheetBg.cornerRadius = dp(28).toFloat()
+        sheet.background = sheetBg
+        sheet.elevation = dp(18).toFloat()
+        sheet.setPadding(dp(18), dp(10), dp(18), dp(18))
+
+        val handle = View(this)
+        val handleBg = GradientDrawable()
+        handleBg.setColor(0xFFDCE1E8.toInt())
+        handleBg.cornerRadius = dp(3).toFloat()
+        handle.background = handleBg
+        val handleLp = LinearLayout.LayoutParams(dp(44), dp(6))
+        handleLp.gravity = Gravity.CENTER_HORIZONTAL
+        sheet.addView(handle, handleLp)
+
+        val title = TextView(this)
+        title.text = "Theme chuno"
+        title.textSize = 18f
+        title.typeface = Typeface.DEFAULT_BOLD
+        title.setTextColor(0xFF111827.toInt())
+        val titleLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        titleLp.topMargin = dp(10)
+        sheet.addView(title, titleLp)
+        val subT = TextView(this)
+        subT.text = "rang turant badalta hai — phone me save rehta hai"
+        subT.textSize = 11.5f
+        subT.setTextColor(0xFF6B7280.toInt())
+        sheet.addView(subT, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+
+        val scroll = ScrollView(this)
+        scroll.isVerticalScrollBarEnabled = false
+        val grid = LinearLayout(this)
+        grid.orientation = LinearLayout.VERTICAL
+        scroll.addView(grid, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+
+        val currentHex = String.format("#%06X", 0xFFFFFF and accentColor)
+        var row: LinearLayout? = null
+        THEME_PRESETS.forEachIndexed { idx, entry ->
+            if (idx % 3 == 0) {
+                row?.let { g -> grid.addView(g, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)) }
+                val nr = LinearLayout(this)
+                nr.orientation = LinearLayout.HORIZONTAL
+                row = nr
+            }
+            val parts = entry.split("|")
+            val name = parts.getOrNull(0) ?: ""
+            val hex = parts.getOrNull(1) ?: ""
+            val cell = LinearLayout(this)
+            cell.orientation = LinearLayout.VERTICAL
+            cell.gravity = Gravity.CENTER_HORIZONTAL
+            cell.setPadding(dp(4), dp(10), dp(4), dp(6))
+
+            val circle = FrameLayout(this)
+            var base = accentColor
+            try { base = Color.parseColor(hex) } catch (e: Exception) { }
+            val cBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(base, 0.30f), base))
+            cBg.shape = GradientDrawable.OVAL
+            val active = hex.equals(currentHex, true)
+            cBg.setStroke(dp(3), if (active) Color.WHITE else 0x33000000)
+            circle.background = cBg
+            circle.elevation = if (active) dp(6).toFloat() else dp(3).toFloat()
+            if (active) {
+                val check = TextView(this)
+                check.text = "✓"
+                check.textSize = 18f
+                check.typeface = Typeface.DEFAULT_BOLD
+                check.setTextColor(Color.WHITE)
+                check.gravity = Gravity.CENTER
+                circle.addView(check, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+            }
+            cell.addView(circle, LinearLayout.LayoutParams(dp(52), dp(52)))
+
+            val tName = TextView(this)
+            tName.text = name
+            tName.textSize = 10.5f
+            tName.setTextColor(0xFF374151.toInt())
+            tName.gravity = Gravity.CENTER
+            tName.maxLines = 1
+            val tLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            tLp.topMargin = dp(5)
+            cell.addView(tName, tLp)
+
+            cell.setOnClickListener {
+                bounce(cell)
+                try {
+                    applyAccent(Color.parseColor(hex), idx)
+                } catch (e: Exception) {
+                }
+                dialog.dismiss()
+                Toast.makeText(this, name + " theme lag gayi", Toast.LENGTH_SHORT).show()
+            }
+            val r = row
+            if (r != null) {
+                r.addView(cell, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            }
+        }
+        row?.let { g -> grid.addView(g, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)) }
+        sheet.addView(scroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+
+        dialog.setContentView(sheet)
+        val window = dialog.window
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent)
+            window.setGravity(Gravity.BOTTOM)
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+        sheet.translationY = dp(320).toFloat()
+        sheet.alpha = 0f
+        dialog.show()
+        sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
+    }
 
     private fun printPage() {
         try {
@@ -1497,9 +1646,9 @@ class MainActivity : AppCompatActivity() {
         share.text = "Share"
         share.textSize = 12f
         share.typeface = Typeface.DEFAULT_BOLD
-        share.setTextColor(themeColorInt)
+        share.setTextColor(accentColor)
         val shareBg = GradientDrawable()
-        shareBg.setColor(shade(themeColorInt, 0.88f))
+        shareBg.setColor(shade(accentColor, 0.88f))
         shareBg.cornerRadius = dp(12).toFloat()
         share.background = shareBg
         share.setPadding(dp(12), dp(6), dp(12), dp(6))
@@ -1606,7 +1755,7 @@ class MainActivity : AppCompatActivity() {
         openFolder.typeface = Typeface.DEFAULT_BOLD
         openFolder.gravity = Gravity.CENTER
         openFolder.setTextColor(Color.WHITE)
-        val btnBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, 0.35f), themeColorInt))
+        val btnBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(accentColor, 0.35f), accentColor))
         btnBg.cornerRadius = dp(14).toFloat()
         openFolder.background = btnBg
         openFolder.setPadding(dp(14), dp(11), dp(14), dp(11))
@@ -1694,20 +1843,43 @@ class MainActivity : AppCompatActivity() {
 
     private fun selectNav(index: Int) {
         if (!SHOW_NAV) return
+        currentNavIndex = index
         navIcons.forEachIndexed { i, icon -> icon.setColorFilter(if (i == index) Color.WHITE else 0xFF8A8F98.toInt()) }
         navLabels.forEachIndexed { i, label ->
-            label.setTextColor(if (i == index) themeColorInt else 0xFF8A8F98.toInt())
+            label.setTextColor(if (i == index) accentColor else 0xFF8A8F98.toInt())
             label.typeface = if (i == index) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
         }
         pillBackgrounds.forEachIndexed { i, pill ->
             pill.orientation = GradientDrawable.Orientation.TL_BR
             if (i == index) {
-                pill.setColors(intArrayOf(shade(themeColorInt, 0.35f), themeColorInt))
+                pill.setColors(intArrayOf(shade(accentColor, 0.35f), accentColor))
             } else {
                 pill.setColor(0x00000000)
             }
         }
         pillHolders.forEachIndexed { i, holder -> holder.elevation = if (i == index) dp(6).toFloat() else 0f }
+    }
+
+    private fun updateNavTheme() {
+        selectNav(currentNavIndex)
+    }
+
+    private fun applyAccent(color: Int, presetIdx: Int) {
+        accentColor = color
+        prefs.edit().putInt("theme_idx", presetIdx).apply()
+        try {
+            window.statusBarColor = shade(color, -0.45f)
+        } catch (e: Exception) {
+        }
+        progressBar.progressTintList = ColorStateList.valueOf(color)
+        swipeRefresh.setColorSchemeColors(color)
+        moreBtn?.let { b ->
+            val bg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(color, 0.35f), color, shade(color, -0.25f)))
+            bg.shape = GradientDrawable.OVAL
+            bg.setStroke(dp(2), Color.WHITE)
+            b.background = bg
+        }
+        updateNavTheme()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
