@@ -25,6 +25,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.print.PrintManager
+import android.util.Base64
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ import android.view.animation.OvershootInterpolator
 import android.view.animation.TranslateAnimation
 import android.webkit.CookieManager
 import android.webkit.DownloadListener
+import android.webkit.JavascriptInterface
 import android.webkit.URLUtil
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -56,6 +58,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 class NavEntry(val label: String, val url: String, val icon: Int)
@@ -68,8 +71,8 @@ class MainActivity : AppCompatActivity() {
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio"
-        const val THEME_COLOR = "#EC4899"
-        const val SPLASH_COLOR = "#F8FAFC"
+        const val THEME_COLOR = "#3DDC84"
+        const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -96,6 +99,10 @@ class MainActivity : AppCompatActivity() {
         const val BACK_TWICE_ON = true
         const val CLEAR_CACHE_ON = true
         const val EXIT_ITEM_ON = true
+        const val LONGPRESS_DL_ON = true
+        const val DESKTOP_VIEW_ON = true
+        const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+        const val BLOB_HOOK_JS = "(function(){\nif (window.__appbanaoDl) return; window.__appbanaoDl = 1;\nvar CH = 262144;\nfunction sendBlob(blob, name, mime) {\n  try {\n    var total = blob.size;\n    var off = 0;\n    var fr = new FileReader();\n    window.AndroidDownloads && window.AndroidDownloads.blobSaveStart(name || 'download.bin', (mime || blob.type || 'application/octet-stream').split(',')[0]);\n    fr.onload = function() {\n      try {\n        var arr = new Uint8Array(fr.result);\n        var s = '';\n        for (var i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);\n        window.AndroidDownloads && window.AndroidDownloads.blobSaveChunk(btoa(s));\n      } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); return; }\n      off += CH;\n      if (off < total) fr.readAsArrayBuffer(blob.slice(off, off + CH));\n      else window.AndroidDownloads && window.AndroidDownloads.blobSaveDone();\n    };\n    fr.onerror = function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); };\n    fr.readAsArrayBuffer(blob.slice(0, CH));\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nfunction grab(url, name) {\n  try {\n    fetch(url).then(function(r) { return r.blob(); }).then(function(b) { sendBlob(b, name, b.type); }).catch(function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); });\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nwindow.__appbanaoGrab = grab;\ndocument.addEventListener('click', function(e) {\n  var t = e.target;\n  while (t && t.tagName !== 'A') t = t.parentElement;\n  if (!t) return;\n  var href = t.getAttribute('href') || '';\n  if (href.indexOf('blob:') === 0 || href.indexOf('data:') === 0) {\n    e.preventDefault(); e.stopPropagation();\n    var nm = t.getAttribute('download') || (document.title ? document.title.replace(/[\\\\/:*?\"<>|]/g, '').slice(0, 40) : 'download.bin');\n    grab(href, nm);\n  }\n}, true);\n})();"
     }
 
     private lateinit var webView: WebView
@@ -124,12 +131,16 @@ class MainActivity : AppCompatActivity() {
     private var textZoomLevel = 100
     private var lastBackAt = 0L
     private var whatsappFab: FrameLayout? = null
+    private val blobBuffer = ByteArrayOutputStream()
+    private var blobName = "download.bin"
+    private var blobMime = "application/octet-stream"
+    private var desktopView = false
+    private var baseUa = ""
 
     private val navEntries: Array<NavEntry> = arrayOf(
         NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
-        NavEntry("Login ", "https://rbstudiosmusic.kliv.site/login", R.drawable.ic_nav_grid),
-        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone),
-        NavEntry("Support ", "https://rbstudiosmusic.raiseaticket.com", R.drawable.ic_nav_chat)
+        NavEntry("Products", "https://rbstudiosmusic.kliv.site/products", R.drawable.ic_nav_grid),
+        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -230,7 +241,26 @@ class MainActivity : AppCompatActivity() {
         selectNav(0)
         webView.loadUrl(HOME_URL)
         registerDownloadReceiver()
-
+        webView.addJavascriptInterface(BlobBridge(), "AndroidDownloads")
+        if (LONGPRESS_DL_ON) {
+            webView.setOnLongClickListener {
+                val hit = webView.hitTestResult
+                val extra = hit.extra ?: return@setOnLongClickListener false
+                val isImage = hit.type == WebView.HitTestResult.IMAGE_TYPE || hit.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+                if (!isImage) return@setOnLongClickListener false
+                if (extra.startsWith("blob:") || extra.startsWith("data:")) {
+                    captureBlobDownload(extra)
+                } else if (extra.startsWith("http") && DOWNLOADS_ON) {
+                    startDownload(extra, webView.settings.userAgentString, "", "image/*")
+                }
+                true
+            }
+        }
+        if (DESKTOP_VIEW_ON) {
+            baseUa = webView.settings.userAgentString
+            desktopView = prefs.getBoolean("desktop_view", false)
+            if (desktopView) webView.settings.userAgentString = DESKTOP_UA
+        }
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val welcome = welcomeOverlay
@@ -281,66 +311,118 @@ class MainActivity : AppCompatActivity() {
         val overlay = FrameLayout(this)
         val bg = GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
-            intArrayOf(shade(splashColorInt, -0.3f), splashColorInt, shade(themeColorInt, -0.5f))
+            intArrayOf(shade(splashColorInt, -0.45f), splashColorInt, shade(themeColorInt, -0.55f))
         )
+        bg.setGradientCenter(0.5f, 0.35f)
         overlay.background = bg
+
+        // — floating soft circles — background me halke se chalte rehte hain
+        fun addFloat(sizeDp: Int, color: Int, alphaInt: Int, x: Int, y: Int, driftMs: Long) {
+            val dot = View(this)
+            val dotBg = GradientDrawable()
+            dotBg.shape = GradientDrawable.OVAL
+            dotBg.setColor(color)
+            dot.background = dotBg
+            dot.alpha = alphaInt.toFloat()
+            overlay.addView(dot, FrameLayout.LayoutParams(dp(sizeDp), dp(sizeDp)))
+            dot.translationX = x.toFloat()
+            dot.translationY = y.toFloat()
+            val rise = ObjectAnimator.ofFloat(dot, View.TRANSLATION_Y, y.toFloat(), y - dp(46).toFloat(), y.toFloat())
+            rise.duration = driftMs
+            rise.repeatCount = ObjectAnimator.INFINITE
+            rise.startDelay = (driftMs / 3)
+            rise.start()
+        }
+        addFloat(130, shade(themeColorInt, 0.15f), 36, -dp(30), dp(80), 3400)
+        addFloat(90, Color.WHITE, 26, dp(230), dp(120), 4200)
+        addFloat(160, shade(themeColorInt, 0.4f), 30, dp(40), dp(430), 5000)
+        addFloat(70, Color.WHITE, 22, -dp(10), dp(380), 3800)
 
         val stack = LinearLayout(this)
         stack.orientation = LinearLayout.VERTICAL
         stack.gravity = Gravity.CENTER
 
         val logoCard = FrameLayout(this)
-        val cardBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(Color.WHITE, shade(themeColorInt, 0.7f)))
-        cardBg.cornerRadius = dp(32).toFloat()
+        val cardBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(Color.WHITE, shade(themeColorInt, 0.72f)))
+        cardBg.cornerRadius = dp(34).toFloat()
+        cardBg.setStroke(dp(2), 0x66FFFFFF)
         logoCard.background = cardBg
-        logoCard.elevation = dp(22).toFloat()
-        logoCard.setPadding(dp(12), dp(12), dp(12), dp(12))
+        logoCard.clipToOutline = true
+        logoCard.elevation = dp(24).toFloat()
+        logoCard.setPadding(dp(14), dp(14), dp(14), dp(14))
         val logo = ImageView(this)
         logo.setImageResource(R.mipmap.ic_launcher)
         logoCard.addView(logo, FrameLayout.LayoutParams(dp(104), dp(104), Gravity.CENTER))
 
+        // — shine sweep — logo ke upar se roshani ka pass jata hai
+        val shine = View(this)
+        val shineBg = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(0x00FFFFFF, 0x73FFFFFF, 0x00FFFFFF))
+        shine.background = shineBg
+        shine.rotation = 22f
+        logoCard.addView(shine, FrameLayout.LayoutParams(dp(30), dp(150), Gravity.CENTER))
+        shine.translationX = -dp(80).toFloat()
+        val sweep = ObjectAnimator.ofFloat(shine, View.TRANSLATION_X, -dp(80).toFloat(), dp(80).toFloat())
+        sweep.duration = 850
+        sweep.startDelay = 620
+        sweep.interpolator = OvershootInterpolator(0.9f)
+        sweep.start()
+
         val name = TextView(this)
         name.text = APP_NAME
-        name.textSize = 21f
+        name.textSize = 22f
         name.setTextColor(Color.WHITE)
         name.typeface = Typeface.DEFAULT_BOLD
         name.gravity = Gravity.CENTER
-        name.letterSpacing = 0.06f
+        name.letterSpacing = 0.08f
+        name.setShadowLayer(dp(6).toFloat(), 0f, dp(2).toFloat(), 0x66000000)
 
         val tagline = TextView(this)
         tagline.text = "Loading ho raha hai..."
         tagline.textSize = 13f
         tagline.setTextColor(0xB3FFFFFF.toInt())
         tagline.gravity = Gravity.CENTER
+        tagline.letterSpacing = 0.04f
 
         val spinner = ProgressBar(this)
         spinner.indeterminateTintList = ColorStateList.valueOf(themeColorInt)
 
-        stack.addView(logoCard, LinearLayout.LayoutParams(dp(128), dp(128)))
+        val ring = FrameLayout(this)
+        val ringBg = GradientDrawable()
+        ringBg.shape = GradientDrawable.OVAL
+        ringBg.setColor(0x2EFFFFFF)
+        ring.background = ringBg
+        ring.addView(spinner, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER))
+
+        stack.addView(logoCard, LinearLayout.LayoutParams(dp(132), dp(132)))
         val nameLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        nameLp.topMargin = dp(22)
+        nameLp.topMargin = dp(24)
         stack.addView(name, nameLp)
         val tagLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        tagLp.topMargin = dp(6)
+        tagLp.topMargin = dp(7)
         stack.addView(tagline, tagLp)
-        val spLp = LinearLayout.LayoutParams(dp(38), dp(38))
-        spLp.topMargin = dp(18)
-        stack.addView(spinner, spLp)
+        val spLp = LinearLayout.LayoutParams(dp(46), dp(46))
+        spLp.topMargin = dp(20)
+        stack.addView(ring, spLp)
 
         overlay.addView(stack, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
-        logoCard.scaleX = 0.35f
-        logoCard.scaleY = 0.35f
+        logoCard.scaleX = 0.3f
+        logoCard.scaleY = 0.3f
         logoCard.alpha = 0f
         name.alpha = 0f
         name.translationY = dp(16).toFloat()
         tagline.alpha = 0f
 
-        logoCard.animate().scaleX(1f).scaleY(1f).alpha(1f).setDuration(480).setInterpolator(OvershootInterpolator(1.5f)).start()
+        logoCard.animate().scaleX(1f).scaleY(1f).alpha(1f).setDuration(500).setInterpolator(OvershootInterpolator(1.6f)).start()
+        logoCard.postDelayed({
+            logoCard.animate().scaleX(1.05f).scaleY(1.05f).setDuration(320).withEndAction {
+                logoCard.animate().scaleX(1f).scaleY(1f).setDuration(260).start()
+            }.start()
+        }, 560)
         logoCard.postDelayed({
             name.animate().alpha(1f).translationY(0f).setDuration(380).start()
             tagline.animate().alpha(1f).setDuration(380).start()
-        }, 320)
+        }, 330)
 
         overlay.postDelayed({
             overlay.animate().translationY(-overlay.height.toFloat()).alpha(0f).setDuration(450)
@@ -366,7 +448,7 @@ class MainActivity : AppCompatActivity() {
             b.translationY = dp(34).toFloat()
             b.animate().alpha(1f).translationY(0f).setDuration(480).setStartDelay(240).start()
         }
-    }
+    },
 
     private fun dismissWelcome() {
         val ov = welcomeOverlay ?: return
@@ -766,6 +848,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun buildMoreButton(): TextView {
 
+
         val btn = TextView(this)
         btn.text = "⋮"
         btn.textSize = 20f
@@ -778,7 +861,6 @@ class MainActivity : AppCompatActivity() {
         btn.background = bg
         btn.elevation = dp(12).toFloat()
         btn.setOnClickListener { showToolsMenu() }
-
         return btn
     }
 
@@ -884,6 +966,7 @@ class MainActivity : AppCompatActivity() {
         items.add(ToolItem("📂", "Downloads folder", "phone ka folder") { openDownloads() })
         items.add(ToolItem("🔄", "Refresh page", "dobara load") { webView.reload() })
         items.add(ToolItem("🏠", "Home page", "shuruati page") { webView.loadUrl(HOME_URL) })
+        items.add(ToolItem("🖥️", if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode") { toggleDesktopView() })
         items.add(ToolItem(if (nightOn) "☀️" else "🌙", if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram") { toggleNightMode() })
         items.add(ToolItem("A+", "Text bada karo", "padhna aasan") { changeTextSize(15) })
         items.add(ToolItem("A−", "Text chhota karo", "compact view") { changeTextSize(-15) })
@@ -963,23 +1046,194 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startDownload(url: String, userAgent: String, contentDisposition: String, mimeType: String) {
+        if (url.startsWith("blob:") || url.startsWith("data:")) {
+            captureBlobDownload(url)
+            return
+        }
+        if (!url.startsWith("http")) {
+            openExternal(Uri.parse(url))
+            return
+        }
         try {
             val fileName = URLUtil.guessFileName(url, contentDisposition, mimeType)
             val request = DownloadManager.Request(Uri.parse(url))
             request.setMimeType(mimeType)
             request.addRequestHeader("User-Agent", userAgent)
+            request.addRequestHeader("Referer", HOME_URL)
+            val cookies = CookieManager.getInstance().getCookie(url)
+            if (!cookies.isNullOrBlank()) request.addRequestHeader("Cookie", cookies)
             request.setTitle(fileName)
             request.setDescription(APP_NAME)
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            request.setAllowedOverMetered(true)
+            request.setAllowedOverRoaming(true)
+            try {
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            } catch (e: Exception) {
+                // koi device public folder allow nahi karta — default destination bhi Downloads hi hai
+            }
             lastDownloadId = (getSystemService(DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
             downloadIds.add(lastDownloadId)
             downloadMimes[lastDownloadId] = mimeType
-            Toast.makeText(this, "Download shuru — " + fileName, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Download shuru — " + fileName + " (Downloads folder me save hoga)", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             openExternal(Uri.parse(url))
         }
     }
+
+    private fun jsonQuote(value: String): String {
+        return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
+    }
+
+    private fun captureBlobDownload(url: String) {
+        Toast.makeText(this, "Download shuru ho raha hai...", Toast.LENGTH_SHORT).show()
+        val js = "(function(){var u=" + jsonQuote(url) + ",f=window.__appbanaoGrab;if(f){f(u,'download.bin');}else{setTimeout(function(){window.__appbanaoGrab&&window.__appbanaoGrab(u,'download.bin');},700);}})()"
+        webView.evaluateJavascript(js, null)
+    }
+
+    inner class BlobBridge {
+        @JavascriptInterface
+        fun blobSaveStart(name: String, mime: String) {
+            try {
+                blobBuffer.reset()
+                blobName = name.ifBlank { "download.bin" }
+                blobMime = mime.ifBlank { "application/octet-stream" }
+            } catch (e: Exception) {
+            }
+        }
+
+        @JavascriptInterface
+        fun blobSaveChunk(b64: String) {
+            try {
+                val bytes = Base64.decode(b64, Base64.DEFAULT)
+                synchronized(blobBuffer) { blobBuffer.write(bytes) }
+            } catch (e: Exception) {
+            }
+        }
+
+        @JavascriptInterface
+        fun blobSaveDone() {
+            runOnUiThread { finishBlobSave() }
+        }
+
+        @JavascriptInterface
+        fun blobSaveFail() {
+            runOnUiThread { Toast.makeText(this@MainActivity, "Ye download app me nahi ho paya — link browser me try karo", Toast.LENGTH_LONG).show() }
+        }
+    }
+
+    private fun finishBlobSave() {
+        val bytes = synchronized(blobBuffer) { blobBuffer.toByteArray() }
+        if (bytes.isEmpty()) {
+            Toast.makeText(this, "File khali thi — download cancel", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val safeName = blobName.replace(Regex("[^A-Za-z0-9 ._()-]"), "_").ifBlank { "download.bin" }
+        try {
+            if (Build.VERSION.SDK_INT >= 29) {
+                val values = android.content.ContentValues()
+                values.put(android.provider.MediaStore.Downloads.DISPLAY_NAME, safeName)
+                values.put(android.provider.MediaStore.Downloads.MIME_TYPE, blobMime)
+                values.put(android.provider.MediaStore.Downloads.IS_PENDING, 1)
+                val dest = contentResolver.insert(android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                    ?: throw IllegalStateException("save fail")
+                contentResolver.openOutputStream(dest)?.use { it.write(bytes) }
+                val done = android.content.ContentValues()
+                done.put(android.provider.MediaStore.Downloads.IS_PENDING, 0)
+                contentResolver.update(dest, done, null, null)
+                rememberSavedBlob(safeName, dest.toString())
+                Toast.makeText(this, "Download complete — " + safeName + " Downloads folder me save ho gaya", Toast.LENGTH_LONG).show()
+            } else {
+                val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "")
+                if (!dir.exists()) dir.mkdirs()
+                val outFile = File(dir, safeName)
+                outFile.writeBytes(bytes)
+                MediaScannerConnection.scanFile(this, arrayOf(outFile.absolutePath), arrayOf(blobMime), null)
+                rememberSavedBlob(safeName, "file://" + outFile.absolutePath)
+                Toast.makeText(this, "Download complete — " + safeName, Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            try {
+                val dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: filesDir
+                val outFile = File(dir, safeName)
+                outFile.writeBytes(bytes)
+                rememberSavedBlob(safeName, "file://" + outFile.absolutePath)
+                Toast.makeText(this, "Download complete — " + safeName + " (app ke folder me save)", Toast.LENGTH_LONG).show()
+            } catch (e2: Exception) {
+                Toast.makeText(this, "File save nahi ho payi", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun rememberSavedBlob(name: String, uri: String) {
+        val cur = prefs.getString("saved_blobs", "") ?: ""
+        val next = (cur.split("|@|").filter { it.isNotBlank() } + (name + "@@" + uri)).takeLast(30)
+        prefs.edit().putString("saved_blobs", next.joinToString("|@|")).apply()
+    }
+
+    private fun savedBlobEntries(): List<Pair<String, String>> {
+        val raw = prefs.getString("saved_blobs", "") ?: ""
+        return raw.split("|@|").filter { it.contains("@@") }.map { entry ->
+            val parts = entry.split("@@")
+            Pair(parts[0], parts[1])
+        }
+    }
+
+    private fun openSavedBlob(uriStr: String) {
+        try {
+            val uri = if (uriStr.startsWith("file://")) Uri.fromFile(File(uriStr.removePrefix("file://"))) else Uri.parse(uriStr)
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.setDataAndType(uri, blobMime)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, "Is file ko kholne wala app nahi mila", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "File nahi khul payi", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun buildSavedRow(dialog: Dialog, name: String, uriStr: String): View {
+        val row = LinearLayout(this)
+        row.orientation = LinearLayout.HORIZONTAL
+        row.gravity = Gravity.CENTER_VERTICAL
+        row.setPadding(dp(12), dp(10), dp(10), dp(10))
+        val card = GradientDrawable()
+        card.setColor(0xFFEDF7FF.toInt())
+        card.cornerRadius = dp(14).toFloat()
+        row.background = card
+        row.foreground = RippleDrawable(ColorStateList.valueOf(0x1F888888), null, null)
+        val rowLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        rowLp.topMargin = dp(8)
+        row.layoutParams = rowLp
+
+        val info = LinearLayout(this)
+        info.orientation = LinearLayout.VERTICAL
+        val label = TextView(this)
+        label.text = name
+        label.textSize = 14f
+        label.typeface = Typeface.DEFAULT_BOLD
+        label.setTextColor(0xFF1B1F24.toInt())
+        label.maxLines = 2
+        info.addView(label)
+        val meta = TextView(this)
+        meta.text = "App me download — tap karke kholo"
+        meta.textSize = 11f
+        meta.setTextColor(0xFF6B7280.toInt())
+        info.addView(meta)
+        row.addView(info, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        row.setOnClickListener { bounce(row); openSavedBlob(uriStr) }
+        return row
+    }
+
+    private fun toggleDesktopView() {
+        desktopView = !desktopView
+        prefs.edit().putBoolean("desktop_view", desktopView).apply()
+        webView.settings.userAgentString = if (desktopView) DESKTOP_UA else baseUa
+        Toast.makeText(this, if (desktopView) "Desktop view ON — poori site load ho rahi hai" else "Mobile view ON", Toast.LENGTH_SHORT).show()
+        webView.reload()
+    }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -1239,6 +1493,11 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             // list na mile to neeche empty message dikhega
         }
+        val saved = savedBlobEntries()
+        saved.forEach { entry ->
+            list.addView(buildSavedRow(dialog, entry.first, entry.second))
+            rows++
+        }
         if (rows == 0) {
             val empty = TextView(this)
             empty.text = "Abhi koi download nahi hui — website se koi file download karo, wo yahan dikhegi"
@@ -1400,6 +1659,10 @@ class MainActivity : AppCompatActivity() {
                 super.onPageFinished(view, url)
                 swipeRefresh.isRefreshing = false
                 if (HIDE_ON) injectHideEngine(view)
+                if (DOWNLOADS_ON || LONGPRESS_DL_ON) {
+                    view.evaluateJavascript(BLOB_HOOK_JS, null)
+                    view.postDelayed({ view.evaluateJavascript(BLOB_HOOK_JS, null) }, 600)
+                }
             }
 
             override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
@@ -1435,6 +1698,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         webView.setDownloadListener(DownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
+            if (url.startsWith("blob:") || url.startsWith("data:")) {
+                captureBlobDownload(url)
+                return@DownloadListener
+            }
             if (!DOWNLOADS_ON) {
                 openExternal(Uri.parse(url))
                 return@DownloadListener
