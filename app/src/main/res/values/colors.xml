@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="theme_color">#40E0D0</color>
-    <color name="splash_bg">#03211E</color>
+    <color name="theme_color">#3DDC84</color>
+    <color name="splash_bg">#0C0F14</color>
     <color name="nav_inactive">#FF757575</color>
 </resources>
