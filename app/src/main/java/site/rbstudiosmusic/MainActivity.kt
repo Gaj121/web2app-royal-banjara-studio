@@ -1626,63 +1626,6 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
-    // — Screen band na ho: padhai/video dekhte waqt screen jalta rahe —
-    private fun toggleKeepScreenOn() {
-        val on = (window.attributes.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0
-        if (on) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            Toast.makeText(this, "Screen ab wapas band ho sakta hai", Toast.LENGTH_SHORT).show()
-        } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            Toast.makeText(this, "Screen jalta rahega — band nahi hoga", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // — Roshni (brightness): slider ghumao, aankhon ko aaram —
-    private fun showBrightnessDialog() {
-        val cur = window.attributes.screenBrightness
-        val start = ((if (cur < 0f) 0.6f else cur) * 100).toInt().coerceIn(5, 100)
-        val seek = android.widget.SeekBar(this)
-        seek.max = 100
-        seek.progress = start
-        seek.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(s: android.widget.SeekBar?, p: Int, fromUser: Boolean) {
-                val lp = window.attributes
-                lp.screenBrightness = (p / 100f).coerceAtLeast(0.06f)
-                window.attributes = lp
-            }
-            override fun onStartTrackingTouch(s: android.widget.SeekBar?) {}
-            override fun onStopTrackingTouch(s: android.widget.SeekBar?) {}
-        })
-        val wrap = LinearLayout(this)
-        wrap.orientation = LinearLayout.VERTICAL
-        wrap.setPadding(dp(20), dp(6), dp(20), 0)
-        wrap.addView(seek, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-        AlertDialog.Builder(this)
-            .setTitle("Roshni set karo")
-            .setMessage("Slider ghumao — screen ki roshni turant badlegi")
-            .setView(wrap)
-            .setPositiveButton("Ho gaya", null)
-            .show()
-    }
-
-    // — Auto scroll: page khud dheere-dheere chalega, aaram se padho —
-    private fun autoScrollDialog() {
-        val speeds = arrayOf("Dheema — aaram se", "Normal", "Tez — fast")
-        AlertDialog.Builder(this)
-            .setTitle("Auto scroll")
-            .setMessage("Speed chuno — page khud scroll karega")
-            .setItems(speeds) { _, which ->
-                val px = intArrayOf(2, 3, 6)[which]
-                webView.evaluateJavascript("(function(){if(window.__rbScroll){clearInterval(window.__rbScroll)}window.__rbScroll=setInterval(function(){window.scrollBy(0," + px + ");if((window.innerHeight+window.scrollY)>=document.body.scrollHeight){clearInterval(window.__rbScroll);window.__rbScroll=null}},50)})()", null)
-                Toast.makeText(this, "Auto scroll chalu — rokne ke liye dobara yahi tool dabao", Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton("Scroll roko") { _, _ ->
-                webView.evaluateJavascript("(function(){if(window.__rbScroll){clearInterval(window.__rbScroll);window.__rbScroll=null}})()", null)
-                Toast.makeText(this, "Auto scroll band ho gaya", Toast.LENGTH_SHORT).show()
-            }
-            .show()
-    }
     // — URL se sirf path — Bookmarks/History me site ka domain (jaise rbstudiosmusic.kliv.site) kabhi nahi dikhta —
     private fun friendlyPath(raw: String): String {
         var p = raw
