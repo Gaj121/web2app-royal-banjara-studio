@@ -448,7 +448,7 @@ class MainActivity : AppCompatActivity() {
             b.translationY = dp(34).toFloat()
             b.animate().alpha(1f).translationY(0f).setDuration(480).setStartDelay(240).start()
         }
-    },
+    }
 
     private fun dismissWelcome() {
         val ov = welcomeOverlay ?: return
