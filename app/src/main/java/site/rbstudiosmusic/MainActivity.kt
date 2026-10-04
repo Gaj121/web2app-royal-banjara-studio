@@ -147,8 +147,8 @@ class MainActivity : AppCompatActivity() {
         const val MAP_QUERY = "Royal Banjara Studio Music Distribution"
         const val TRANSLATE_TOOL_ON = true
         const val HISTORY_TOOL_ON = true
-        const val CALL_TOOL_ON = true
-        const val CALL_NUMBER = "+919370612297"
+        const val CALL_TOOL_ON = false
+        const val CALL_NUMBER = ""
         const val SCREENSHOT_ON = true
         const val SHARE_APP_ON = true
         const val HISTORY_NAV_ON = true
@@ -1640,190 +1640,6 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
-    // — Text copy: poore page ka likha hua text clipboard me —
-    private fun jsonUnquote(v: String?): String {
-        if (v == null) return ""
-        var s = v.trim()
-        if (s.length >= 2 && s.startsWith("\"") && s.endsWith("\"")) s = s.substring(1, s.length - 1)
-        val sb = StringBuilder()
-        var i = 0
-        while (i < s.length) {
-            if (s[i] == '\\' && i + 1 < s.length) {
-                when (s[i + 1]) {
-                    'n' -> { sb.append('\n'); i += 2 }
-                    't' -> { sb.append('\t'); i += 2 }
-                    'r' -> { sb.append('\r'); i += 2 }
-                    '"' -> { sb.append('"'); i += 2 }
-                    '\\' -> { sb.append('\\'); i += 2 }
-                    '/' -> { sb.append('/'); i += 2 }
-                    else -> { sb.append(s[i]); i += 1 }
-                }
-            } else { sb.append(s[i]); i += 1 }
-        }
-        return sb.toString()
-    }
-
-    private fun copyPageText() {
-        webView.evaluateJavascript("(function(){return document.body ? document.body.innerText.substring(0, 15000) : ''})()", object : android.webkit.ValueCallback<String> {
-            override fun onReceiveValue(value: String?) {
-                val txt = jsonUnquote(value)
-                runOnUiThread {
-                    if (txt.isBlank()) {
-                        Toast.makeText(this@MainActivity, "Copy karne layak text nahi mila", Toast.LENGTH_SHORT).show()
-                    } else {
-                        try {
-                            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                            cm.setPrimaryClip(android.content.ClipData.newPlainText("page text", txt))
-                            Toast.makeText(this@MainActivity, "Page ka text copy ho gaya", Toast.LENGTH_SHORT).show()
-                        } catch (e: Exception) {
-                            Toast.makeText(this@MainActivity, "Copy nahi ho paya", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            }
-        })
-    }
-
-    // — Font style: page ka lekha serif ya bade akshar —
-    private fun fontStyleDialog() {
-        val styles = arrayOf("Normal style", "Padhai style (serif)", "Bade akshar style")
-        AlertDialog.Builder(this)
-            .setTitle("Font style badlo")
-            .setMessage("Page ke lekhe ka style chuno")
-            .setItems(styles) { _, which ->
-                val js = when (which) {
-                    1 -> "(function(){document.body.style.fontFamily='serif';document.body.style.lineHeight='1.8'})()"
-                    2 -> "(function(){document.body.style.fontFamily='sans-serif';document.body.style.lineHeight='1.6';document.body.style.fontSize='1.12em'})()"
-                    else -> "(function(){document.body.style.fontFamily='';document.body.style.lineHeight='';document.body.style.fontSize=''})()"
-                }
-                webView.evaluateJavascript(js, null)
-                Toast.makeText(this, "Font style lag gaya", Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton("Band", null)
-            .show()
-    }
-
-    // — Auto refresh: page har 30 second me khud update —
-    private var autoRefreshOn = false
-    private var autoRefreshTimer: android.os.Handler? = null
-
-    private fun toggleAutoRefresh() {
-        if (autoRefreshOn) {
-            autoRefreshTimer?.removeCallbacksAndMessages(null)
-            autoRefreshTimer = null
-            autoRefreshOn = false
-            Toast.makeText(this, "Auto refresh band ho gaya", Toast.LENGTH_SHORT).show()
-        } else {
-            val h = android.os.Handler(android.os.Looper.getMainLooper())
-            val task = object : Runnable {
-                override fun run() {
-                    webView.reload()
-                    h.postDelayed(this, 30000)
-                }
-            }
-            h.postDelayed(task, 30000)
-            autoRefreshTimer = h
-            autoRefreshOn = true
-            Toast.makeText(this, "Auto refresh chalu — har 30 second page khud update hoga", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    // — Photo save: page par di hui photos me se chun kar download —
-    private fun showImagesSheet() {
-        webView.evaluateJavascript("(function(){var a=[];var els=document.querySelectorAll('img');for(var i=0;i<els.length&&a.length<14;i++){var u=els[i].currentSrc||els[i].src||'';if(u&&u.indexOf('http')===0){a.push(u)}}return JSON.stringify(a)})()", object : android.webkit.ValueCallback<String> {
-            override fun onReceiveValue(value: String?) {
-                val raw = jsonUnquote(value)
-                runOnUiThread {
-                    val urls = try {
-                        val l = org.json.JSONArray(raw)
-                        (0 until l.length()).map { l.getString(it) }
-                    } catch (e: Exception) { emptyList() }
-                    if (urls.isEmpty()) {
-                        Toast.makeText(this@MainActivity, "Is page par koi photo nahi mili", Toast.LENGTH_SHORT).show()
-                    } else {
-                        val names = urls.map { u -> u.substringAfterLast('/').substringBefore('?').ifBlank { "photo" } }.toTypedArray()
-                        AlertDialog.Builder(this@MainActivity)
-                            .setTitle("Photo save karo")
-                            .setMessage("Jo photo chahiye use dabao — download ho jayegi")
-                            .setItems(names) { _, which -> startDownload(urls[which], webView.settings.userAgentString, "attachment", "image/*") }
-                            .setNegativeButton("Band", null)
-                            .show()
-                    }
-                }
-            }
-        })
-    }
-
-    // — QR banao: is page ka QR — dusre phone se scan karke kholo —
-    private fun showQrDialog() {
-        val url = webView.url ?: HOME_URL
-        val enc = java.net.URLEncoder.encode(url, "UTF-8")
-        val iv = ImageView(this)
-        iv.adjustViewBounds = true
-        iv.maxHeight = dp(360)
-        val hint = TextView(this)
-        hint.text = "Is page ka QR — scan karke kholo · " + friendlyPath(url)
-        hint.textSize = 13f
-        hint.setPadding(dp(20), dp(16), dp(20), 0)
-        hint.setTextColor(0xFF64748B.toInt())
-        Thread {
-            try {
-                val conn = java.net.URL("https://api.qrserver.com/v1/create-qr-code/?size=420x420&data=" + enc).openConnection() as java.net.HttpURLConnection
-                conn.connectTimeout = 12000
-                conn.readTimeout = 12000
-                val bmp = android.graphics.BitmapFactory.decodeStream(conn.inputStream)
-                runOnUiThread { if (bmp != null) iv.setImageBitmap(bmp) else hint.text = "QR load nahi hua — internet check karo" }
-            } catch (e: Exception) {
-                runOnUiThread { hint.text = "QR load nahi hua — internet check karo" }
-            }
-        }.start()
-        val wrap = LinearLayout(this)
-        wrap.orientation = LinearLayout.VERTICAL
-        wrap.addView(hint)
-        wrap.addView(iv, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-        AlertDialog.Builder(this)
-            .setTitle("QR banao")
-            .setView(wrap)
-            .setPositiveButton("Ho gaya", null)
-            .show()
-    }
-    // — Internet bachao: cache se kholo + trackers band — data ka kharch bahut kam —
-    private fun toggleDataSaver() {
-        dataSaverCacheOn = !dataSaverCacheOn
-        webView.settings.cacheMode = if (dataSaverCacheOn) WebSettings.LOAD_CACHE_ELSE_NETWORK else WebSettings.LOAD_DEFAULT
-        if (dataSaverCacheOn) webView.evaluateJavascript(DATA_SAVER_JS, null)
-        Toast.makeText(this, if (dataSaverCacheOn) "Internet bachao on — cache se khulega, data kam lagega" else "Internet bachao off — normal mode", Toast.LENGTH_SHORT).show()
-    }
-
-    // — Video autoplay band: video khud nahi chalega (tool se on/off) —
-    private fun toggleVideoBlock() {
-        videoBlockOn = !videoBlockOn
-        if (videoBlockOn) webView.evaluateJavascript(VIDEO_BLOCK_JS, null)
-        else webView.evaluateJavascript("(function(){try{if(window.__rbVidObs){window.__rbVidObs.disconnect();window.__rbVidObs=null}}catch(e){}})()", null)
-        Toast.makeText(this, if (videoBlockOn) "Video autoplay band — video khud nahi chalega" else "Video autoplay chalu", Toast.LENGTH_SHORT).show()
-    }
-
-    // — Ads band karo: app me hi on/off —
-    private fun toggleAdBlock() {
-        adBlockOn = !adBlockOn
-        if (adBlockOn) injectAdBlock(webView)
-        else webView.evaluateJavascript("(function(){try{document.querySelectorAll('[data-w2a-ad]').forEach(function(e){e.style.display=''})}catch(e){}})()", null)
-        Toast.makeText(this, if (adBlockOn) "Ads band on — banner ads chhupenge" else "Ads dikhne lagenge", Toast.LENGTH_SHORT).show()
-    }
-
-    // — Page share: khula page WhatsApp/link par bhejo —
-    private fun shareCurrentPage() {
-        val url = webView.url ?: HOME_URL
-        val send = Intent(Intent.ACTION_SEND)
-        send.type = "text/plain"
-        send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " — " + SITE_LABEL + "\n" + url)
-        try {
-            startActivity(Intent.createChooser(send, "Page share karo"))
-        } catch (e: Exception) {
-            Toast.makeText(this, "Share karne wali app nahi mili", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     // Saare Quick Tools — sections me grouped: Padhai sabse upar, phir Screen, Page, Files, App, Madad
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
@@ -1854,6 +1670,7 @@ class MainActivity : AppCompatActivity() {
         if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
         if (THEME_PICKER_ON) items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen ke Tools") { showThemeSheet() })
         if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
+        if (ROTATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen ke Tools") { toggleRotation() })
         items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
         items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
         items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
@@ -1871,11 +1688,12 @@ class MainActivity : AppCompatActivity() {
         if (DATA_SAVER_ON) items.add(ToolItem(R.drawable.ic_tool_internetbachao, if (dataSaverCacheOn) "Internet bachao band" else "Internet bachao", "cache se kholo, data kam", 0xFF15803D.toInt(), "App") { toggleDataSaver() })
         if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
         if (COOKIES_CLEAR_ON) items.add(ToolItem(R.drawable.ic_tool_cookie, "Cookies clear", "login data saaf", 0xFFB45309.toInt(), "App") { clearCookiesNow() })
+        if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
+        if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
+        items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         return items
     }
-
-
 
     // — Tool row: poora chauda row — icon chip + naam + sub + arrow. Poora naam ek line me — text kabhi nahi katta —
     private fun buildToolRow(dialog: Dialog, item: ToolItem): View {
@@ -2070,6 +1888,190 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Cookies clear nahi ho paye", Toast.LENGTH_SHORT).show()
         }
     }
+    // — Text copy: poore page ka likha hua text clipboard me —
+    private fun jsonUnquote(v: String?): String {
+        if (v == null) return ""
+        var s = v.trim()
+        if (s.length >= 2 && s.startsWith("\"") && s.endsWith("\"")) s = s.substring(1, s.length - 1)
+        val sb = StringBuilder()
+        var i = 0
+        while (i < s.length) {
+            if (s[i] == '\\' && i + 1 < s.length) {
+                when (s[i + 1]) {
+                    'n' -> { sb.append('\n'); i += 2 }
+                    't' -> { sb.append('\t'); i += 2 }
+                    'r' -> { sb.append('\r'); i += 2 }
+                    '"' -> { sb.append('"'); i += 2 }
+                    '\\' -> { sb.append('\\'); i += 2 }
+                    '/' -> { sb.append('/'); i += 2 }
+                    else -> { sb.append(s[i]); i += 1 }
+                }
+            } else { sb.append(s[i]); i += 1 }
+        }
+        return sb.toString()
+    }
+
+    private fun copyPageText() {
+        webView.evaluateJavascript("(function(){return document.body ? document.body.innerText.substring(0, 15000) : ''})()", object : android.webkit.ValueCallback<String> {
+            override fun onReceiveValue(value: String?) {
+                val txt = jsonUnquote(value)
+                runOnUiThread {
+                    if (txt.isBlank()) {
+                        Toast.makeText(this@MainActivity, "Copy karne layak text nahi mila", Toast.LENGTH_SHORT).show()
+                    } else {
+                        try {
+                            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                            cm.setPrimaryClip(android.content.ClipData.newPlainText("page text", txt))
+                            Toast.makeText(this@MainActivity, "Page ka text copy ho gaya", Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+                            Toast.makeText(this@MainActivity, "Copy nahi ho paya", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    // — Font style: page ka lekha serif ya bade akshar —
+    private fun fontStyleDialog() {
+        val styles = arrayOf("Normal style", "Padhai style (serif)", "Bade akshar style")
+        AlertDialog.Builder(this)
+            .setTitle("Font style badlo")
+            .setMessage("Page ke lekhe ka style chuno")
+            .setItems(styles) { _, which ->
+                val js = when (which) {
+                    1 -> "(function(){document.body.style.fontFamily='serif';document.body.style.lineHeight='1.8'})()"
+                    2 -> "(function(){document.body.style.fontFamily='sans-serif';document.body.style.lineHeight='1.6';document.body.style.fontSize='1.12em'})()"
+                    else -> "(function(){document.body.style.fontFamily='';document.body.style.lineHeight='';document.body.style.fontSize=''})()"
+                }
+                webView.evaluateJavascript(js, null)
+                Toast.makeText(this, "Font style lag gaya", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Auto refresh: page har 30 second me khud update —
+    private var autoRefreshOn = false
+    private var autoRefreshTimer: android.os.Handler? = null
+
+    private fun toggleAutoRefresh() {
+        if (autoRefreshOn) {
+            autoRefreshTimer?.removeCallbacksAndMessages(null)
+            autoRefreshTimer = null
+            autoRefreshOn = false
+            Toast.makeText(this, "Auto refresh band ho gaya", Toast.LENGTH_SHORT).show()
+        } else {
+            val h = android.os.Handler(android.os.Looper.getMainLooper())
+            val task = object : Runnable {
+                override fun run() {
+                    webView.reload()
+                    h.postDelayed(this, 30000)
+                }
+            }
+            h.postDelayed(task, 30000)
+            autoRefreshTimer = h
+            autoRefreshOn = true
+            Toast.makeText(this, "Auto refresh chalu — har 30 second page khud update hoga", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // — Photo save: page par di hui photos me se chun kar download —
+    private fun showImagesSheet() {
+        webView.evaluateJavascript("(function(){var a=[];var els=document.querySelectorAll('img');for(var i=0;i<els.length&&a.length<14;i++){var u=els[i].currentSrc||els[i].src||'';if(u&&u.indexOf('http')===0){a.push(u)}}return JSON.stringify(a)})()", object : android.webkit.ValueCallback<String> {
+            override fun onReceiveValue(value: String?) {
+                val raw = jsonUnquote(value)
+                runOnUiThread {
+                    val urls = try {
+                        val l = org.json.JSONArray(raw)
+                        (0 until l.length()).map { l.getString(it) }
+                    } catch (e: Exception) { emptyList() }
+                    if (urls.isEmpty()) {
+                        Toast.makeText(this@MainActivity, "Is page par koi photo nahi mili", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val names = urls.map { u -> u.substringAfterLast('/').substringBefore('?').ifBlank { "photo" } }.toTypedArray()
+                        AlertDialog.Builder(this@MainActivity)
+                            .setTitle("Photo save karo")
+                            .setMessage("Jo photo chahiye use dabao — download ho jayegi")
+                            .setItems(names) { _, which -> startDownload(urls[which], webView.settings.userAgentString, "attachment", "image/*") }
+                            .setNegativeButton("Band", null)
+                            .show()
+                    }
+                }
+            }
+        })
+    }
+
+    // — QR banao: is page ka QR — dusre phone se scan karke kholo —
+    private fun showQrDialog() {
+        val url = webView.url ?: HOME_URL
+        val enc = java.net.URLEncoder.encode(url, "UTF-8")
+        val iv = ImageView(this)
+        iv.adjustViewBounds = true
+        iv.maxHeight = dp(360)
+        val hint = TextView(this)
+        hint.text = "Is page ka QR — scan karke kholo · " + friendlyPath(url)
+        hint.textSize = 13f
+        hint.setPadding(dp(20), dp(16), dp(20), 0)
+        hint.setTextColor(0xFF64748B.toInt())
+        Thread {
+            try {
+                val conn = java.net.URL("https://api.qrserver.com/v1/create-qr-code/?size=420x420&data=" + enc).openConnection() as java.net.HttpURLConnection
+                conn.connectTimeout = 12000
+                conn.readTimeout = 12000
+                val bmp = android.graphics.BitmapFactory.decodeStream(conn.inputStream)
+                runOnUiThread { if (bmp != null) iv.setImageBitmap(bmp) else hint.text = "QR load nahi hua — internet check karo" }
+            } catch (e: Exception) {
+                runOnUiThread { hint.text = "QR load nahi hua — internet check karo" }
+            }
+        }.start()
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.addView(hint)
+        wrap.addView(iv, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("QR banao")
+            .setView(wrap)
+            .setPositiveButton("Ho gaya", null)
+            .show()
+    }
+    // — Internet bachao: cache se kholo + trackers band — data ka kharch bahut kam —
+    private fun toggleDataSaver() {
+        dataSaverCacheOn = !dataSaverCacheOn
+        webView.settings.cacheMode = if (dataSaverCacheOn) WebSettings.LOAD_CACHE_ELSE_NETWORK else WebSettings.LOAD_DEFAULT
+        if (dataSaverCacheOn) webView.evaluateJavascript(DATA_SAVER_JS, null)
+        Toast.makeText(this, if (dataSaverCacheOn) "Internet bachao on — cache se khulega, data kam lagega" else "Internet bachao off — normal mode", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Video autoplay band: video khud nahi chalega (tool se on/off) —
+    private fun toggleVideoBlock() {
+        videoBlockOn = !videoBlockOn
+        if (videoBlockOn) webView.evaluateJavascript(VIDEO_BLOCK_JS, null)
+        else webView.evaluateJavascript("(function(){try{if(window.__rbVidObs){window.__rbVidObs.disconnect();window.__rbVidObs=null}}catch(e){}})()", null)
+        Toast.makeText(this, if (videoBlockOn) "Video autoplay band — video khud nahi chalega" else "Video autoplay chalu", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Ads band karo: app me hi on/off —
+    private fun toggleAdBlock() {
+        adBlockOn = !adBlockOn
+        if (adBlockOn) injectAdBlock(webView)
+        else webView.evaluateJavascript("(function(){try{document.querySelectorAll('[data-w2a-ad]').forEach(function(e){e.style.display=''})}catch(e){}})()", null)
+        Toast.makeText(this, if (adBlockOn) "Ads band on — banner ads chhupenge" else "Ads dikhne lagenge", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Page share: khula page WhatsApp/link par bhejo —
+    private fun shareCurrentPage() {
+        val url = webView.url ?: HOME_URL
+        val send = Intent(Intent.ACTION_SEND)
+        send.type = "text/plain"
+        send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " — " + SITE_LABEL + "\n" + url)
+        try {
+            startActivity(Intent.createChooser(send, "Page share karo"))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Share karne wali app nahi mili", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     // — Padhai mode: sirf text — image, video, ad sab chhup jaate hain — aaram se padho —
     private fun toggleReadingMode() {
