@@ -92,6 +92,11 @@ class MainActivity : AppCompatActivity() {
         const val DICT_TOOL_ON = true
         const val TTS_SPEED_ON = true
         const val COOKIES_CLEAR_ON = true
+        const val COPY_TEXT_ON = true
+        const val FONT_STYLE_ON = true
+        const val AUTO_REFRESH_ON = true
+        const val IMAGE_SAVE_ON = true
+        const val QR_TOOL_ON = true
         const val THEME_COLOR = "#3DDC84"
         const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
@@ -148,7 +153,7 @@ class MainActivity : AppCompatActivity() {
         const val DATA_SAVE_ON = true
         const val URL_TOOL_ON = true
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
-        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF")
+        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF", "Ink Blue|#1A237E", "Terracotta Mitti|#C0563B", "Spearmint Green|#00C853", "Bubblegum Pink|#FF69B4", "Bright Sky|#00B0FF", "Deep Teal|#00695C", "Sunrise Peach|#FF8A65", "Velvet Night|#311B92", "Leaf Green|#43A047", "Desert Sand|#C2A878")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         const val BLOB_HOOK_JS = "(function(){\nif (window.__appbanaoDl) return; window.__appbanaoDl = 1;\nvar CH = 262144;\nfunction sendBlob(blob, name, mime) {\n  try {\n    var total = blob.size;\n    var off = 0;\n    var fr = new FileReader();\n    window.AndroidDownloads && window.AndroidDownloads.blobSaveStart(name || 'download.bin', (mime || blob.type || 'application/octet-stream').split(',')[0]);\n    fr.onload = function() {\n      try {\n        var arr = new Uint8Array(fr.result);\n        var s = '';\n        for (var i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);\n        window.AndroidDownloads && window.AndroidDownloads.blobSaveChunk(btoa(s));\n      } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); return; }\n      off += CH;\n      if (off < total) fr.readAsArrayBuffer(blob.slice(off, off + CH));\n      else window.AndroidDownloads && window.AndroidDownloads.blobSaveDone();\n    };\n    fr.onerror = function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); };\n    fr.readAsArrayBuffer(blob.slice(0, CH));\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nfunction grab(url, name) {\n  try {\n    fetch(url).then(function(r) { return r.blob(); }).then(function(b) { sendBlob(b, name, b.type); }).catch(function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); });\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nwindow.__appbanaoGrab = grab;\ndocument.addEventListener('click', function(e) {\n  var t = e.target;\n  while (t && t.tagName !== 'A') t = t.parentElement;\n  if (!t) return;\n  var href = t.getAttribute('href') || '';\n  if (href.indexOf('blob:') === 0 || href.indexOf('data:') === 0) {\n    e.preventDefault(); e.stopPropagation();\n    var nm = t.getAttribute('download') || (document.title ? document.title.replace(/[\\\\/:*?\"<>|]/g, '').slice(0, 40) : 'download.bin');\n    grab(href, nm);\n  }\n}, true);\n})();"
     }
@@ -1626,6 +1631,153 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
+    // — Text copy: poore page ka likha hua text clipboard me —
+    private fun jsonUnquote(v: String?): String {
+        if (v == null) return ""
+        var s = v.trim()
+        if (s.length >= 2 && s.startsWith("\"") && s.endsWith("\"")) s = s.substring(1, s.length - 1)
+        val sb = StringBuilder()
+        var i = 0
+        while (i < s.length) {
+            if (s[i] == '\\' && i + 1 < s.length) {
+                when (s[i + 1]) {
+                    'n' -> { sb.append('\n'); i += 2 }
+                    't' -> { sb.append('\t'); i += 2 }
+                    'r' -> { sb.append('\r'); i += 2 }
+                    '"' -> { sb.append('"'); i += 2 }
+                    '\\' -> { sb.append('\\'); i += 2 }
+                    '/' -> { sb.append('/'); i += 2 }
+                    else -> { sb.append(s[i]); i += 1 }
+                }
+            } else { sb.append(s[i]); i += 1 }
+        }
+        return sb.toString()
+    }
+
+    private fun copyPageText() {
+        webView.evaluateJavascript("(function(){return document.body ? document.body.innerText.substring(0, 15000) : ''})()", object : android.webkit.ValueCallback<String> {
+            override fun onReceiveValue(value: String?) {
+                val txt = jsonUnquote(value)
+                runOnUiThread {
+                    if (txt.isBlank()) {
+                        Toast.makeText(this@MainActivity, "Copy karne layak text nahi mila", Toast.LENGTH_SHORT).show()
+                    } else {
+                        try {
+                            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                            cm.setPrimaryClip(android.content.ClipData.newPlainText("page text", txt))
+                            Toast.makeText(this@MainActivity, "Page ka text copy ho gaya", Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+                            Toast.makeText(this@MainActivity, "Copy nahi ho paya", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    // — Font style: page ka lekha serif ya bade akshar —
+    private fun fontStyleDialog() {
+        val styles = arrayOf("Normal style", "Padhai style (serif)", "Bade akshar style")
+        AlertDialog.Builder(this)
+            .setTitle("Font style badlo")
+            .setMessage("Page ke lekhe ka style chuno")
+            .setItems(styles) { _, which ->
+                val js = when (which) {
+                    1 -> "(function(){document.body.style.fontFamily='serif';document.body.style.lineHeight='1.8'})()"
+                    2 -> "(function(){document.body.style.fontFamily='sans-serif';document.body.style.lineHeight='1.6';document.body.style.fontSize='1.12em'})()"
+                    else -> "(function(){document.body.style.fontFamily='';document.body.style.lineHeight='';document.body.style.fontSize=''})()"
+                }
+                webView.evaluateJavascript(js, null)
+                Toast.makeText(this, "Font style lag gaya", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Auto refresh: page har 30 second me khud update —
+    private var autoRefreshOn = false
+    private var autoRefreshTimer: android.os.Handler? = null
+
+    private fun toggleAutoRefresh() {
+        if (autoRefreshOn) {
+            autoRefreshTimer?.removeCallbacksAndMessages(null)
+            autoRefreshTimer = null
+            autoRefreshOn = false
+            Toast.makeText(this, "Auto refresh band ho gaya", Toast.LENGTH_SHORT).show()
+        } else {
+            val h = android.os.Handler(android.os.Looper.getMainLooper())
+            val task = object : Runnable {
+                override fun run() {
+                    webView.reload()
+                    h.postDelayed(this, 30000)
+                }
+            }
+            h.postDelayed(task, 30000)
+            autoRefreshTimer = h
+            autoRefreshOn = true
+            Toast.makeText(this, "Auto refresh chalu — har 30 second page khud update hoga", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // — Photo save: page par di hui photos me se chun kar download —
+    private fun showImagesSheet() {
+        webView.evaluateJavascript("(function(){var a=[];var els=document.querySelectorAll('img');for(var i=0;i<els.length&&a.length<14;i++){var u=els[i].currentSrc||els[i].src||'';if(u&&u.indexOf('http')===0){a.push(u)}}return JSON.stringify(a)})()", object : android.webkit.ValueCallback<String> {
+            override fun onReceiveValue(value: String?) {
+                val raw = jsonUnquote(value)
+                runOnUiThread {
+                    val urls = try {
+                        val l = org.json.JSONArray(raw)
+                        (0 until l.length()).map { l.getString(it) }
+                    } catch (e: Exception) { emptyList() }
+                    if (urls.isEmpty()) {
+                        Toast.makeText(this@MainActivity, "Is page par koi photo nahi mili", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val names = urls.map { u -> u.substringAfterLast('/').substringBefore('?').ifBlank { "photo" } }.toTypedArray()
+                        AlertDialog.Builder(this@MainActivity)
+                            .setTitle("Photo save karo")
+                            .setMessage("Jo photo chahiye use dabao — download ho jayegi")
+                            .setItems(names) { _, which -> startDownload(urls[which]) }
+                            .setNegativeButton("Band", null)
+                            .show()
+                    }
+                }
+            }
+        })
+    }
+
+    // — QR banao: is page ka QR — dusre phone se scan karke kholo —
+    private fun showQrDialog() {
+        val url = webView.url ?: HOME_URL
+        val enc = java.net.URLEncoder.encode(url, "UTF-8")
+        val iv = ImageView(this)
+        iv.adjustViewBounds = true
+        iv.maxHeight = dp(360)
+        val hint = TextView(this)
+        hint.text = "Is page ka QR — dusre phone me scan karke kholo"
+        hint.textSize = 13f
+        hint.setPadding(dp(20), dp(16), dp(20), 0)
+        hint.setTextColor(0xFF64748B.toInt())
+        Thread {
+            try {
+                val conn = java.net.URL("https://api.qrserver.com/v1/create-qr-code/?size=420x420&data=" + enc).openConnection() as java.net.HttpURLConnection
+                conn.connectTimeout = 12000
+                conn.readTimeout = 12000
+                val bmp = android.graphics.BitmapFactory.decodeStream(conn.inputStream)
+                runOnUiThread { if (bmp != null) iv.setImageBitmap(bmp) else hint.text = "QR load nahi hua — internet check karo" }
+            } catch (e: Exception) {
+                runOnUiThread { hint.text = "QR load nahi hua — internet check karo" }
+            }
+        }.start()
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.addView(hint)
+        wrap.addView(iv, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("QR banao")
+            .setView(wrap)
+            .setPositiveButton("Ho gaya", null)
+            .show()
+    }
     // Saare Quick Tools — sections me grouped: Padhai sabse upar, phir Screen, Page, Files, App, Madad
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
@@ -1635,6 +1787,8 @@ class MainActivity : AppCompatActivity() {
         if (TRANSLATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_translate, "Hindi me padho", "page translate", 0xFF0F766E.toInt(), "Padhai ke Tools") { translatePage() })
         if (DICT_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_dict, "Shabd ka matlab", "meaning turant", 0xFF7C2D12.toInt(), "Padhai ke Tools") { dictDialog() })
         if (SITE_SEARCH_ON) items.add(ToolItem(R.drawable.ic_tool_sitesearch, "Site me dhoondo", "Google se isi site me", 0xFF0E7490.toInt(), "Padhai ke Tools") { siteSearchDialog() })
+        if (COPY_TEXT_ON) items.add(ToolItem(R.drawable.ic_tool_copy, "Text copy karo", "poora page ka likha", 0xFF4338CA.toInt(), "Padhai ke Tools") { copyPageText() })
+        if (FONT_STYLE_ON) items.add(ToolItem(R.drawable.ic_tool_fontstyle, "Font style badlo", "lekhe ka style", 0xFF9F1239.toInt(), "Padhai ke Tools") { fontStyleDialog() })
         items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text bada karo", "padhna aasan", 0xFF0EA5E9.toInt(), "Padhai ke Tools") { changeTextSize(15) })
         items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text chhota karo", "compact view", 0xFF38BDF8.toInt(), "Padhai ke Tools") { changeTextSize(-15) })
         if (READING_MODE_ON) items.add(ToolItem(R.drawable.ic_tool_bookopen, if (readingModeOn) "Padhai mode band" else "Padhai mode on", "sirf text, aaram se", 0xFFB45309.toInt(), "Padhai ke Tools") { toggleReadingMode() })
@@ -1652,26 +1806,25 @@ class MainActivity : AppCompatActivity() {
         if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
         if (THEME_PICKER_ON) items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen ke Tools") { showThemeSheet() })
         if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
-        if (ROTATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen ke Tools") { toggleRotation() })
         items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
         items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
         items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
         items.add(ToolItem(R.drawable.ic_tool_home, "Home page", "shuruati page", 0xFF111827.toInt(), "Page ke Tools") { webView.loadUrl(HOME_URL) })
         if (URL_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_globe, "Kholo (URL likho)", "seedha page kholo", 0xFF0284C7.toInt(), "Page ke Tools") { openUrlDialog() })
+        if (AUTO_REFRESH_ON) items.add(ToolItem(R.drawable.ic_tool_autorefresh, if (autoRefreshOn) "Auto refresh band" else "Auto refresh karo", "har 30s update", 0xFF3F6212.toInt(), "Page ke Tools") { toggleAutoRefresh() })
+        if (QR_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_qr, "QR banao", "page ka QR code", 0xFF374151.toInt(), "Page ke Tools") { showQrDialog() })
         if (HISTORY_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_history, "Mera History", "khole hue pages", 0xFF64748B.toInt(), "Page ke Tools") { showHistorySheet() })
         items.add(ToolItem(R.drawable.ic_tool_print, "Print / PDF", "page ya PDF banao", 0xFF111827.toInt(), "Files aur Print") { printPage() })
         if (DL_LIST_ON) items.add(ToolItem(R.drawable.ic_tool_download, "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
         items.add(ToolItem(R.drawable.ic_tool_folder, "Downloads folder", "phone ka folder", 0xFF059669.toInt(), "Files aur Print") { openDownloads() })
+        if (IMAGE_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_images, "Photo save karo", "page ki photo chuno", 0xFF86198F.toInt(), "Files aur Print") { showImagesSheet() })
         if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
         if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
         if (COOKIES_CLEAR_ON) items.add(ToolItem(R.drawable.ic_tool_cookie, "Cookies clear", "login data saaf", 0xFFB45309.toInt(), "App") { clearCookiesNow() })
-        if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
-        if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
-        items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
-        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         return items
     }
+
 
     // — Tool row: poora chauda row — icon chip + naam + sub + arrow. Poora naam ek line me — text kabhi nahi katta —
     private fun buildToolRow(dialog: Dialog, item: ToolItem): View {
@@ -1813,7 +1966,7 @@ class MainActivity : AppCompatActivity() {
                 val q = input.text.toString().trim()
                 if (q.isNotEmpty()) {
                     val host = Uri.parse(HOME_URL).host ?: ""
-                    webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q + " site:" + host, "UTF-8"))
+                    webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q, "UTF-8") + "&as_sitesearch=" + host)
                 }
             }
             .setNegativeButton("Band", null)
