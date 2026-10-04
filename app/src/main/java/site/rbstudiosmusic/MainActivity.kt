@@ -19,6 +19,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.media.MediaScannerConnection
@@ -81,8 +82,8 @@ class MainActivity : AppCompatActivity() {
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio"
-        const val THEME_COLOR = "#3DDC84"
-        const val SPLASH_COLOR = "#0C0F14"
+        const val THEME_COLOR = "#0EA5E9"
+        const val SPLASH_COLOR = "#06202E"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -121,6 +122,13 @@ class MainActivity : AppCompatActivity() {
         const val READ_ALOUD_ON = true
         const val BOOKMARKS_ON = true
         const val SUPPORT_EMAIL = "support@rbstudiosmusic.site"
+        const val DIRECTION_TOOL_ON = true
+        const val MAP_QUERY = "Royal Banjara Studio Music Distribution At post pedgaon"
+        const val TRANSLATE_TOOL_ON = true
+        const val HISTORY_TOOL_ON = true
+        const val CALL_TOOL_ON = true
+        const val CALL_NUMBER = "+919370612297"
+        const val QUICK_BAR_ON = true
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
         val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
@@ -138,6 +146,9 @@ class MainActivity : AppCompatActivity() {
     private var welcomeBottom: LinearLayout? = null
     private var accentColor = 0
     private var moreBtn: TextView? = null
+    private var quickBar: LinearLayout? = null
+    private var backPill: FrameLayout? = null
+    private var forwardPill: FrameLayout? = null
     private var tts: TextToSpeech? = null
     private var ttsReady = false
     private var fullScreenOn = false
@@ -226,6 +237,18 @@ class MainActivity : AppCompatActivity() {
             barLp.rightMargin = dp(12)
             barLp.bottomMargin = dp(10)
             root.addView(bar, barLp)
+        }
+
+        if (QUICK_BAR_ON) {
+            val qb = buildQuickBar()
+            quickBar = qb
+            val qbLp = FrameLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM or Gravity.START)
+            qbLp.leftMargin = dp(12)
+            qbLp.bottomMargin = if (SHOW_NAV) dp(98) else dp(22)
+            root.addView(qb, qbLp)
+        }
+
+        if (SHOW_NAV || QUICK_BAR_ON) {
             webView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
                 val dy = scrollY - oldScrollY
                 if (dy > 8) hideNavBar() else if (dy < -8) showNavBar()
@@ -1130,6 +1153,257 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun emailSupportTo(to: String) {
+        val target = to.trim()
+        if (target.isBlank()) {
+            Toast.makeText(this, "Email address khali hai — Builder me apna email daalo", Toast.LENGTH_LONG).show()
+            return
+        }
+        try {
+            val gm = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + Uri.encode(target)))
+            gm.setPackage("com.google.android.gm")
+            gm.putExtra(Intent.EXTRA_SUBJECT, APP_NAME + " — app se message")
+            gm.putExtra(Intent.EXTRA_TEXT, "Namaste,\n\n")
+            startActivity(gm)
+            return
+        } catch (e: Exception) {
+        }
+        try {
+            val send = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + Uri.encode(target)))
+            send.putExtra(Intent.EXTRA_EMAIL, arrayOf(target))
+            send.putExtra(Intent.EXTRA_SUBJECT, APP_NAME + " — app se message")
+            send.putExtra(Intent.EXTRA_TEXT, "Namaste,\n\n")
+            startActivity(send)
+            return
+        } catch (e: Exception) {
+        }
+        try {
+            startActivity(Intent.createChooser(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + Uri.encode(target))), "Email bhejo"))
+        } catch (e: Exception) {
+            openExternal(Uri.parse("mailto:" + Uri.encode(target)))
+        }
+    }
+
+    private fun emailSupport() {
+        emailSupportTo(SUPPORT_EMAIL)
+    }
+
+    // — Direction: pehle Google Maps app, phir koi Maps app, phir browser — har haal me khulta hai —
+    private fun openDirections(query: String, webFallback: Uri?) {
+        var q = query.trim()
+        if (q.isBlank()) q = MAP_QUERY.trim()
+        if (q.isBlank()) {
+            if (webFallback != null) openExternal(webFallback)
+            else Toast.makeText(this, "Address set nahi hai — Builder me studio ka address daalo", Toast.LENGTH_LONG).show()
+            return
+        }
+        val enc = Uri.encode(q)
+        try {
+            val maps = Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + enc))
+            maps.setPackage("com.google.android.apps.maps")
+            if (maps.resolveActivity(packageManager) != null) {
+                startActivity(maps)
+                return
+            }
+        } catch (e: Exception) {
+        }
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + enc)))
+            return
+        } catch (e: Exception) {
+        }
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/search/?api=1&query=" + enc)))
+        } catch (e: Exception) {
+            if (webFallback != null) openExternal(webFallback)
+            else Toast.makeText(this, "Maps app nahi mila", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openDirectionsTool() {
+        openDirections(MAP_QUERY, null)
+    }
+
+    // — Website ke Maps links (maps.google.com, maps.app.goo.gl, google.com/maps) ko Maps app me khole —
+    private fun openMapsFromWeb(uri: Uri) {
+        var q = ""
+        try { q = uri.getQueryParameter("q") ?: "" } catch (e: Exception) { }
+        if (q.isBlank()) { try { q = uri.getQueryParameter("query") ?: "" } catch (e: Exception) { } }
+        if (q.isBlank()) { try { q = uri.lastPathSegment ?: "" } catch (e: Exception) { } }
+        if (q.isNotBlank()) openDirections(q, uri)
+        else openExternal(uri)
+    }
+
+    // — Call: seedha phone dialer khulta hai —
+    private fun callSupport() {
+        val num = CALL_NUMBER.trim()
+        if (num.isBlank()) {
+            Toast.makeText(this, "Phone number set nahi hai", Toast.LENGTH_SHORT).show()
+            return
+        }
+        try {
+            startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num)))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Phone app nahi khula", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Page translate: site ka page Hindi me padho —
+    private fun translatePage() {
+        try {
+            val cur = webView.url ?: HOME_URL
+            val u = Uri.parse(cur)
+            val host = u.host ?: throw IllegalStateException("no host")
+            val path = u.encodedPath ?: "/"
+            val query = u.query ?: ""
+            val qs = if (query.isBlank()) "" else "?" + query
+            val sep = if (qs.isBlank()) "?" else "&"
+            val target = "https://" + host.replace(".", "-") + ".translate.goog" + path + qs + sep + "_x_tr_sl=auto&_x_tr_tl=hi&_x_tr_hl=hi"
+            webView.loadUrl(target)
+            Toast.makeText(this, "Page Hindi me translate ho raha hai...", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Translate nahi ho paya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Mera History: jo pages tumne khole — tap karke wapas jao —
+    private fun showHistorySheet() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCanceledOnTouchOutside(true)
+        val sheet = LinearLayout(this)
+        sheet.orientation = LinearLayout.VERTICAL
+        val sheetBg = GradientDrawable()
+        sheetBg.setColor(Color.WHITE)
+        sheetBg.cornerRadius = dp(28).toFloat()
+        sheet.background = sheetBg
+        sheet.elevation = dp(18).toFloat()
+        sheet.setPadding(dp(18), dp(8), dp(18), dp(16))
+        val handle = View(this)
+        val handleBg = GradientDrawable()
+        handleBg.setColor(0xFFE2E8F0.toInt())
+        handleBg.cornerRadius = dp(4).toFloat()
+        handle.background = handleBg
+        sheet.addView(handle, LinearLayout.LayoutParams(dp(44), dp(5)).apply { gravity = Gravity.CENTER_HORIZONTAL; topMargin = dp(6) })
+        val title = TextView(this)
+        title.text = "Mera History"
+        title.textSize = 20f
+        title.typeface = Typeface.DEFAULT_BOLD
+        title.setTextColor(0xFF0F172A.toInt())
+        sheet.addView(title, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(10) })
+        val sub = TextView(this)
+        sub.text = "jo pages tumne khole — tap karke wapas jao"
+        sub.textSize = 13f
+        sub.setTextColor(0xFF64748B.toInt())
+        sheet.addView(sub, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(2) })
+        val scroll = ScrollView(this)
+        scroll.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(10) }
+        val list = LinearLayout(this)
+        list.orientation = LinearLayout.VERTICAL
+        scroll.addView(list)
+        val hist = webView.copyBackForwardList()
+        val cur = hist.currentIndex
+        for (i in 0 until hist.size) {
+            val item = hist.getItemAtIndex(i)
+            val url = item.url ?: continue
+            val name = if (item.title.isNullOrBlank()) url else item.title
+            val row = LinearLayout(this)
+            row.orientation = LinearLayout.VERTICAL
+            val rowBg = GradientDrawable()
+            rowBg.setColor(if (i == cur) 0xFFE8F1FF.toInt() else 0xFFF6F8FB.toInt())
+            rowBg.cornerRadius = dp(14).toFloat()
+            row.background = rowBg
+            row.setPadding(dp(12), dp(10), dp(12), dp(10))
+            val t1 = TextView(this)
+            t1.text = name
+            t1.textSize = 15f
+            t1.typeface = Typeface.DEFAULT_BOLD
+            t1.setTextColor(0xFF0F172A.toInt())
+            t1.maxLines = 1
+            t1.ellipsize = android.text.TextUtils.TruncateAt.END
+            row.addView(t1)
+            val t2 = TextView(this)
+            t2.text = if (i == cur) "● abhi yahin ho" else url
+            t2.textSize = 12f
+            t2.setTextColor(if (i == cur) 0xFF2563EB.toInt() else 0xFF94A3B8.toInt())
+            t2.maxLines = 1
+            t2.ellipsize = android.text.TextUtils.TruncateAt.END
+            row.addView(t2, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(2) })
+            row.setOnClickListener {
+                dialog.dismiss()
+                if (i != cur) webView.goBackOrForward(i - cur)
+            }
+            list.addView(row, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(8) })
+        }
+        if (hist.size == 0) {
+            val empty = TextView(this)
+            empty.text = "Abhi koi history nahi bani"
+            empty.textSize = 14f
+            empty.setTextColor(0xFF94A3B8.toInt())
+            list.addView(empty, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(12) })
+        }
+        sheet.addView(scroll)
+        dialog.setContentView(sheet)
+        val window = dialog.window
+        if (window != null) {
+            window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            window.setLayout((resources.displayMetrics.widthPixels * 0.92f).toInt(), (resources.displayMetrics.heightPixels * 0.60f).toInt())
+            window.setGravity(Gravity.CENTER)
+        }
+        dialog.show()
+    }
+
+    // — Home quick buttons: Back / Forward / Top / Night — har page par haath ke paas —
+    private fun buildQuickBar(): LinearLayout {
+        val bar = LinearLayout(this)
+        bar.orientation = LinearLayout.VERTICAL
+        bar.gravity = Gravity.CENTER_HORIZONTAL
+        val barBg = GradientDrawable()
+        barBg.setColor(Color.WHITE)
+        barBg.cornerRadius = dp(26).toFloat()
+        barBg.setStroke(dp(1), 0x14808080)
+        bar.background = barBg
+        bar.elevation = dp(12).toFloat()
+        bar.setPadding(dp(5), dp(7), dp(5), dp(7))
+        fun makePill(iconRes: Int, hint: String, onClick: () -> Unit): FrameLayout {
+            val p = FrameLayout(this)
+            val bg = GradientDrawable()
+            bg.shape = GradientDrawable.OVAL
+            bg.setColor(0xFFEFF4FA.toInt())
+            p.background = RippleDrawable(ColorStateList.valueOf(0x22808080), bg, null)
+            val ic = ImageView(this)
+            ic.setImageResource(iconRes)
+            ic.setColorFilter(0xFF334155.toInt())
+            p.addView(ic, FrameLayout.LayoutParams(dp(19), dp(19), Gravity.CENTER))
+            p.setOnLongClickListener { Toast.makeText(this, hint, Toast.LENGTH_SHORT).show(); true }
+            p.setOnClickListener {
+                bounce(p)
+                onClick()
+            }
+            return p
+        }
+        val backP = makePill(R.drawable.ic_tool_back, "Pichla page") {
+            if (webView.canGoBack()) webView.goBack()
+            else Toast.makeText(this, "Peeche aur kuch nahi hai", Toast.LENGTH_SHORT).show()
+        }
+        backPill = backP
+        bar.addView(backP, LinearLayout.LayoutParams(dp(38), dp(38)))
+        val fwdP = makePill(R.drawable.ic_tool_forward, "Agla page") {
+            if (webView.canGoForward()) webView.goForward()
+            else Toast.makeText(this, "Aage aur kuch nahi hai", Toast.LENGTH_SHORT).show()
+        }
+        forwardPill = fwdP
+        bar.addView(fwdP, LinearLayout.LayoutParams(dp(38), dp(38)).apply { topMargin = dp(6) })
+        if (GO_TOP_ON) {
+            val topP = makePill(R.drawable.ic_tool_arrowup, "Page ke top par") { goToTop() }
+            bar.addView(topP, LinearLayout.LayoutParams(dp(38), dp(38)).apply { topMargin = dp(6) })
+        }
+        if (NIGHT_MODE_ON) {
+            val nightP = makePill(R.drawable.ic_tool_moon, "Night mode on/off") { toggleNightMode() }
+            bar.addView(nightP, LinearLayout.LayoutParams(dp(38), dp(38)).apply { topMargin = dp(6) })
+        }
+        return bar
+    }
     private fun findInPage() {
         val input = EditText(this)
         input.hint = "kya dhoondna hai?"
@@ -1152,19 +1426,7 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun emailSupport() {
-        val to = SUPPORT_EMAIL
-        if (to.isBlank()) {
-            shareAppLink()
-            return
-        }
-        try {
-            val uri = Uri.parse("mailto:" + to + "?subject=" + Uri.encode(APP_NAME + " sawaal") + "&body=" + Uri.encode("Namaste,\n\n"))
-            startActivity(Intent.createChooser(Intent(Intent.ACTION_SENDTO, uri), "Email bhejo"))
-        } catch (e: Exception) {
-            openExternal(Uri.parse("mailto:" + to))
-        }
-    }
+    // — Email: pehle Gmail app, phir koi bhi mail app, phir chooser — seedha message likhne ka screen khulta hai —
 
     private fun openAppSettings() {
         try {
@@ -1336,12 +1598,16 @@ class MainActivity : AppCompatActivity() {
         items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen aur Padhai") { showThemeSheet() })
         items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen aur Padhai") { goToTop() })
         items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen aur Padhai") { toggleRotation() })
+        items.add(ToolItem(R.drawable.ic_tool_translate, "Hindi me padho", "page translate", 0xFF0F766E.toInt(), "Screen aur Padhai") { translatePage() })
         items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "App") { webView.reload() })
         items.add(ToolItem(R.drawable.ic_tool_home, "Home page", "shuruati page", 0xFF111827.toInt(), "App") { webView.loadUrl(HOME_URL) })
+        items.add(ToolItem(R.drawable.ic_tool_history, "Mera History", "khole hue pages", 0xFF64748B.toInt(), "App") { showHistorySheet() })
         items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
         items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
         items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
-        if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha humein likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
+        if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
+        items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
+        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
         items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         return items
     }
@@ -2108,12 +2374,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideNavBar() {
-        val bar = navBar ?: return
-        bar.animate().translationY((bar.height + dp(12)).toFloat()).setDuration(220).start()
+        navBar?.animate()?.translationY((dp(90)).toFloat())?.setDuration(220)?.start()
+        quickBar?.animate()?.translationY((dp(80)).toFloat())?.alpha(0.15f)?.setDuration(220)?.start()
     }
 
     private fun showNavBar() {
         navBar?.animate()?.translationY(0f)?.setDuration(220)?.start()
+        quickBar?.animate()?.translationY(0f)?.alpha(1f)?.setDuration(220)?.start()
     }
 
     private fun selectNav(index: Int) {
@@ -2179,17 +2446,35 @@ class MainActivity : AppCompatActivity() {
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 val uri = request.url
                 val scheme = uri.scheme?.lowercase() ?: return false
-                // Email / call / WhatsApp / Maps links — sab direct apni app me khulte hain
-                if (scheme == "mailto" || scheme == "tel" || scheme == "sms" || scheme == "intent" || scheme == "whatsapp" || scheme == "geo") {
+                // Email link — seedha message likhne ka screen khulta hai (jo address link me ho)
+                if (scheme == "mailto") {
+                    emailSupportTo(uri.toString().removePrefix("mailto:").substringBefore('?'))
+                    return true
+                }
+                // Maps / location link — seedha Maps app me khulta hai
+                if (scheme == "geo") {
+                    var gq = ""
+                    try { gq = uri.getQueryParameter("q") ?: "" } catch (e: Exception) { }
+                    if (gq.isBlank()) { try { gq = uri.schemeSpecificPart.substringBefore('?') } catch (e: Exception) { } }
+                    openDirections(gq, uri)
+                    return true
+                }
+                // Call / SMS / WhatsApp / intent links — sab direct apni app me khulte hain
+                if (scheme == "tel" || scheme == "sms" || scheme == "intent" || scheme == "whatsapp") {
                     openExternal(uri)
                     return true
                 }
                 if (scheme == "http" || scheme == "https") {
                     // Google Maps / directions / email-compose links ko WebView me mat kholo — Maps/Gmail app khule
                     val linkHost = uri.host?.lowercase() ?: ""
-                    val isMaps = linkHost == "maps.google.com" || linkHost.endsWith(".google.com") && (linkHost.startsWith("maps") || linkHost.startsWith("www.google.com")) && (uri.query ?: "").contains("directions")
+                    val linkPath = (uri.path ?: "").lowercase()
+                    val isMapsLink = linkHost == "maps.google.com" || linkHost == "maps.app.goo.gl" || (linkHost == "goo.gl" && linkPath.startsWith("/maps")) || ((linkHost == "www.google.com" || linkHost == "google.com" || linkHost.endsWith(".google.com")) && linkPath.startsWith("/maps"))
                     val isGmail = linkHost == "mail.google.com"
-                    if (isMaps || isGmail) {
+                    if (isMapsLink) {
+                        openMapsFromWeb(uri)
+                        return true
+                    }
+                    if (isGmail) {
                         openExternal(uri)
                         return true
                     }
@@ -2207,6 +2492,8 @@ class MainActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 swipeRefresh.isRefreshing = false
+                backPill?.alpha = if (view.canGoBack()) 1f else 0.35f
+                forwardPill?.alpha = if (view.canGoForward()) 1f else 0.35f
                 if (HIDE_ON) injectHideEngine(view)
                 if (AD_BLOCK_ON) injectAdBlock(view)
                 if (DOWNLOADS_ON || LONGPRESS_DL_ON) {
