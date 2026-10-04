@@ -46,6 +46,9 @@ jobs:
             } > keystore.properties
           fi
 
+      - name: Resource folder saaf karo (sirf .xml/.png)
+        run: find app/src/main/res -type f ! -name '*.xml' ! -name '*.png' -delete || true
+
       - name: Build APK + Play Store AAB (dono saath me)
         run: gradle assembleDebug bundleRelease --no-daemon
 
