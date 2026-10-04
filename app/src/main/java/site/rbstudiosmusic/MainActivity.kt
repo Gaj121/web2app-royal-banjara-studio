@@ -389,7 +389,7 @@ class MainActivity : AppCompatActivity() {
             dotBg.shape = GradientDrawable.OVAL
             dotBg.setColor(color)
             dot.background = dotBg
-            dot.alpha = alphaInt
+            dot.alpha = alphaInt.toFloat()
             overlay.addView(dot, FrameLayout.LayoutParams(dp(sizeDp), dp(sizeDp)))
             dot.translationX = x.toFloat()
             dot.translationY = y.toFloat()
@@ -538,7 +538,7 @@ class MainActivity : AppCompatActivity() {
             val dotBg = GradientDrawable()
             dotBg.shape = GradientDrawable.RECTANGLE
             dotBg.cornerRadius = dp(5).toFloat()
-            dotBg.setColor(0x80FFFFFF)
+            dotBg.setColor(0x80FFFFFF.toInt())
             dot.background = dotBg
             dots.add(dot)
             val dLp = LinearLayout.LayoutParams(dp(9), dp(9))
@@ -553,7 +553,7 @@ class MainActivity : AppCompatActivity() {
                 lp.width = if (active) dp(28) else dp(9)
                 lp.height = dp(9)
                 d.layoutParams = lp
-                (d.background as GradientDrawable).setColor(if (active) Color.WHITE else 0x80FFFFFF)
+                (d.background as GradientDrawable).setColor(if (active) Color.WHITE else 0x80FFFFFF.toInt())
             }
         }
 
