@@ -947,8 +947,15 @@ class MainActivity : AppCompatActivity() {
         header.orientation = LinearLayout.HORIZONTAL
         header.gravity = Gravity.CENTER_VERTICAL
         val headLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        headLp.topMargin = dp(10)
-        headLp.bottomMargin = dp(4)
+        headLp.topMargin = dp(8)
+        headLp.bottomMargin = dp(2)
+        val strip = View(this)
+        val stripBg = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(shade(accentColor, 0.4f), accentColor, shade(accentColor, -0.3f)))
+        stripBg.cornerRadius = dp(4).toFloat()
+        strip.background = stripBg
+        val stripLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(4))
+        stripLp.topMargin = dp(8)
+        sheet.addView(strip, stripLp)
         sheet.addView(header, headLp)
 
         val headBlock = LinearLayout(this)
@@ -979,26 +986,45 @@ class MainActivity : AppCompatActivity() {
         close.setOnClickListener { dialog.dismiss() }
         header.addView(close, LinearLayout.LayoutParams(dp(34), dp(34)))
 
+        val scroll = ScrollView(this)
+        scroll.isVerticalScrollBarEnabled = false
+        val content = LinearLayout(this)
+        content.orientation = LinearLayout.VERTICAL
+        scroll.addView(content, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+
         val items = buildToolItems()
-        val grid = LinearLayout(this)
-        grid.orientation = LinearLayout.VERTICAL
-        var row = LinearLayout(this)
-        row.orientation = LinearLayout.HORIZONTAL
+        val cards = mutableListOf<View>()
+        var lastSection = ""
+        var row: LinearLayout? = null
         items.forEachIndexed { index, item ->
-            if (index > 0 && index % 2 == 0) {
-                grid.addView(row, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-                row = LinearLayout(this)
-                row.orientation = LinearLayout.HORIZONTAL
+            if (row == null || item.section != lastSection) {
+                row?.let { r -> content.addView(r, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)) }
+                lastSection = item.section
+                val st = TextView(this)
+                st.text = lastSection.uppercase()
+                st.textSize = 10.5f
+                st.typeface = Typeface.DEFAULT_BOLD
+                st.letterSpacing = 0.10f
+                st.setTextColor(0xFF98A1B3.toInt())
+                val stLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                stLp.topMargin = dp(14)
+                stLp.bottomMargin = dp(6)
+                content.addView(st, stLp)
+                val nr = LinearLayout(this)
+                nr.orientation = LinearLayout.HORIZONTAL
+                row = nr
             }
-            val card = buildToolCard(dialog, item)
-            val cardLp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-            if (index % 2 == 0) cardLp.rightMargin = dp(5) else cardLp.leftMargin = dp(5)
-            row.addView(card, cardLp)
+            val r = row
+            if (r != null) {
+                val card = buildToolCard(dialog, item)
+                cards.add(card)
+                val cardLp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                if (r.childCount % 2 == 0) cardLp.rightMargin = dp(5) else cardLp.leftMargin = dp(5)
+                r.addView(card, cardLp)
+            }
         }
-        if (items.isNotEmpty()) {
-            grid.addView(row, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-        }
-        sheet.addView(grid, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        row?.let { r -> content.addView(r, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)) }
+        sheet.addView(scroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
         dialog.setContentView(sheet)
         val window = dialog.window
@@ -1010,24 +1036,33 @@ class MainActivity : AppCompatActivity() {
         sheet.translationY = dp(320).toFloat()
         sheet.alpha = 0f
         dialog.show()
-        sheet.animate().translationY(0f).alpha(1f).setDuration(280).setInterpolator(OvershootInterpolator(1.05f)).start()
+        sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
+        cards.forEachIndexed { i, c ->
+            c.alpha = 0f
+            c.translationY = dp(16).toFloat()
+            c.animate().alpha(1f).translationY(0f).setDuration(260).setStartDelay((i * 28).toLong()).start()
+        }
     }
 
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
-        items.add(ToolItem("🖨️", "Print / PDF", "page ya PDF banao") { printPage() })
-        items.add(ToolItem("📸", "Screenshot lo", "page ki photo") { takeScreenshot() })
-        items.add(ToolItem("📤", "App share karo", "doston ko bhejo") { shareAppLink() })
-        items.add(ToolItem("📥", "Mere Downloads", "app ki hi list") { showDownloadsSheet() })
-        items.add(ToolItem("📂", "Downloads folder", "phone ka folder") { openDownloads() })
-        items.add(ToolItem("🔄", "Refresh page", "dobara load") { webView.reload() })
-        items.add(ToolItem("🏠", "Home page", "shuruati page") { webView.loadUrl(HOME_URL) })
-        items.add(ToolItem("🖥️", if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode") { toggleDesktopView() })
-        items.add(ToolItem(if (nightOn) "☀️" else "🌙", if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram") { toggleNightMode() })
-        items.add(ToolItem("A+", "Text bada karo", "padhna aasan") { changeTextSize(15) })
-        items.add(ToolItem("A−", "Text chhota karo", "compact view") { changeTextSize(-15) })
-        items.add(ToolItem("🧹", "Cache clear", "speed badhao") { clearAppCache() })
-        items.add(ToolItem("🚪", "App band karo", "seedha close") { finishAffinity() })
+        items.add(ToolItem("🖨️", "Print / PDF", "page ya PDF banao", 0xFF111827.toInt(), "Files aur Print") { printPage() })
+        items.add(ToolItem("📸", "Screenshot lo", "page ki photo", 0xFFDC2626.toInt(), "Files aur Print") { takeScreenshot() })
+        items.add(ToolItem("📥", "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
+        items.add(ToolItem("📂", "Downloads folder", "phone ka folder", 0xFF059669.toInt(), "Files aur Print") { openDownloads() })
+        items.add(ToolItem(if (nightOn) "☀️" else "🌙", if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram", 0xFF1E293B.toInt(), "Screen aur Padhai") { toggleNightMode() })
+        items.add(ToolItem("A+", "Text bada karo", "padhna aasan", 0xFF0EA5E9.toInt(), "Screen aur Padhai") { changeTextSize(15) })
+        items.add(ToolItem("A−", "Text chhota karo", "compact view", 0xFF0EA5E9.toInt(), "Screen aur Padhai") { changeTextSize(-15) })
+        items.add(ToolItem(if (fullScreenOn) "🔳" else "⛶", if (fullScreenOn) "Full screen band" else "Full screen karo", "poora screen app ka", 0xFF7C3AED.toInt(), "Screen aur Padhai") { toggleFullScreen() })
+        items.add(ToolItem("🖥️", if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen aur Padhai") { toggleDesktopView() })
+        items.add(ToolItem("🎨", "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen aur Padhai") { showThemeSheet() })
+        items.add(ToolItem("⬆️", "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen aur Padhai") { goToTop() })
+        items.add(ToolItem("🔄", "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen aur Padhai") { toggleRotation() })
+        items.add(ToolItem("♻️", "Refresh page", "dobara load", 0xFF2563EB.toInt(), "App") { webView.reload() })
+        items.add(ToolItem("🏠", "Home page", "shuruati page", 0xFF111827.toInt(), "App") { webView.loadUrl(HOME_URL) })
+        items.add(ToolItem("📤", "App share karo", "doston ko bhejo", 0xFF8B5CF6.toInt(), "App") { shareAppLink() })
+        items.add(ToolItem("🧹", "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
+        items.add(ToolItem("🚪", "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
         return items
     }
 
