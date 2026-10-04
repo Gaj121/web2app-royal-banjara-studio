@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         const val APPINFO_TOOL_ON = true
         const val READ_ALOUD_ON = true
         const val BOOKMARKS_ON = true
-        const val SUPPORT_EMAIL = "support@rbstudiosmusic.site"
+        const val SUPPORT_EMAIL = "adegajanancsc8@gmail.com"
         const val DIRECTION_TOOL_ON = true
         const val MAP_QUERY = "Royal Banjara Studio Music Distribution"
         const val TRANSLATE_TOOL_ON = true
@@ -961,7 +961,7 @@ class MainActivity : AppCompatActivity() {
             val send = Intent(Intent.ACTION_SEND)
             send.setType("text/plain")
             send.putExtra(Intent.EXTRA_SUBJECT, APP_NAME)
-            send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " app try karo! " + HOME_URL)
+            send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " app try karo! " + SITE_LABEL)
             startActivity(Intent.createChooser(send, "App share karo"))
         } catch (e: Exception) {
             Toast.makeText(this, "Share nahi ho paya", Toast.LENGTH_SHORT).show()
@@ -1606,6 +1606,105 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
+    // Saare Quick Tools — sections me grouped: Padhai sabse upar, phir Screen, Page, Files, App, Madad
+    private fun buildToolItems(): List<ToolItem> {
+        val items = mutableListOf<ToolItem>()
+        if (FIND_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_find, "Page me dhoondo", "shabd turant milenge", 0xFF0891B2.toInt(), "Padhai ke Tools") { findInPage() })
+        if (READ_ALOUD_ON) items.add(ToolItem(R.drawable.ic_tool_speaker, "Padh ke sunao", "page bolke padhega", 0xFF6D28D9.toInt(), "Padhai ke Tools") { readAloud() })
+        if (TRANSLATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_translate, "Hindi me padho", "page translate", 0xFF0F766E.toInt(), "Padhai ke Tools") { translatePage() })
+        items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text bada karo", "padhna aasan", 0xFF0EA5E9.toInt(), "Padhai ke Tools") { changeTextSize(15) })
+        items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text chhota karo", "compact view", 0xFF38BDF8.toInt(), "Padhai ke Tools") { changeTextSize(-15) })
+        if (READING_MODE_ON) items.add(ToolItem(R.drawable.ic_tool_bookopen, if (readingModeOn) "Padhai mode band" else "Padhai mode on", "sirf text, aaram se", 0xFFB45309.toInt(), "Padhai ke Tools") { toggleReadingMode() })
+        if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_star, "Bookmark karo", "page save karo", 0xFFEAB308.toInt(), "Padhai ke Tools") { bookmarkCurrentPage() })
+        if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_book, "Mere Bookmarks", "save kiye page", 0xFFD97706.toInt(), "Padhai ke Tools") { showBookmarksSheet() })
+        if (OFFLINE_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_save, "Page save karo", "offline padho baad me", 0xFF0369A1.toInt(), "Padhai ke Tools") { savePageOffline() })
+        if (AUTOSCROLL_ON) items.add(ToolItem(R.drawable.ic_tool_autoscroll, "Auto scroll karo", "page khud chalega", 0xFF92400E.toInt(), "Padhai ke Tools") { autoScrollDialog() })
+        if (KEEPCR_ON) items.add(ToolItem(R.drawable.ic_tool_screenon, if ((window.attributes.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0) "Screen band hone do" else "Screen band na ho", "padhai/video me jalta rahe", 0xFF0D9488.toInt(), "Screen ke Tools") { toggleKeepScreenOn() })
+        if (BRIGHTNESS_ON) items.add(ToolItem(R.drawable.ic_tool_brightness, "Roshni set karo", "screen ki brightness", 0xFFCA8A04.toInt(), "Screen ke Tools") { showBrightnessDialog() })
+        items.add(ToolItem(if (nightOn) R.drawable.ic_tool_sun else R.drawable.ic_tool_moon, if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram", 0xFF1E293B.toInt(), "Screen ke Tools") { toggleNightMode() })
+        if (MUTE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_mute, if (muted) "Aawaz chalu karo" else "Aawaz band karo", "site ki awaaz", 0xFFDB2777.toInt(), "Screen ke Tools") { toggleMute() })
+        if (DATA_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_datasave, if (dataSaveOn) "Photo chalu karo" else "Data save karo", "photo band, data bacho", 0xFF059669.toInt(), "Screen ke Tools") { toggleDataSave() })
+        if (SCREENSHOT_ON) items.add(ToolItem(R.drawable.ic_tool_camera, "Screenshot lo", "page ki photo", 0xFFDC2626.toInt(), "Screen ke Tools") { takeScreenshot() })
+        if (FULLSCREEN_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_fullscreen, if (fullScreenOn) "Full screen band" else "Full screen karo", "poora screen app ka", 0xFF7C3AED.toInt(), "Screen ke Tools") { toggleFullScreen() })
+        if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
+        if (THEME_PICKER_ON) items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen ke Tools") { showThemeSheet() })
+        if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
+        if (ROTATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen ke Tools") { toggleRotation() })
+        items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
+        items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
+        items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
+        items.add(ToolItem(R.drawable.ic_tool_home, "Home page", "shuruati page", 0xFF111827.toInt(), "Page ke Tools") { webView.loadUrl(HOME_URL) })
+        if (URL_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_globe, "Kholo (URL likho)", "seedha page kholo", 0xFF0284C7.toInt(), "Page ke Tools") { openUrlDialog() })
+        if (HISTORY_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_history, "Mera History", "khole hue pages", 0xFF64748B.toInt(), "Page ke Tools") { showHistorySheet() })
+        items.add(ToolItem(R.drawable.ic_tool_print, "Print / PDF", "page ya PDF banao", 0xFF111827.toInt(), "Files aur Print") { printPage() })
+        if (DL_LIST_ON) items.add(ToolItem(R.drawable.ic_tool_download, "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
+        items.add(ToolItem(R.drawable.ic_tool_folder, "Downloads folder", "phone ka folder", 0xFF059669.toInt(), "Files aur Print") { openDownloads() })
+        if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
+        if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
+        if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
+        if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
+        items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
+        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
+        if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
+        return items
+    }
+
+    // — Tool row: poora chauda row — icon chip + naam + sub + arrow. Poora naam ek line me — text kabhi nahi katta —
+    private fun buildToolRow(dialog: Dialog, item: ToolItem): View {
+        val row = LinearLayout(this)
+        row.orientation = LinearLayout.HORIZONTAL
+        row.gravity = Gravity.CENTER_VERTICAL
+        row.setPadding(dp(10), dp(9), dp(12), dp(9))
+        val rowBg = GradientDrawable()
+        rowBg.setColor(0xFFF7F9FC.toInt())
+        rowBg.cornerRadius = dp(16).toFloat()
+        rowBg.setStroke(dp(1), shade(item.accent, 0.90f))
+        row.background = RippleDrawable(ColorStateList.valueOf(shade(item.accent, 0.86f)), rowBg, null)
+        row.elevation = dp(2).toFloat()
+
+        val chip = FrameLayout(this)
+        val chipBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(item.accent, 0.30f), item.accent))
+        chipBg.cornerRadius = dp(13).toFloat()
+        chip.background = chipBg
+        chip.elevation = dp(3).toFloat()
+        val icon = ImageView(this)
+        icon.setImageResource(item.icon)
+        chip.addView(icon, FrameLayout.LayoutParams(dp(21), dp(21), Gravity.CENTER))
+        row.addView(chip, LinearLayout.LayoutParams(dp(42), dp(42)))
+
+        val textBlock = LinearLayout(this)
+        textBlock.orientation = LinearLayout.VERTICAL
+        val label = TextView(this)
+        label.text = item.label
+        label.textSize = 13.5f
+        label.typeface = Typeface.DEFAULT_BOLD
+        label.setTextColor(0xFF111827.toInt())
+        label.maxLines = 1
+        textBlock.addView(label, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        val sub = TextView(this)
+        sub.text = item.sub
+        sub.textSize = 11f
+        sub.setTextColor(0xFF6B7280.toInt())
+        sub.maxLines = 1
+        textBlock.addView(sub, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        row.addView(textBlock, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply { leftMargin = dp(11) })
+
+        val arrow = TextView(this)
+        arrow.text = "›"
+        arrow.textSize = 18f
+        arrow.typeface = Typeface.DEFAULT_BOLD
+        arrow.setTextColor(shade(item.accent, 0.55f))
+        row.addView(arrow, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(4) })
+
+        row.setOnClickListener {
+            bounce(row)
+            dialog.dismiss()
+            item.action()
+        }
+        return row
+    }
+
+
     // — Screen band na ho: padhai/video dekhte waqt screen jalta rahe —
     private fun toggleKeepScreenOn() {
         val on = (window.attributes.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0
@@ -1663,100 +1762,6 @@ class MainActivity : AppCompatActivity() {
             }
             .show()
     }
-    // Saare Quick Tools — sections me grouped: Padhai sabse upar, phir Screen, Page, Files, App, Madad
-    private fun buildToolItems(): List<ToolItem> {
-        val items = mutableListOf<ToolItem>()
-        if (FIND_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_find, "Page me dhoondo", "shabd turant milenge", 0xFF0891B2.toInt(), "Padhai ke Tools") { findInPage() })
-        if (READ_ALOUD_ON) items.add(ToolItem(R.drawable.ic_tool_speaker, "Padh ke sunao", "page bolke padhega", 0xFF6D28D9.toInt(), "Padhai ke Tools") { readAloud() })
-        if (TRANSLATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_translate, "Hindi me padho", "page translate", 0xFF0F766E.toInt(), "Padhai ke Tools") { translatePage() })
-        items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text bada karo", "padhna aasan", 0xFF0EA5E9.toInt(), "Padhai ke Tools") { changeTextSize(15) })
-        items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text chhota karo", "compact view", 0xFF38BDF8.toInt(), "Padhai ke Tools") { changeTextSize(-15) })
-        if (READING_MODE_ON) items.add(ToolItem(R.drawable.ic_tool_bookopen, if (readingModeOn) "Padhai mode band" else "Padhai mode on", "sirf text, aaram se", 0xFFB45309.toInt(), "Padhai ke Tools") { toggleReadingMode() })
-        if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_star, "Bookmark karo", "page save karo", 0xFFEAB308.toInt(), "Padhai ke Tools") { bookmarkCurrentPage() })
-        if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_book, "Mere Bookmarks", "save kiye page", 0xFFD97706.toInt(), "Padhai ke Tools") { showBookmarksSheet() })
-        if (OFFLINE_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_save, "Page save karo", "offline padho baad me", 0xFF0369A1.toInt(), "Padhai ke Tools") { savePageOffline() })
-        if (AUTOSCROLL_ON) items.add(ToolItem(R.drawable.ic_tool_autoscroll, "Auto scroll karo", "page khud chalega", 0xFF92400E.toInt(), "Padhai ke Tools") { autoScrollDialog() })
-        if (KEEPCR_ON) items.add(ToolItem(R.drawable.ic_tool_screenon, if ((window.attributes.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0) "Screen band hone do" else "Screen band na ho", "padhai/video me jalta rahe", 0xFF0D9488.toInt(), "Screen ke Tools") { toggleKeepScreenOn() })
-        if (BRIGHTNESS_ON) items.add(ToolItem(R.drawable.ic_tool_brightness, "Roshni set karo", "screen ki brightness", 0xFFCA8A04.toInt(), "Screen ke Tools") { showBrightnessDialog() })
-        items.add(ToolItem(if (nightOn) R.drawable.ic_tool_sun else R.drawable.ic_tool_moon, if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram", 0xFF1E293B.toInt(), "Screen ke Tools") { toggleNightMode() })
-        if (MUTE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_mute, if (muted) "Aawaz chalu karo" else "Aawaz band karo", "site ki awaaz", 0xFFDB2777.toInt(), "Screen ke Tools") { toggleMute() })
-        if (DATA_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_datasave, if (dataSaveOn) "Photo chalu karo" else "Data save karo", "photo band, data bacho", 0xFF059669.toInt(), "Screen ke Tools") { toggleDataSave() })
-        if (SCREENSHOT_ON) items.add(ToolItem(R.drawable.ic_tool_camera, "Screenshot lo", "page ki photo", 0xFFDC2626.toInt(), "Screen ke Tools") { takeScreenshot() })
-        if (FULLSCREEN_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_fullscreen, if (fullScreenOn) "Full screen band" else "Full screen karo", "poora screen app ka", 0xFF7C3AED.toInt(), "Screen ke Tools") { toggleFullScreen() })
-        if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
-        if (THEME_PICKER_ON) items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen ke Tools") { showThemeSheet() })
-        if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
-        items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
-        items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
-        items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
-        items.add(ToolItem(R.drawable.ic_tool_home, "Home page", "shuruati page", 0xFF111827.toInt(), "Page ke Tools") { webView.loadUrl(HOME_URL) })
-        if (URL_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_globe, "Kholo (URL likho)", "seedha page kholo", 0xFF0284C7.toInt(), "Page ke Tools") { openUrlDialog() })
-        if (HISTORY_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_history, "Mera History", "khole hue pages", 0xFF64748B.toInt(), "Page ke Tools") { showHistorySheet() })
-        items.add(ToolItem(R.drawable.ic_tool_print, "Print / PDF", "page ya PDF banao", 0xFF111827.toInt(), "Files aur Print") { printPage() })
-        if (DL_LIST_ON) items.add(ToolItem(R.drawable.ic_tool_download, "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
-        items.add(ToolItem(R.drawable.ic_tool_folder, "Downloads folder", "phone ka folder", 0xFF059669.toInt(), "Files aur Print") { openDownloads() })
-        if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
-        if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
-        if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
-        return items
-    }
-
-
-    // — Tool row: poora chauda row — icon chip + naam + sub + arrow. Poora naam ek line me — text kabhi nahi katta —
-    private fun buildToolRow(dialog: Dialog, item: ToolItem): View {
-        val row = LinearLayout(this)
-        row.orientation = LinearLayout.HORIZONTAL
-        row.gravity = Gravity.CENTER_VERTICAL
-        row.setPadding(dp(10), dp(9), dp(12), dp(9))
-        val rowBg = GradientDrawable()
-        rowBg.setColor(0xFFF7F9FC.toInt())
-        rowBg.cornerRadius = dp(16).toFloat()
-        rowBg.setStroke(dp(1), shade(item.accent, 0.90f))
-        row.background = RippleDrawable(ColorStateList.valueOf(shade(item.accent, 0.86f)), rowBg, null)
-        row.elevation = dp(2).toFloat()
-
-        val chip = FrameLayout(this)
-        val chipBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(item.accent, 0.30f), item.accent))
-        chipBg.cornerRadius = dp(13).toFloat()
-        chip.background = chipBg
-        chip.elevation = dp(3).toFloat()
-        val icon = ImageView(this)
-        icon.setImageResource(item.icon)
-        chip.addView(icon, FrameLayout.LayoutParams(dp(21), dp(21), Gravity.CENTER))
-        row.addView(chip, LinearLayout.LayoutParams(dp(42), dp(42)))
-
-        val textBlock = LinearLayout(this)
-        textBlock.orientation = LinearLayout.VERTICAL
-        val label = TextView(this)
-        label.text = item.label
-        label.textSize = 13.5f
-        label.typeface = Typeface.DEFAULT_BOLD
-        label.setTextColor(0xFF111827.toInt())
-        label.maxLines = 1
-        textBlock.addView(label, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-        val sub = TextView(this)
-        sub.text = item.sub
-        sub.textSize = 11f
-        sub.setTextColor(0xFF6B7280.toInt())
-        sub.maxLines = 1
-        textBlock.addView(sub, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-        row.addView(textBlock, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply { leftMargin = dp(11) })
-
-        val arrow = TextView(this)
-        arrow.text = "›"
-        arrow.textSize = 18f
-        arrow.typeface = Typeface.DEFAULT_BOLD
-        arrow.setTextColor(shade(item.accent, 0.55f))
-        row.addView(arrow, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(4) })
-
-        row.setOnClickListener {
-            bounce(row)
-            dialog.dismiss()
-            item.action()
-        }
-        return row
-    }
-
 
     // — Padhai mode: sirf text — image, video, ad sab chhup jaate hain — aaram se padho —
     private fun toggleReadingMode() {
