@@ -66,8 +66,8 @@ class MainActivity : AppCompatActivity() {
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio"
-        const val THEME_COLOR = "#3DDC84"
-        const val SPLASH_COLOR = "#0C0F14"
+        const val THEME_COLOR = "#EC4899"
+        const val SPLASH_COLOR = "#F8FAFC"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -82,17 +82,17 @@ class MainActivity : AppCompatActivity() {
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
         const val DL_LIST_ON = true
-        const val PINCH_ZOOM = false
-        const val KEEP_SCREEN_ON = false
-        const val FULLSCREEN_ON = false
-        const val WHATSAPP_ON = false
-        const val WHATSAPP_NUMBER = ""
+        const val PINCH_ZOOM = true
+        const val KEEP_SCREEN_ON = true
+        const val FULLSCREEN_ON = true
+        const val WHATSAPP_ON = true
+        const val WHATSAPP_NUMBER = "919370612297"
         const val WHATSAPP_MESSAGE = "Hello! Mujhe jaankari chahiye"
         const val NIGHT_MODE_ON = true
         const val TEXT_SIZE_ON = true
         const val BACK_TWICE_ON = true
         const val CLEAR_CACHE_ON = true
-        const val EXIT_ITEM_ON = false
+        const val EXIT_ITEM_ON = true
     }
 
     private lateinit var webView: WebView
@@ -122,8 +122,9 @@ class MainActivity : AppCompatActivity() {
 
     private val navEntries: Array<NavEntry> = arrayOf(
         NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
-        NavEntry("Products", "https://rbstudiosmusic.kliv.site/products", R.drawable.ic_nav_grid),
-        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone)
+        NavEntry("Login ", "https://rbstudiosmusic.kliv.site/login", R.drawable.ic_nav_grid),
+        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone),
+        NavEntry("Support ", "https://rbstudiosmusic.raiseaticket.com", R.drawable.ic_nav_chat)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -712,6 +713,7 @@ class MainActivity : AppCompatActivity() {
         items.add(ToolItem("A+", "Text bada karo", "padhna aasan") { changeTextSize(15) })
         items.add(ToolItem("A−", "Text chhota karo", "compact view") { changeTextSize(-15) })
         items.add(ToolItem("🧹", "Cache clear", "speed badhao") { clearAppCache() })
+        items.add(ToolItem("🚪", "App band karo", "seedha close") { finishAffinity() })
         return items
     }
 
