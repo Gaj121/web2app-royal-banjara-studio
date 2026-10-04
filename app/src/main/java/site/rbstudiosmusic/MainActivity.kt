@@ -118,9 +118,9 @@ class MainActivity : AppCompatActivity() {
         const val ROTATE_TOOL_ON = true
         const val FIND_TOOL_ON = true
         const val APPINFO_TOOL_ON = true
-        const val SUPPORT_EMAIL = "support@rbstudiosmusic.site"
         const val READ_ALOUD_ON = true
         const val BOOKMARKS_ON = true
+        const val SUPPORT_EMAIL = "support@rbstudiosmusic.site"
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
         val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
@@ -1321,7 +1321,6 @@ class MainActivity : AppCompatActivity() {
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
         if (FIND_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_find, "Page me dhoondo", "shabd turant milenge", 0xFF0891B2.toInt(), "Screen aur Padhai") { findInPage() })
-        if (READ_ALOUD_ON) items.add(ToolItem(R.drawable.ic_tool_speaker, "Padh ke sunao", "page bolke padhega", 0xFF6D28D9.toInt(), "Screen aur Padhai") { readAloud() })
         items.add(ToolItem(R.drawable.ic_tool_print, "Print / PDF", "page ya PDF banao", 0xFF111827.toInt(), "Files aur Print") { printPage() })
         items.add(ToolItem(R.drawable.ic_tool_camera, "Screenshot lo", "page ki photo", 0xFFDC2626.toInt(), "Files aur Print") { takeScreenshot() })
         items.add(ToolItem(R.drawable.ic_tool_download, "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
@@ -1329,6 +1328,7 @@ class MainActivity : AppCompatActivity() {
         if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_star, "Bookmark karo", "page save karo", 0xFFEAB308.toInt(), "Save kiye hue") { bookmarkCurrentPage() })
         if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_book, "Mere Bookmarks", "save kiye page", 0xFFD97706.toInt(), "Save kiye hue") { showBookmarksSheet() })
         items.add(ToolItem(if (nightOn) R.drawable.ic_tool_sun else R.drawable.ic_tool_moon, if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram", 0xFF1E293B.toInt(), "Screen aur Padhai") { toggleNightMode() })
+        if (READ_ALOUD_ON) items.add(ToolItem(R.drawable.ic_tool_speaker, "Padh ke sunao", "page bolke padhega", 0xFF6D28D9.toInt(), "Screen aur Padhai") { readAloud() })
         items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text bada karo", "padhna aasan", 0xFF0EA5E9.toInt(), "Screen aur Padhai") { changeTextSize(15) })
         items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text chhota karo", "compact view", 0xFF0EA5E9.toInt(), "Screen aur Padhai") { changeTextSize(-15) })
         items.add(ToolItem(R.drawable.ic_tool_fullscreen, if (fullScreenOn) "Full screen band" else "Full screen karo", "poora screen app ka", 0xFF7C3AED.toInt(), "Screen aur Padhai") { toggleFullScreen() })
