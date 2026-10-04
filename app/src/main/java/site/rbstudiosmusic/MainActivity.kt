@@ -4,6 +4,7 @@ import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.DownloadManager
 import android.app.Dialog
 import android.content.ActivityNotFoundException
@@ -26,6 +27,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.print.PrintManager
+import android.provider.Settings
+import android.text.InputType
 import android.util.Base64
 import android.view.Gravity
 import android.view.View
@@ -48,6 +51,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -60,6 +64,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -109,8 +114,11 @@ class MainActivity : AppCompatActivity() {
         const val FULLSCREEN_TOOL_ON = true
         const val GO_TOP_ON = true
         const val ROTATE_TOOL_ON = true
+        const val FIND_TOOL_ON = true
+        const val APPINFO_TOOL_ON = true
+        const val SUPPORT_EMAIL = "support@rbstudiosmusic.site"
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
-        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37")
+        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         const val BLOB_HOOK_JS = "(function(){\nif (window.__appbanaoDl) return; window.__appbanaoDl = 1;\nvar CH = 262144;\nfunction sendBlob(blob, name, mime) {\n  try {\n    var total = blob.size;\n    var off = 0;\n    var fr = new FileReader();\n    window.AndroidDownloads && window.AndroidDownloads.blobSaveStart(name || 'download.bin', (mime || blob.type || 'application/octet-stream').split(',')[0]);\n    fr.onload = function() {\n      try {\n        var arr = new Uint8Array(fr.result);\n        var s = '';\n        for (var i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);\n        window.AndroidDownloads && window.AndroidDownloads.blobSaveChunk(btoa(s));\n      } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); return; }\n      off += CH;\n      if (off < total) fr.readAsArrayBuffer(blob.slice(off, off + CH));\n      else window.AndroidDownloads && window.AndroidDownloads.blobSaveDone();\n    };\n    fr.onerror = function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); };\n    fr.readAsArrayBuffer(blob.slice(0, CH));\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nfunction grab(url, name) {\n  try {\n    fetch(url).then(function(r) { return r.blob(); }).then(function(b) { sendBlob(b, name, b.type); }).catch(function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); });\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nwindow.__appbanaoGrab = grab;\ndocument.addEventListener('click', function(e) {\n  var t = e.target;\n  while (t && t.tagName !== 'A') t = t.parentElement;\n  if (!t) return;\n  var href = t.getAttribute('href') || '';\n  if (href.indexOf('blob:') === 0 || href.indexOf('data:') === 0) {\n    e.preventDefault(); e.stopPropagation();\n    var nm = t.getAttribute('download') || (document.title ? document.title.replace(/[\\\\/:*?\"<>|]/g, '').slice(0, 40) : 'download.bin');\n    grab(href, nm);\n  }\n}, true);\n})();"
     }
@@ -122,7 +130,6 @@ class MainActivity : AppCompatActivity() {
     private var introOverlay: FrameLayout? = null
     private var welcomeOverlay: FrameLayout? = null
     private var welcomeCenter: LinearLayout? = null
-    private var welcomeBottom: LinearLayout? = null
     private var welcomeHeader: LinearLayout? = null
     private var accentColor = 0
     private var moreBtn: TextView? = null
@@ -304,6 +311,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onPause() {
+        webView.onPause()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        webView.onResume()
     }
 
     override fun onDestroy() {
@@ -902,6 +919,84 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // App ki asli APK file share — dost file kholte hi install kar sakta hai
+    private fun shareApkNow() {
+        try {
+            val ai = packageManager.getApplicationInfo(packageName, 0)
+            val srcFile = File(ai.sourceDir)
+            val safe = APP_NAME.replace(Regex("[^A-Za-z0-9_-]"), "_").ifBlank { "MyApp" }
+            val dest = File(cacheDir, safe + ".apk")
+            Toast.makeText(this, "APK file taiyaar ho rahi hai...", Toast.LENGTH_SHORT).show()
+            Thread {
+                try {
+                    srcFile.copyTo(dest, overwrite = true)
+                    runOnUiThread {
+                        try {
+                            val uri = FileProvider.getUriForFile(this, packageName + ".fileprovider", dest)
+                            val send = Intent(Intent.ACTION_SEND)
+                            send.type = "application/vnd.android.package-archive"
+                            send.putExtra(Intent.EXTRA_STREAM, uri)
+                            send.putExtra(Intent.EXTRA_SUBJECT, APP_NAME + " app install karo")
+                            send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " ki app — file kholte hi install ho jayegi")
+                            send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            startActivity(Intent.createChooser(send, APP_NAME + " ki APK share karo"))
+                        } catch (e: Exception) {
+                            shareAppLink()
+                        }
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread { shareAppLink() }
+                }
+            }.start()
+        } catch (e: Exception) {
+            shareAppLink()
+        }
+    }
+
+    private fun findInPage() {
+        val input = EditText(this)
+        input.hint = "kya dhoondna hai?"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        input.setSingleLine(true)
+        val wrap = FrameLayout(this)
+        wrap.setPadding(dp(16), dp(10), dp(16), 0)
+        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("Page me dhoondo")
+            .setView(wrap)
+            .setPositiveButton("Dhoondo") { _, _ ->
+                val q = input.text.toString().trim()
+                if (q.isNotEmpty()) {
+                    webView.findAllAsync(q)
+                    Toast.makeText(this, "shabd highlight ho gaya — page me dekho", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    private fun emailSupport() {
+        val to = SUPPORT_EMAIL
+        if (to.isBlank()) {
+            shareAppLink()
+            return
+        }
+        try {
+            val uri = Uri.parse("mailto:" + to + "?subject=" + Uri.encode(APP_NAME + " sawaal") + "&body=" + Uri.encode("Namaste,\n\n"))
+            startActivity(Intent.createChooser(Intent(Intent.ACTION_SENDTO, uri), "Email bhejo"))
+        } catch (e: Exception) {
+            openExternal(Uri.parse("mailto:" + to))
+        }
+    }
+
+    private fun openAppSettings() {
+        try {
+            startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)))
+        } catch (e: Exception) {
+            Toast.makeText(this, "App settings nahi khul payi", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun buildMoreButton(): TextView {
         val btn = TextView(this)
         btn.text = "⋮"
@@ -1025,28 +1120,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
         row?.let { r -> content.addView(r, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)) }
-        sheet.addView(scroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-
-        dialog.setContentView(sheet)
-        val window = dialog.window
-        if (window != null) {
-            window.setBackgroundDrawableResource(android.R.color.transparent)
-            window.setGravity(Gravity.BOTTOM)
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        }
-        sheet.translationY = dp(320).toFloat()
-        sheet.alpha = 0f
-        dialog.show()
-        sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
-        cards.forEachIndexed { i, c ->
-            c.alpha = 0f
-            c.translationY = dp(16).toFloat()
-            c.animate().alpha(1f).translationY(0f).setDuration(260).setStartDelay((i * 28).toLong()).start()
-        }
-    }
-
-    private fun buildToolItems(): List<ToolItem> {
+        // Scroll height fix — sheet screen se bahar na jaye, neeche ke options bhi poore dikhen
+        val screenH = resources.displayMetrics.heightPixels
+        val maxScroll = (screenH * 0.60f).toInt()
+        content.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val scrollH = kotlin.math.min(content.measuredHeight, maxScroll)
+        sheet.addView(scroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, scrollH))
         val items = mutableListOf<ToolItem>()
+        if (FIND_TOOL_ON) items.add(ToolItem("🔍", "Page me dhoondo", "shabd turant milenge", 0xFF0891B2.toInt(), "Screen aur Padhai") { findInPage() })
         items.add(ToolItem("🖨️", "Print / PDF", "page ya PDF banao", 0xFF111827.toInt(), "Files aur Print") { printPage() })
         items.add(ToolItem("📸", "Screenshot lo", "page ki photo", 0xFFDC2626.toInt(), "Files aur Print") { takeScreenshot() })
         items.add(ToolItem("📥", "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
@@ -1061,9 +1142,11 @@ class MainActivity : AppCompatActivity() {
         items.add(ToolItem("🔄", "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen aur Padhai") { toggleRotation() })
         items.add(ToolItem("♻️", "Refresh page", "dobara load", 0xFF2563EB.toInt(), "App") { webView.reload() })
         items.add(ToolItem("🏠", "Home page", "shuruati page", 0xFF111827.toInt(), "App") { webView.loadUrl(HOME_URL) })
-        items.add(ToolItem("📤", "App share karo", "doston ko bhejo", 0xFF8B5CF6.toInt(), "App") { shareAppLink() })
+        items.add(ToolItem("📤", "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
         items.add(ToolItem("🧹", "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
         items.add(ToolItem("🚪", "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
+        if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem("✉️", "Email karo", "seedha humein likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
+        items.add(ToolItem("ℹ️", "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         return items
     }
 
@@ -1071,27 +1154,28 @@ class MainActivity : AppCompatActivity() {
         val card = LinearLayout(this)
         card.orientation = LinearLayout.VERTICAL
         card.gravity = Gravity.CENTER_HORIZONTAL
-        card.setPadding(dp(10), dp(13), dp(10), dp(11))
+        card.setPadding(dp(10), dp(14), dp(10), dp(12))
         val cardBg = GradientDrawable()
-        cardBg.setColor(0xFFFFFFFF.toInt())
-        cardBg.cornerRadius = dp(20).toFloat()
-        cardBg.setStroke(dp(1), shade(item.accent, 0.90f))
+        cardBg.setColor(0xFFF8FAFC.toInt())
+        cardBg.cornerRadius = dp(22).toFloat()
+        cardBg.setStroke(dp(1), shade(item.accent, 0.86f))
         card.background = cardBg
-        card.foreground = RippleDrawable(ColorStateList.valueOf(shade(item.accent, 0.86f)), null, null)
-        card.elevation = dp(2).toFloat()
+        card.foreground = RippleDrawable(ColorStateList.valueOf(shade(item.accent, 0.82f)), null, null)
+        card.elevation = dp(3).toFloat()
 
         val chip = FrameLayout(this)
         val chipBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(item.accent, 0.30f), item.accent))
-        chipBg.cornerRadius = dp(16).toFloat()
+        chipBg.cornerRadius = dp(17).toFloat()
         chip.background = chipBg
-        chip.elevation = dp(3).toFloat()
+        chip.elevation = dp(4).toFloat()
         val icon = TextView(this)
         icon.text = item.icon
-        icon.textSize = 20f
+        icon.textSize = 21f
         icon.typeface = Typeface.DEFAULT_BOLD
         icon.gravity = Gravity.CENTER
+        icon.setShadowLayer(dp(2).toFloat(), 0f, dp(1).toFloat(), 0x40000000)
         chip.addView(icon, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-        card.addView(chip, LinearLayout.LayoutParams(dp(46), dp(46)))
+        card.addView(chip, LinearLayout.LayoutParams(dp(50), dp(50)))
 
         val label = TextView(this)
         label.text = item.label
@@ -1892,6 +1976,8 @@ class MainActivity : AppCompatActivity() {
         webView.settings.builtInZoomControls = PINCH_ZOOM
         webView.settings.displayZoomControls = false
         webView.settings.mediaPlaybackRequiresUserGesture = false
+        webView.settings.cacheMode = WebSettings.LOAD_DEFAULT
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         webView.settings.javaScriptCanOpenWindowsAutomatically = true
         webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
         CookieManager.getInstance().setAcceptCookie(true)
@@ -1901,11 +1987,20 @@ class MainActivity : AppCompatActivity() {
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 val uri = request.url
                 val scheme = uri.scheme?.lowercase() ?: return false
-                if (scheme == "mailto" || scheme == "tel" || scheme == "sms" || scheme == "intent" || scheme == "whatsapp") {
+                // Email / call / WhatsApp / Maps links — sab direct apni app me khulte hain
+                if (scheme == "mailto" || scheme == "tel" || scheme == "sms" || scheme == "intent" || scheme == "whatsapp" || scheme == "geo") {
                     openExternal(uri)
                     return true
                 }
                 if (scheme == "http" || scheme == "https") {
+                    // Google Maps / directions / email-compose links ko WebView me mat kholo — Maps/Gmail app khule
+                    val linkHost = uri.host?.lowercase() ?: ""
+                    val isMaps = linkHost == "maps.google.com" || linkHost.endsWith(".google.com") && (linkHost.startsWith("maps") || linkHost.startsWith("www.google.com")) && (uri.query ?: "").contains("directions")
+                    val isGmail = linkHost == "mail.google.com"
+                    if (isMaps || isGmail) {
+                        openExternal(uri)
+                        return true
+                    }
                     val host = uri.host?.lowercase() ?: return false
                     val sameSite = host == HOME_HOST || host.endsWith("." + HOME_HOST)
                     if (OPEN_EXTERNAL && !sameSite) {
@@ -1992,7 +2087,16 @@ class MainActivity : AppCompatActivity() {
         try {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, "Koi app nahi mila is link ke liye", Toast.LENGTH_SHORT).show()
+            try {
+                // koi direct app na mile to chooser se khulo (Gmail/Chrome/Maps me se chuno)
+                val fallback = Intent(Intent.ACTION_VIEW, uri)
+                fallback.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(Intent.createChooser(fallback, "Kaunsa app khole?"))
+            } catch (e2: Exception) {
+                Toast.makeText(this, "Ye link is phone par nahi khul paya", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Ye link nahi khul paya", Toast.LENGTH_SHORT).show()
         }
     }
 
