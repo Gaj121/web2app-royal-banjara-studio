@@ -88,6 +88,10 @@ class MainActivity : AppCompatActivity() {
         const val KEEPCR_ON = true
         const val BRIGHTNESS_ON = true
         const val AUTOSCROLL_ON = true
+        const val SITE_SEARCH_ON = true
+        const val DICT_TOOL_ON = true
+        const val TTS_SPEED_ON = true
+        const val COOKIES_CLEAR_ON = true
         const val THEME_COLOR = "#3DDC84"
         const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
@@ -144,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         const val DATA_SAVE_ON = true
         const val URL_TOOL_ON = true
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
-        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F")
+        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         const val BLOB_HOOK_JS = "(function(){\nif (window.__appbanaoDl) return; window.__appbanaoDl = 1;\nvar CH = 262144;\nfunction sendBlob(blob, name, mime) {\n  try {\n    var total = blob.size;\n    var off = 0;\n    var fr = new FileReader();\n    window.AndroidDownloads && window.AndroidDownloads.blobSaveStart(name || 'download.bin', (mime || blob.type || 'application/octet-stream').split(',')[0]);\n    fr.onload = function() {\n      try {\n        var arr = new Uint8Array(fr.result);\n        var s = '';\n        for (var i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);\n        window.AndroidDownloads && window.AndroidDownloads.blobSaveChunk(btoa(s));\n      } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); return; }\n      off += CH;\n      if (off < total) fr.readAsArrayBuffer(blob.slice(off, off + CH));\n      else window.AndroidDownloads && window.AndroidDownloads.blobSaveDone();\n    };\n    fr.onerror = function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); };\n    fr.readAsArrayBuffer(blob.slice(0, CH));\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nfunction grab(url, name) {\n  try {\n    fetch(url).then(function(r) { return r.blob(); }).then(function(b) { sendBlob(b, name, b.type); }).catch(function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); });\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nwindow.__appbanaoGrab = grab;\ndocument.addEventListener('click', function(e) {\n  var t = e.target;\n  while (t && t.tagName !== 'A') t = t.parentElement;\n  if (!t) return;\n  var href = t.getAttribute('href') || '';\n  if (href.indexOf('blob:') === 0 || href.indexOf('data:') === 0) {\n    e.preventDefault(); e.stopPropagation();\n    var nm = t.getAttribute('download') || (document.title ? document.title.replace(/[\\\\/:*?\"<>|]/g, '').slice(0, 40) : 'download.bin');\n    grab(href, nm);\n  }\n}, true);\n})();"
     }
@@ -1132,7 +1136,7 @@ class MainActivity : AppCompatActivity() {
             nm.maxLines = 1
             block.addView(nm)
             val ur = TextView(this)
-            ur.text = url
+            ur.text = friendlyPath(url)
             ur.textSize = 10.5f
             ur.setTextColor(0xFF8A94A6.toInt())
             ur.maxLines = 1
@@ -1309,6 +1313,22 @@ class MainActivity : AppCompatActivity() {
         sub.textSize = 13f
         sub.setTextColor(0xFF64748B.toInt())
         sheet.addView(sub, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(2) })
+        val clr = TextView(this)
+        clr.text = "History saaf karo"
+        clr.textSize = 12.5f
+        clr.typeface = Typeface.DEFAULT_BOLD
+        clr.setTextColor(0xFFDC2626.toInt())
+        val clrBg = GradientDrawable()
+        clrBg.setColor(0xFFFEE2E2.toInt())
+        clrBg.cornerRadius = dp(12).toFloat()
+        clr.background = clrBg
+        clr.setPadding(dp(12), dp(6), dp(12), dp(6))
+        clr.setOnClickListener {
+            webView.clearHistory()
+            dialog.dismiss()
+            Toast.makeText(this, "History saaf ho gayi", Toast.LENGTH_SHORT).show()
+        }
+        sheet.addView(clr, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(8) })
         val scroll = ScrollView(this)
         scroll.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(10) }
         val list = LinearLayout(this)
@@ -1319,7 +1339,7 @@ class MainActivity : AppCompatActivity() {
         for (i in 0 until hist.size) {
             val item = hist.getItemAtIndex(i)
             val url = item.url ?: continue
-            val name = if (item.title.isNullOrBlank()) url else item.title
+            val name = if (item.title.isNullOrBlank()) friendlyPath(url) else item.title
             val row = LinearLayout(this)
             row.orientation = LinearLayout.VERTICAL
             val rowBg = GradientDrawable()
@@ -1336,7 +1356,7 @@ class MainActivity : AppCompatActivity() {
             t1.ellipsize = android.text.TextUtils.TruncateAt.END
             row.addView(t1)
             val t2 = TextView(this)
-            t2.text = if (i == cur) "● abhi yahin ho" else url
+            t2.text = if (i == cur) "● abhi yahin ho" else friendlyPath(url)
             t2.textSize = 12f
             t2.setTextColor(if (i == cur) 0xFF2563EB.toInt() else 0xFF94A3B8.toInt())
             t2.maxLines = 1
@@ -1606,12 +1626,152 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
+    // — Screen band na ho: padhai/video dekhte waqt screen jalta rahe —
+    private fun toggleKeepScreenOn() {
+        val on = (window.attributes.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0
+        if (on) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            Toast.makeText(this, "Screen ab wapas band ho sakta hai", Toast.LENGTH_SHORT).show()
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            Toast.makeText(this, "Screen jalta rahega — band nahi hoga", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Roshni (brightness): slider ghumao, aankhon ko aaram —
+    private fun showBrightnessDialog() {
+        val cur = window.attributes.screenBrightness
+        val start = ((if (cur < 0f) 0.6f else cur) * 100).toInt().coerceIn(5, 100)
+        val seek = android.widget.SeekBar(this)
+        seek.max = 100
+        seek.progress = start
+        seek.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(s: android.widget.SeekBar?, p: Int, fromUser: Boolean) {
+                val lp = window.attributes
+                lp.screenBrightness = (p / 100f).coerceAtLeast(0.06f)
+                window.attributes = lp
+            }
+            override fun onStartTrackingTouch(s: android.widget.SeekBar?) {}
+            override fun onStopTrackingTouch(s: android.widget.SeekBar?) {}
+        })
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.setPadding(dp(20), dp(6), dp(20), 0)
+        wrap.addView(seek, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("Roshni set karo")
+            .setMessage("Slider ghumao — screen ki roshni turant badlegi")
+            .setView(wrap)
+            .setPositiveButton("Ho gaya", null)
+            .show()
+    }
+
+    // — Auto scroll: page khud dheere-dheere chalega, aaram se padho —
+    private fun autoScrollDialog() {
+        val speeds = arrayOf("Dheema — aaram se", "Normal", "Tez — fast")
+        AlertDialog.Builder(this)
+            .setTitle("Auto scroll")
+            .setMessage("Speed chuno — page khud scroll karega")
+            .setItems(speeds) { _, which ->
+                val px = intArrayOf(2, 3, 6)[which]
+                webView.evaluateJavascript("(function(){if(window.__rbScroll){clearInterval(window.__rbScroll)}window.__rbScroll=setInterval(function(){window.scrollBy(0," + px + ");if((window.innerHeight+window.scrollY)>=document.body.scrollHeight){clearInterval(window.__rbScroll);window.__rbScroll=null}},50)})()", null)
+                Toast.makeText(this, "Auto scroll chalu — rokne ke liye dobara yahi tool dabao", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Scroll roko") { _, _ ->
+                webView.evaluateJavascript("(function(){if(window.__rbScroll){clearInterval(window.__rbScroll);window.__rbScroll=null}})()", null)
+                Toast.makeText(this, "Auto scroll band ho gaya", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
+    // — URL se sirf path — Bookmarks/History me site ka domain (jaise rbstudiosmusic.kliv.site) kabhi nahi dikhta —
+    private fun friendlyPath(raw: String): String {
+        var p = raw
+        val scheme = p.indexOf("://")
+        if (scheme >= 0) p = p.substring(scheme + 3)
+        val slash = p.indexOf("/")
+        val path = if (slash >= 0) p.substring(slash) else "/"
+        val clean = path.substringBefore('?').substringBefore('#').trimEnd('/')
+        return if (clean.isBlank()) "Home page" else clean
+    }
+
+    // — Site me dhoondo: Google se sirf is site ke andar search —
+    private fun siteSearchDialog() {
+        val input = EditText(this)
+        input.hint = "kya dhoondna hai is site me?"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        input.setSingleLine(true)
+        val wrap = FrameLayout(this)
+        wrap.setPadding(dp(16), dp(10), dp(16), 0)
+        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("Site me dhoondo")
+            .setView(wrap)
+            .setPositiveButton("Dhoondo") { _, _ ->
+                val q = input.text.toString().trim()
+                if (q.isNotEmpty()) {
+                    val host = Uri.parse(HOME_URL).host ?: ""
+                    webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q + " site:" + host, "UTF-8"))
+                }
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Shabd ka matlab: kisi bhi shabd ka Hindi meaning —
+    private fun dictDialog() {
+        val input = EditText(this)
+        input.hint = "shabd likho — matlab milega"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        input.setSingleLine(true)
+        val wrap = FrameLayout(this)
+        wrap.setPadding(dp(16), dp(10), dp(16), 0)
+        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("Shabd ka matlab")
+            .setView(wrap)
+            .setPositiveButton("Dekho") { _, _ ->
+                val q = input.text.toString().trim()
+                if (q.isNotEmpty()) {
+                    webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q + " meaning in hindi", "UTF-8"))
+                }
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Sunne ki raftaar: Padh ke sunao ki awaaz dheemi/tez —
+    private fun ttsSpeedDialog() {
+        val speeds = arrayOf("Dheemi — 0.75x", "Normal — 1x", "Tez — 1.25x", "Bahut tez — 1.5x")
+        AlertDialog.Builder(this)
+            .setTitle("Sunne ki raftaar")
+            .setMessage("Padh ke sunao wali awaaz ki speed chuno")
+            .setItems(speeds) { _, which ->
+                val rate = floatArrayOf(0.75f, 1f, 1.25f, 1.5f)[which]
+                tts?.setSpeechRate(rate)
+                Toast.makeText(this, "Awaaz ki raftaar set ho gayi", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
+
+    // — Cookies clear: login data saaf karke privacy —
+    private fun clearCookiesNow() {
+        try {
+            CookieManager.getInstance().removeAllCookies(null)
+            CookieManager.getInstance().flush()
+            Toast.makeText(this, "Cookies saaf ho gaye — privacy lock lag gaya", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Cookies clear nahi ho paye", Toast.LENGTH_SHORT).show()
+        }
+    }
     // Saare Quick Tools — sections me grouped: Padhai sabse upar, phir Screen, Page, Files, App, Madad
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
         if (FIND_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_find, "Page me dhoondo", "shabd turant milenge", 0xFF0891B2.toInt(), "Padhai ke Tools") { findInPage() })
         if (READ_ALOUD_ON) items.add(ToolItem(R.drawable.ic_tool_speaker, "Padh ke sunao", "page bolke padhega", 0xFF6D28D9.toInt(), "Padhai ke Tools") { readAloud() })
+        if (TTS_SPEED_ON) items.add(ToolItem(R.drawable.ic_tool_speed, "Sunne ki raftaar", "awaaz tez/dheemi", 0xFF4F46E5.toInt(), "Padhai ke Tools") { ttsSpeedDialog() })
         if (TRANSLATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_translate, "Hindi me padho", "page translate", 0xFF0F766E.toInt(), "Padhai ke Tools") { translatePage() })
+        if (DICT_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_dict, "Shabd ka matlab", "meaning turant", 0xFF7C2D12.toInt(), "Padhai ke Tools") { dictDialog() })
+        if (SITE_SEARCH_ON) items.add(ToolItem(R.drawable.ic_tool_sitesearch, "Site me dhoondo", "Google se isi site me", 0xFF0E7490.toInt(), "Padhai ke Tools") { siteSearchDialog() })
         items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text bada karo", "padhna aasan", 0xFF0EA5E9.toInt(), "Padhai ke Tools") { changeTextSize(15) })
         items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text chhota karo", "compact view", 0xFF38BDF8.toInt(), "Padhai ke Tools") { changeTextSize(-15) })
         if (READING_MODE_ON) items.add(ToolItem(R.drawable.ic_tool_bookopen, if (readingModeOn) "Padhai mode band" else "Padhai mode on", "sirf text, aaram se", 0xFFB45309.toInt(), "Padhai ke Tools") { toggleReadingMode() })
@@ -1629,7 +1789,6 @@ class MainActivity : AppCompatActivity() {
         if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
         if (THEME_PICKER_ON) items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen ke Tools") { showThemeSheet() })
         if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
-        if (ROTATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen ke Tools") { toggleRotation() })
         items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
         items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
         items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
@@ -1641,13 +1800,11 @@ class MainActivity : AppCompatActivity() {
         items.add(ToolItem(R.drawable.ic_tool_folder, "Downloads folder", "phone ka folder", 0xFF059669.toInt(), "Files aur Print") { openDownloads() })
         if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
         if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
-        if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
-        if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
-        items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
-        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
+        if (COOKIES_CLEAR_ON) items.add(ToolItem(R.drawable.ic_tool_cookie, "Cookies clear", "login data saaf", 0xFFB45309.toInt(), "App") { clearCookiesNow() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         return items
     }
+
 
     // — Tool row: poora chauda row — icon chip + naam + sub + arrow. Poora naam ek line me — text kabhi nahi katta —
     private fun buildToolRow(dialog: Dialog, item: ToolItem): View {
