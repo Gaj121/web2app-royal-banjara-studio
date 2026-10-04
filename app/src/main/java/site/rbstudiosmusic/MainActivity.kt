@@ -1736,7 +1736,7 @@ class MainActivity : AppCompatActivity() {
                         AlertDialog.Builder(this@MainActivity)
                             .setTitle("Photo save karo")
                             .setMessage("Jo photo chahiye use dabao — download ho jayegi")
-                            .setItems(names) { _, which -> startDownload(urls[which]) }
+                            .setItems(names) { _, which -> startDownload(urls[which], webView.settings.userAgentString, "attachment", "image/*") }
                             .setNegativeButton("Band", null)
                             .show()
                     }
