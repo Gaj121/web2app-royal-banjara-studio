@@ -13,6 +13,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -81,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         const val INTRO_ON = true
         const val WELCOME_ON = true
         const val WELCOME_TEXT = "Welcome to Royal Banjara Studio Music Distribution Company"
+        const val VERSION_NAME = "1.0"
         const val TOOLS_ON = true
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
@@ -108,6 +111,8 @@ class MainActivity : AppCompatActivity() {
     private var navBar: LinearLayout? = null
     private var introOverlay: FrameLayout? = null
     private var welcomeOverlay: FrameLayout? = null
+    private var welcomeCenter: LinearLayout? = null
+    private var welcomeBottom: LinearLayout? = null
     private val navIcons = mutableListOf<ImageView>()
     private val navLabels = mutableListOf<TextView>()
     private val pillHolders = mutableListOf<FrameLayout>()
@@ -434,6 +439,17 @@ class MainActivity : AppCompatActivity() {
         ov.alpha = 1f
         ov.visibility = View.VISIBLE
         ov.animate().translationY(0f).setDuration(560).setInterpolator(OvershootInterpolator(0.8f)).start()
+        welcomeCenter?.let { c ->
+            c.alpha = 0f
+            c.scaleX = 0.92f
+            c.scaleY = 0.92f
+            c.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(480).setStartDelay(160).start()
+        }
+        welcomeBottom?.let { b ->
+            b.alpha = 0f
+            b.translationY = dp(34).toFloat()
+            b.animate().alpha(1f).translationY(0f).setDuration(480).setStartDelay(240).start()
+        }
     }
 
     private fun dismissWelcome() {
@@ -675,6 +691,64 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun takeScreenshot() {
+        try {
+            webView.invalidate()
+            val w = webView.width.coerceAtLeast(1)
+            val h = webView.height.coerceAtLeast(1)
+            val bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            webView.draw(canvas)
+            val stamp = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.US).format(java.util.Date())
+            val safeApp = APP_NAME.replace(Regex("[^A-Za-z0-9_-]"), "_")
+            val fileName = safeApp + "_" + stamp + ".png"
+            var savedUri: Uri? = null
+            if (Build.VERSION.SDK_INT >= 29) {
+                val values = android.content.ContentValues()
+                values.put(android.provider.MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                values.put(android.provider.MediaStore.Images.Media.MIME_TYPE, "image/png")
+                values.put(android.provider.MediaStore.Images.Media.IS_PENDING, 1)
+                val dest = contentResolver.insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values) ?: throw IllegalStateException("save fail")
+                contentResolver.openOutputStream(dest)?.use { out -> bitmap.compress(Bitmap.CompressFormat.PNG, 100, out) }
+                val done = android.content.ContentValues()
+                done.put(android.provider.MediaStore.Images.Media.IS_PENDING, 0)
+                contentResolver.update(dest, done, null, null)
+                savedUri = dest
+            } else {
+                val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_NAME)
+                if (!dir.exists()) dir.mkdirs()
+                val outFile = File(dir, fileName)
+                outFile.outputStream().use { out -> bitmap.compress(Bitmap.CompressFormat.PNG, 100, out) }
+                MediaScannerConnection.scanFile(this, arrayOf(outFile.absolutePath), arrayOf("image/png"), null)
+                savedUri = Uri.fromFile(outFile)
+            }
+            Toast.makeText(this, "Screenshot save ho gaya — Gallery me dekho", Toast.LENGTH_SHORT).show()
+            try {
+                val send = Intent(Intent.ACTION_SEND)
+                send.setType("image/png")
+                send.putExtra(Intent.EXTRA_STREAM, savedUri)
+                send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                startActivity(Intent.createChooser(send, "Screenshot share karo"))
+            } catch (e: Exception) {
+                // save ho gaya — share optional hai
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Screenshot nahi le paya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun shareAppLink() {
+        try {
+            val send = Intent(Intent.ACTION_SEND)
+            send.setType("text/plain")
+            send.putExtra(Intent.EXTRA_SUBJECT, APP_NAME)
+            send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " app try karo! " + HOME_URL)
+            startActivity(Intent.createChooser(send, "App share karo"))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Share nahi ho paya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun buildMoreButton(): TextView {
 
         val btn = TextView(this)
@@ -788,6 +862,8 @@ class MainActivity : AppCompatActivity() {
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
         items.add(ToolItem("🖨️", "Print / PDF", "page ya PDF banao") { printPage() })
+        items.add(ToolItem("📸", "Screenshot lo", "page ki photo") { takeScreenshot() })
+        items.add(ToolItem("📤", "App share karo", "doston ko bhejo") { shareAppLink() })
         items.add(ToolItem("📥", "Mere Downloads", "app ki hi list") { showDownloadsSheet() })
         items.add(ToolItem("📂", "Downloads folder", "phone ka folder") { openDownloads() })
         items.add(ToolItem("🔄", "Refresh page", "dobara load") { webView.reload() })
