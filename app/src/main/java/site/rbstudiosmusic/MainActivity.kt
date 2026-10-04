@@ -128,7 +128,11 @@ class MainActivity : AppCompatActivity() {
         const val HISTORY_TOOL_ON = true
         const val CALL_TOOL_ON = true
         const val CALL_NUMBER = "+919370612297"
-        const val QUICK_BAR_ON = true
+        const val SCREENSHOT_ON = true
+        const val SHARE_APP_ON = true
+        const val HISTORY_NAV_ON = true
+        const val OFFLINE_SAVE_ON = true
+        const val AUTO_NIGHT_ON = false
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
         val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
@@ -146,9 +150,6 @@ class MainActivity : AppCompatActivity() {
     private var welcomeBottom: LinearLayout? = null
     private var accentColor = 0
     private var moreBtn: TextView? = null
-    private var quickBar: LinearLayout? = null
-    private var backPill: FrameLayout? = null
-    private var forwardPill: FrameLayout? = null
     private var tts: TextToSpeech? = null
     private var ttsReady = false
     private var fullScreenOn = false
@@ -239,16 +240,7 @@ class MainActivity : AppCompatActivity() {
             root.addView(bar, barLp)
         }
 
-        if (QUICK_BAR_ON) {
-            val qb = buildQuickBar()
-            quickBar = qb
-            val qbLp = FrameLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM or Gravity.START)
-            qbLp.leftMargin = dp(12)
-            qbLp.bottomMargin = if (SHOW_NAV) dp(98) else dp(22)
-            root.addView(qb, qbLp)
-        }
-
-        if (SHOW_NAV || QUICK_BAR_ON) {
+        if (SHOW_NAV) {
             webView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
                 val dy = scrollY - oldScrollY
                 if (dy > 8) hideNavBar() else if (dy < -8) showNavBar()
@@ -295,6 +287,14 @@ class MainActivity : AppCompatActivity() {
         if (NIGHT_MODE_ON && prefs.getBoolean("night_on", false)) {
             nightOn = true
             applyNight(true)
+        }
+        if (NIGHT_MODE_ON && AUTO_NIGHT_ON && !nightOn) {
+            val hr = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+            if (hr >= 19 || hr < 6) {
+                nightOn = true
+                prefs.edit().putBoolean("night_on", true).apply()
+                applyNight(true)
+            }
         }
         textZoomLevel = prefs.getInt("text_zoom", 100)
         if (textZoomLevel != 100) webView.settings.textZoom = textZoomLevel
@@ -1353,56 +1353,24 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    // — Home quick buttons: Back / Forward / Top / Night — har page par haath ke paas —
-    private fun buildQuickBar(): LinearLayout {
-        val bar = LinearLayout(this)
-        bar.orientation = LinearLayout.VERTICAL
-        bar.gravity = Gravity.CENTER_HORIZONTAL
-        val barBg = GradientDrawable()
-        barBg.setColor(Color.WHITE)
-        barBg.cornerRadius = dp(26).toFloat()
-        barBg.setStroke(dp(1), 0x14808080)
-        bar.background = barBg
-        bar.elevation = dp(12).toFloat()
-        bar.setPadding(dp(5), dp(7), dp(5), dp(7))
-        fun makePill(iconRes: Int, hint: String, onClick: () -> Unit): FrameLayout {
-            val p = FrameLayout(this)
-            val bg = GradientDrawable()
-            bg.shape = GradientDrawable.OVAL
-            bg.setColor(0xFFEFF4FA.toInt())
-            p.background = RippleDrawable(ColorStateList.valueOf(0x22808080), bg, null)
-            val ic = ImageView(this)
-            ic.setImageResource(iconRes)
-            ic.setColorFilter(0xFF334155.toInt())
-            p.addView(ic, FrameLayout.LayoutParams(dp(19), dp(19), Gravity.CENTER))
-            p.setOnLongClickListener { Toast.makeText(this, hint, Toast.LENGTH_SHORT).show(); true }
-            p.setOnClickListener {
-                bounce(p)
-                onClick()
-            }
-            return p
+    // — Page navigation: peeche/aage jao + page offline save — Quick Tools menu ke andar —
+    private fun goBackPage() {
+        if (webView.canGoBack()) webView.goBack()
+        else Toast.makeText(this, "Peeche aur kuch nahi hai", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun goForwardPage() {
+        if (webView.canGoForward()) webView.goForward()
+        else Toast.makeText(this, "Aage aur kuch nahi hai", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun savePageOffline() {
+        val url = webView.url
+        if (url.isNullOrBlank() || !url.startsWith("http")) {
+            Toast.makeText(this, "Abhi koi page khula nahi hai", Toast.LENGTH_SHORT).show()
+            return
         }
-        val backP = makePill(R.drawable.ic_tool_back, "Pichla page") {
-            if (webView.canGoBack()) webView.goBack()
-            else Toast.makeText(this, "Peeche aur kuch nahi hai", Toast.LENGTH_SHORT).show()
-        }
-        backPill = backP
-        bar.addView(backP, LinearLayout.LayoutParams(dp(38), dp(38)))
-        val fwdP = makePill(R.drawable.ic_tool_forward, "Agla page") {
-            if (webView.canGoForward()) webView.goForward()
-            else Toast.makeText(this, "Aage aur kuch nahi hai", Toast.LENGTH_SHORT).show()
-        }
-        forwardPill = fwdP
-        bar.addView(fwdP, LinearLayout.LayoutParams(dp(38), dp(38)).apply { topMargin = dp(6) })
-        if (GO_TOP_ON) {
-            val topP = makePill(R.drawable.ic_tool_arrowup, "Page ke top par") { goToTop() }
-            bar.addView(topP, LinearLayout.LayoutParams(dp(38), dp(38)).apply { topMargin = dp(6) })
-        }
-        if (NIGHT_MODE_ON) {
-            val nightP = makePill(R.drawable.ic_tool_moon, "Night mode on/off") { toggleNightMode() }
-            bar.addView(nightP, LinearLayout.LayoutParams(dp(38), dp(38)).apply { topMargin = dp(6) })
-        }
-        return bar
+        startDownload(url, webView.settings.userAgentString, "", "text/html")
     }
     private fun findInPage() {
         val input = EditText(this)
@@ -1477,33 +1445,39 @@ class MainActivity : AppCompatActivity() {
         sheet.addView(handle, handleLp)
 
         val strip = View(this)
-        val stripBg = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(shade(accentColor, 0.4f), accentColor, shade(accentColor, -0.3f)))
+        val stripBg = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(shade(accentColor, 0.45f), accentColor, shade(accentColor, -0.35f)))
         stripBg.cornerRadius = dp(4).toFloat()
         strip.background = stripBg
-        val stripLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(4))
+        val stripLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(5))
         stripLp.topMargin = dp(8)
         sheet.addView(strip, stripLp)
 
+        // Hero header — gradient banner, white text, round white close
         val header = LinearLayout(this)
         header.orientation = LinearLayout.HORIZONTAL
         header.gravity = Gravity.CENTER_VERTICAL
+        val heroBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(accentColor, 0.45f), accentColor, shade(accentColor, -0.35f)))
+        heroBg.cornerRadius = dp(20).toFloat()
+        header.background = heroBg
+        header.elevation = dp(4).toFloat()
+        header.setPadding(dp(14), dp(12), dp(12), dp(12))
         val headLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        headLp.topMargin = dp(8)
+        headLp.topMargin = dp(10)
         headLp.bottomMargin = dp(2)
         sheet.addView(header, headLp)
 
         val headBlock = LinearLayout(this)
         headBlock.orientation = LinearLayout.VERTICAL
         val sheetTitle = TextView(this)
-        sheetTitle.text = "Quick Tools"
-        sheetTitle.textSize = 19f
+        sheetTitle.text = "⚡ Quick Tools"
+        sheetTitle.textSize = 20f
         sheetTitle.typeface = Typeface.DEFAULT_BOLD
-        sheetTitle.setTextColor(0xFF111827.toInt())
+        sheetTitle.setTextColor(Color.WHITE)
         headBlock.addView(sheetTitle)
         val sheetSub = TextView(this)
         sheetSub.text = APP_NAME + " ke kaam ke tools"
         sheetSub.textSize = 12f
-        sheetSub.setTextColor(0xFF6B7280.toInt())
+        sheetSub.setTextColor(0xE6FFFFFF.toInt())
         headBlock.addView(sheetSub)
         header.addView(headBlock, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
 
@@ -1511,12 +1485,13 @@ class MainActivity : AppCompatActivity() {
         close.text = "✕"
         close.textSize = 15f
         close.typeface = Typeface.DEFAULT_BOLD
-        close.setTextColor(0xFF374151.toInt())
+        close.setTextColor(accentColor)
         close.gravity = Gravity.CENTER
         val closeBg = GradientDrawable()
         closeBg.shape = GradientDrawable.OVAL
-        closeBg.setColor(0xFFF1F3F6.toInt())
+        closeBg.setColor(Color.WHITE)
         close.background = closeBg
+        close.elevation = dp(2).toFloat()
         close.setOnClickListener { dialog.dismiss() }
         header.addView(close, LinearLayout.LayoutParams(dp(34), dp(34)))
 
@@ -1535,16 +1510,25 @@ class MainActivity : AppCompatActivity() {
             if (row == null || item.section != lastSection) {
                 row?.let { r -> content.addView(r, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)) }
                 lastSection = item.section
+                val secHead = LinearLayout(this)
+                secHead.orientation = LinearLayout.HORIZONTAL
+                secHead.gravity = Gravity.CENTER_VERTICAL
+                val dot = View(this)
+                val dotBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(accentColor, 0.35f), accentColor))
+                dotBg.shape = GradientDrawable.OVAL
+                dot.background = dotBg
+                secHead.addView(dot, LinearLayout.LayoutParams(dp(7), dp(7)))
                 val st = TextView(this)
                 st.text = lastSection.uppercase()
                 st.textSize = 10.5f
                 st.typeface = Typeface.DEFAULT_BOLD
                 st.letterSpacing = 0.10f
-                st.setTextColor(0xFF98A1B3.toInt())
+                st.setTextColor(0xFF4B5563.toInt())
+                secHead.addView(st, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(6) })
                 val stLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 stLp.topMargin = dp(14)
                 stLp.bottomMargin = dp(6)
-                content.addView(st, stLp)
+                content.addView(secHead, stLp)
                 val nr = LinearLayout(this)
                 nr.orientation = LinearLayout.HORIZONTAL
                 row = nr
@@ -1579,36 +1563,34 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
-    // Saare Quick Tools ki list — sections ke saath; icons premium white vector icons hain
+    // Saare Quick Tools — sections me grouped: Padhai sabse upar, phir Screen, Page, Files, App, Madad
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
-        if (FIND_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_find, "Page me dhoondo", "shabd turant milenge", 0xFF0891B2.toInt(), "Screen aur Padhai") { findInPage() })
+        if (FIND_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_find, "Page me dhoondo", "shabd turant milenge", 0xFF0891B2.toInt(), "Padhai ke Tools") { findInPage() })
+        if (READ_ALOUD_ON) items.add(ToolItem(R.drawable.ic_tool_speaker, "Padh ke sunao", "page bolke padhega", 0xFF6D28D9.toInt(), "Padhai ke Tools") { readAloud() })
+        if (TRANSLATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_translate, "Hindi me padho", "page translate", 0xFF0F766E.toInt(), "Padhai ke Tools") { translatePage() })
+        items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text bada karo", "padhna aasan", 0xFF0EA5E9.toInt(), "Padhai ke Tools") { changeTextSize(15) })
+        items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text chhota karo", "compact view", 0xFF38BDF8.toInt(), "Padhai ke Tools") { changeTextSize(-15) })
+        if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_star, "Bookmark karo", "page save karo", 0xFFEAB308.toInt(), "Padhai ke Tools") { bookmarkCurrentPage() })
+        if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_book, "Mere Bookmarks", "save kiye page", 0xFFD97706.toInt(), "Padhai ke Tools") { showBookmarksSheet() })
+        if (OFFLINE_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_save, "Page save karo", "offline padho baad me", 0xFF0369A1.toInt(), "Padhai ke Tools") { savePageOffline() })
+        items.add(ToolItem(if (nightOn) R.drawable.ic_tool_sun else R.drawable.ic_tool_moon, if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram", 0xFF1E293B.toInt(), "Screen ke Tools") { toggleNightMode() })
+        if (SCREENSHOT_ON) items.add(ToolItem(R.drawable.ic_tool_camera, "Screenshot lo", "page ki photo", 0xFFDC2626.toInt(), "Screen ke Tools") { takeScreenshot() })
+        if (FULLSCREEN_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_fullscreen, if (fullScreenOn) "Full screen band" else "Full screen karo", "poora screen app ka", 0xFF7C3AED.toInt(), "Screen ke Tools") { toggleFullScreen() })
+        if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
+        if (THEME_PICKER_ON) items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen ke Tools") { showThemeSheet() })
+        if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
+        items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
+        items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
+        items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
+        items.add(ToolItem(R.drawable.ic_tool_home, "Home page", "shuruati page", 0xFF111827.toInt(), "Page ke Tools") { webView.loadUrl(HOME_URL) })
+        if (HISTORY_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_history, "Mera History", "khole hue pages", 0xFF64748B.toInt(), "Page ke Tools") { showHistorySheet() })
         items.add(ToolItem(R.drawable.ic_tool_print, "Print / PDF", "page ya PDF banao", 0xFF111827.toInt(), "Files aur Print") { printPage() })
-        items.add(ToolItem(R.drawable.ic_tool_camera, "Screenshot lo", "page ki photo", 0xFFDC2626.toInt(), "Files aur Print") { takeScreenshot() })
-        items.add(ToolItem(R.drawable.ic_tool_download, "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
+        if (DL_LIST_ON) items.add(ToolItem(R.drawable.ic_tool_download, "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
         items.add(ToolItem(R.drawable.ic_tool_folder, "Downloads folder", "phone ka folder", 0xFF059669.toInt(), "Files aur Print") { openDownloads() })
-        if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_star, "Bookmark karo", "page save karo", 0xFFEAB308.toInt(), "Save kiye hue") { bookmarkCurrentPage() })
-        if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_book, "Mere Bookmarks", "save kiye page", 0xFFD97706.toInt(), "Save kiye hue") { showBookmarksSheet() })
-        items.add(ToolItem(if (nightOn) R.drawable.ic_tool_sun else R.drawable.ic_tool_moon, if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram", 0xFF1E293B.toInt(), "Screen aur Padhai") { toggleNightMode() })
-        if (READ_ALOUD_ON) items.add(ToolItem(R.drawable.ic_tool_speaker, "Padh ke sunao", "page bolke padhega", 0xFF6D28D9.toInt(), "Screen aur Padhai") { readAloud() })
-        items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text bada karo", "padhna aasan", 0xFF0EA5E9.toInt(), "Screen aur Padhai") { changeTextSize(15) })
-        items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text chhota karo", "compact view", 0xFF0EA5E9.toInt(), "Screen aur Padhai") { changeTextSize(-15) })
-        items.add(ToolItem(R.drawable.ic_tool_fullscreen, if (fullScreenOn) "Full screen band" else "Full screen karo", "poora screen app ka", 0xFF7C3AED.toInt(), "Screen aur Padhai") { toggleFullScreen() })
-        items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen aur Padhai") { toggleDesktopView() })
-        items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen aur Padhai") { showThemeSheet() })
-        items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen aur Padhai") { goToTop() })
-        items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen aur Padhai") { toggleRotation() })
-        items.add(ToolItem(R.drawable.ic_tool_translate, "Hindi me padho", "page translate", 0xFF0F766E.toInt(), "Screen aur Padhai") { translatePage() })
-        items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "App") { webView.reload() })
-        items.add(ToolItem(R.drawable.ic_tool_home, "Home page", "shuruati page", 0xFF111827.toInt(), "App") { webView.loadUrl(HOME_URL) })
-        items.add(ToolItem(R.drawable.ic_tool_history, "Mera History", "khole hue pages", 0xFF64748B.toInt(), "App") { showHistorySheet() })
-        items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
-        items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
-        items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
-        if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
-        items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
-        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
-        items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
+        if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
+        if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
+        if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         return items
     }
 
@@ -1627,13 +1609,13 @@ class MainActivity : AppCompatActivity() {
 
         val chip = FrameLayout(this)
         val chipBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(item.accent, 0.30f), item.accent))
-        chipBg.cornerRadius = dp(17).toFloat()
+        chipBg.cornerRadius = dp(18).toFloat()
         chip.background = chipBg
         chip.elevation = dp(4).toFloat()
         val icon = ImageView(this)
         icon.setImageResource(item.icon)
-        chip.addView(icon, FrameLayout.LayoutParams(dp(26), dp(26), Gravity.CENTER))
-        card.addView(chip, LinearLayout.LayoutParams(dp(50), dp(50)))
+        chip.addView(icon, FrameLayout.LayoutParams(dp(28), dp(28), Gravity.CENTER))
+        card.addView(chip, LinearLayout.LayoutParams(dp(54), dp(54)))
 
         val label = TextView(this)
         label.text = item.label
@@ -2375,12 +2357,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideNavBar() {
         navBar?.animate()?.translationY((dp(90)).toFloat())?.setDuration(220)?.start()
-        quickBar?.animate()?.translationY((dp(80)).toFloat())?.alpha(0.15f)?.setDuration(220)?.start()
     }
 
     private fun showNavBar() {
         navBar?.animate()?.translationY(0f)?.setDuration(220)?.start()
-        quickBar?.animate()?.translationY(0f)?.alpha(1f)?.setDuration(220)?.start()
     }
 
     private fun selectNav(index: Int) {
@@ -2492,8 +2472,6 @@ class MainActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 swipeRefresh.isRefreshing = false
-                backPill?.alpha = if (view.canGoBack()) 1f else 0.35f
-                forwardPill?.alpha = if (view.canGoForward()) 1f else 0.35f
                 if (HIDE_ON) injectHideEngine(view)
                 if (AD_BLOCK_ON) injectAdBlock(view)
                 if (DOWNLOADS_ON || LONGPRESS_DL_ON) {
