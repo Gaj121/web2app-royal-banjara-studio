@@ -31,10 +31,12 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 - ⋮ floating button: **Print / Save as PDF**, Share, Downloads — sab kuch ek stylish menu me
 - ⋮ menu me **Hindi me padho** — page Google Translate se Hindi me khul jaata hai
 - ⋮ menu me **Mera History** — jo pages khole, list se tap karke wapas jao
-- ⋮ menu me **Direction pao** — “Royal Banjara Studio Music Distribution At post pedgaon” seedha Google Maps me khulta hai
+- ⋮ menu me **Direction pao** — “Royal Banjara Studio Music Distribution” seedha Google Maps me khulta hai
 - ⋮ menu me **Call karo** — seedha phone dialer khulta hai
 - ⋮ menu me **Email karo** — seedha Gmail/message app me message likhne ka screen khulta hai
-- **Home quick buttons** — Back / Forward / Top / Night ke gol buttons har page par (scroll karo to chhup jaate hain)
+- ⋮ Quick Tools me **Peeche jao / Aage jao** — page navigation ab menu ke andar stylish cards me (screen par koi alag button bar nahi)
+- ⋮ menu me **Page save karo** — jo page khula hai wahi file ban kar Downloads me save ho jaata hai, baad me bina internet padho
+- **Auto night mode** — shaam 7 baje se subah 6 baje tak app khud dark mode me khulti hai
 - ⋮ menu me **Mere Downloads** — app ke andar hi saari download files ki stylish list (tap = kholo, Share, dabaye rakho = delete)
 - App khulte hi **animated logo intro** — logo bada hoke aata hai, naam slide hota hai, phir app khul jaata hai
 - **Welcome slider** — app ke upar se slide hoke “Welcome to Royal Banjara Studio Music Distribution Company” ke saath stylish swagat screen (Skip / Get Started ke saath)
