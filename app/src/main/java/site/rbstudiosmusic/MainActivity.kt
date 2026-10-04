@@ -1674,8 +1674,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun toggleMute() {
         muted = !muted
-        webView.setVolume(if (muted) 0f else 1f)
-        Toast.makeText(this, if (muted) "Site ki aawaz band ho gayi" else "Aawaz wapas chalu", Toast.LENGTH_SHORT).show()
+        if (muted) {
+            webView.evaluateJavascript("(function(){var m=function(){try{document.querySelectorAll('video,audio').forEach(function(e){e.muted=true})}catch(_){}};m();window.__rbMuteObs=new MutationObserver(function(){m()});window.__rbMuteObs.observe(document.documentElement,{childList:true,subtree:true})})()", null)
+            Toast.makeText(this, "Site ki aawaz band ho gayi", Toast.LENGTH_SHORT).show()
+        } else {
+            webView.evaluateJavascript("(function(){try{if(window.__rbMuteObs){window.__rbMuteObs.disconnect();window.__rbMuteObs=null}}catch(_){}try{document.querySelectorAll('video,audio').forEach(function(e){e.muted=false})}catch(_){}})()", null)
+            Toast.makeText(this, "Aawaz wapas chalu", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun toggleDataSave() {
