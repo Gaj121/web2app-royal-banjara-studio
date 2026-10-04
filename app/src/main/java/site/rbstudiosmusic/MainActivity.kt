@@ -460,125 +460,224 @@ class MainActivity : AppCompatActivity() {
 
     private fun buildWelcomeSlider(): FrameLayout {
         val overlay = FrameLayout(this)
-        val scrim = GradientDrawable(
-            GradientDrawable.Orientation.TOP_BOTTOM,
-            intArrayOf(shade(splashColorInt, -0.4f), splashColorInt, shade(splashColorInt, -0.55f))
+        val bgGrad = GradientDrawable(
+            GradientDrawable.Orientation.TL_BR,
+            intArrayOf(shade(splashColorInt, -0.30f), shade(themeColorInt, -0.30f), shade(splashColorInt, -0.55f))
         )
-        overlay.background = scrim
+        bgGrad.setGradientCenter(0.5f, 0.3f)
+        overlay.background = bgGrad
 
-        val card = LinearLayout(this)
-        card.orientation = LinearLayout.VERTICAL
-        card.gravity = Gravity.CENTER_HORIZONTAL
-        card.setPadding(dp(26), dp(30), dp(26), dp(26))
-        val cardBg = GradientDrawable()
-        cardBg.setColor(Color.WHITE)
-        cardBg.cornerRadius = dp(30).toFloat()
-        card.background = cardBg
-        card.elevation = dp(24).toFloat()
-        card.setOnClickListener { }
+        fun addFloat(sizeDp: Int, color: Int, alphaInt: Int, x: Int, y: Int, driftMs: Long) {
+            val dot = View(this)
+            val dotBg = GradientDrawable()
+            dotBg.shape = GradientDrawable.OVAL
+            dotBg.setColor(color)
+            dot.background = dotBg
+            dot.alpha = alphaInt
+            overlay.addView(dot, FrameLayout.LayoutParams(dp(sizeDp), dp(sizeDp)))
+            dot.translationX = x.toFloat()
+            dot.translationY = y.toFloat()
+            val rise = ObjectAnimator.ofFloat(dot, View.TRANSLATION_Y, y.toFloat(), y - dp(40).toFloat(), y.toFloat())
+            rise.duration = driftMs
+            rise.repeatCount = ObjectAnimator.INFINITE
+            rise.startDelay = (driftMs / 3)
+            rise.start()
+        }
+        addFloat(150, shade(themeColorInt, 0.25f), 42, -dp(36), dp(60), 3600)
+        addFloat(95, Color.WHITE, 30, dp(235), dp(150), 4400)
+        addFloat(175, shade(themeColorInt, 0.45f), 34, dp(30), dp(430), 5200)
+        addFloat(66, Color.WHITE, 24, dp(30), dp(64), 3900)
+
+        // — upar: chhota logo + app ka naam + Skip button —
+        val header = LinearLayout(this)
+        header.orientation = LinearLayout.HORIZONTAL
+        header.gravity = Gravity.CENTER_VERTICAL
+        header.setPadding(dp(18), dp(16), dp(14), dp(6))
+
+        val logoHolder = FrameLayout(this)
+        val logoBg = GradientDrawable()
+        logoBg.setColor(Color.WHITE)
+        logoBg.cornerRadius = dp(13).toFloat()
+        logoHolder.background = logoBg
+        logoHolder.clipToOutline = true
+        logoHolder.elevation = dp(6).toFloat()
+        val logo = ImageView(this)
+        logo.setImageResource(R.mipmap.ic_launcher)
+        logoHolder.addView(logo, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        header.addView(logoHolder, LinearLayout.LayoutParams(dp(42), dp(42)))
+
+        val headName = TextView(this)
+        headName.text = APP_NAME
+        headName.textSize = 15f
+        headName.setTextColor(Color.WHITE)
+        headName.typeface = Typeface.DEFAULT_BOLD
+        headName.maxLines = 1
+        headName.letterSpacing = 0.03f
+        val headNameLp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        headNameLp.leftMargin = dp(10)
+        header.addView(headName, headNameLp)
+
+        val skip = TextView(this)
+        skip.text = "Skip ›"
+        skip.setTextColor(Color.WHITE)
+        skip.textSize = 13f
+        skip.typeface = Typeface.DEFAULT_BOLD
+        skip.setPadding(dp(16), dp(7), dp(16), dp(7))
+        val skipBg = GradientDrawable()
+        skipBg.setColor(0x38FFFFFF)
+        skipBg.cornerRadius = dp(18).toFloat()
+        skip.background = RippleDrawable(ColorStateList.valueOf(0x40FFFFFF), skipBg, null)
+        header.addView(skip)
+        overlay.addView(header, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP))
+
+        // — beech me: bade gradient bubbles wale slides —
+        val center = LinearLayout(this)
+        center.orientation = LinearLayout.VERTICAL
+        center.gravity = Gravity.CENTER
+        welcomeCenter = center
 
         val flipper = ViewFlipper(this)
         flipper.isAutoStart = true
-        flipper.flipInterval = 3600
+        flipper.flipInterval = 3800
         val inAnim = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 1f, Animation.RELATIVE_TO_PARENT, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f)
-        inAnim.duration = 420
+        inAnim.duration = 430
         val outAnim = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0f, Animation.RELATIVE_TO_PARENT, -1f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f)
-        outAnim.duration = 420
+        outAnim.duration = 430
         flipper.inAnimation = inAnim
         flipper.outAnimation = outAnim
 
         val slides = listOf(
             Triple("👋", WELCOME_TEXT, "Aapka poora website — ab ek asli app me"),
-            Triple("⬇️", "Download & Save", "File, photo, PDF seedha phone ke Downloads folder me save"),
-            Triple("🖨️", "Print & Share", "⋮ button se page print karo ya PDF bana kar bhejo")
+            Triple("⬇️", "Download & Save", "File, photo, PDF seedha phone ke Downloads folder me"),
+            Triple("🖨️", "Print & Share", "⋮ button se page print karo ya PDF bana kar bhejo"),
+            Triple("⚡", "Smart Tools", "Night mode, screenshot, WhatsApp — sab ek jagah")
+        )
+        val palettes = listOf(
+            intArrayOf(shade(themeColorInt, 0.42f), shade(themeColorInt, -0.15f)),
+            intArrayOf(0xFF1B8A3A.toInt(), 0xFF57C863.toInt()),
+            intArrayOf(0xFF6D3FC4.toInt(), 0xFF9B7BE8.toInt()),
+            intArrayOf(0xFF0B7285.toInt(), 0xFF37B9CE.toInt())
         )
 
-        slides.forEach { slideData ->
+        slides.forEachIndexed { idx, slideData ->
             val slide = LinearLayout(this)
             slide.orientation = LinearLayout.VERTICAL
-            slide.gravity = Gravity.CENTER
+            slide.gravity = Gravity.CENTER_HORIZONTAL
+            slide.setPadding(dp(8), 0, dp(8), 0)
+
+            val bubble = FrameLayout(this)
+            val bubbleBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, palettes[idx % palettes.size])
+            bubbleBg.shape = GradientDrawable.OVAL
+            bubbleBg.setStroke(dp(3), 0x73FFFFFF)
+            bubble.background = bubbleBg
+            bubble.elevation = dp(16).toFloat()
             val bigIcon = TextView(this)
             bigIcon.text = slideData.first
-            bigIcon.textSize = 42f
+            bigIcon.textSize = 48f
             bigIcon.gravity = Gravity.CENTER
+            bubble.addView(bigIcon, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER))
+            slide.addView(bubble, LinearLayout.LayoutParams(dp(124), dp(124)))
+
             val title = TextView(this)
             title.text = slideData.second
-            title.textSize = 19f
+            title.textSize = 23f
             title.typeface = Typeface.DEFAULT_BOLD
-            title.setTextColor(0xFF17181C.toInt())
+            title.setTextColor(Color.WHITE)
             title.gravity = Gravity.CENTER
-            title.setPadding(dp(4), 0, dp(4), 0)
+            title.letterSpacing = 0.01f
+            title.setShadowLayer(dp(8).toFloat(), 0f, dp(2).toFloat(), 0x59000000)
+            val titleLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            titleLp.topMargin = dp(22)
+            slide.addView(title, titleLp)
+
             val sub = TextView(this)
             sub.text = slideData.third
-            sub.textSize = 13f
-            sub.setTextColor(0xFF6B7078.toInt())
+            sub.textSize = 14.5f
+            sub.setTextColor(0xD9FFFFFF.toInt())
             sub.gravity = Gravity.CENTER
-            sub.setPadding(dp(10), 0, dp(10), 0)
-            slide.addView(bigIcon)
-            val titleLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            titleLp.topMargin = dp(10)
-            slide.addView(title, titleLp)
+            sub.setPadding(dp(12), 0, dp(12), 0)
             val subLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            subLp.topMargin = dp(4)
+            subLp.topMargin = dp(8)
             slide.addView(sub, subLp)
+
             flipper.addView(slide, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
         }
 
-        val dots = mutableListOf<TextView>()
+        center.addView(flipper, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(330)))
+        overlay.addView(center, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+
+        // — neeche: pill dots + Shuru Karein button + version —
+        val bottom = LinearLayout(this)
+        bottom.orientation = LinearLayout.VERTICAL
+        bottom.gravity = Gravity.CENTER_HORIZONTAL
+        bottom.setPadding(dp(26), 0, dp(26), dp(34))
+        welcomeBottom = bottom
+
+        val dots = mutableListOf<View>()
         val dotsRow = LinearLayout(this)
         dotsRow.orientation = LinearLayout.HORIZONTAL
-        dotsRow.gravity = Gravity.CENTER_HORIZONTAL
+        dotsRow.gravity = Gravity.CENTER
         repeat(slides.size) {
-            val dot = TextView(this)
-            dot.text = "•"
-            dot.textSize = 18f
-            dot.setTextColor(0xFFC9CDD4.toInt())
+            val dot = View(this)
+            val dotBg = GradientDrawable()
+            dotBg.shape = GradientDrawable.RECTANGLE
+            dotBg.cornerRadius = dp(5).toFloat()
+            dotBg.setColor(0x80FFFFFF)
+            dot.background = dotBg
             dots.add(dot)
-            val dotLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            dotLp.setMargins(dp(6), 0, dp(6), 0)
-            dotsRow.addView(dot, dotLp)
+            val dLp = LinearLayout.LayoutParams(dp(9), dp(9))
+            dLp.setMargins(dp(4), 0, dp(4), 0)
+            dotsRow.addView(dot, dLp)
         }
 
         fun updateDots(index: Int) {
             dots.forEachIndexed { i, d ->
-                d.setTextColor(if (i == index) themeColorInt else 0xFFC9CDD4.toInt())
-                d.textSize = if (i == index) 26f else 18f
+                val active = i == index
+                val lp = d.layoutParams
+                lp.width = if (active) dp(28) else dp(9)
+                lp.height = dp(9)
+                d.layoutParams = lp
+                (d.background as GradientDrawable).setColor(if (active) Color.WHITE else 0x80FFFFFF)
             }
         }
 
         val startBtn = TextView(this)
-        startBtn.text = "Get Started"
-        startBtn.textSize = 15f
+        startBtn.text = "Shuru Karein  →"
+        startBtn.textSize = 16f
         startBtn.setTextColor(Color.WHITE)
         startBtn.typeface = Typeface.DEFAULT_BOLD
         startBtn.gravity = Gravity.CENTER
-        startBtn.setPadding(dp(34), dp(13), dp(34), dp(13))
-        val btnBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, 0.3f), themeColorInt))
-        btnBg.cornerRadius = dp(26).toFloat()
-        startBtn.background = btnBg
-        startBtn.elevation = dp(8).toFloat()
+        startBtn.letterSpacing = 0.04f
+        startBtn.setPadding(dp(38), dp(14), dp(38), dp(14))
+        val btnBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, 0.38f), themeColorInt))
+        btnBg.cornerRadius = dp(30).toFloat()
+        startBtn.background = RippleDrawable(ColorStateList.valueOf(0x40FFFFFF), btnBg, null)
+        startBtn.elevation = dp(14).toFloat()
 
-        val flipLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(190))
-        card.addView(flipper, flipLp)
-        val dotsLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        dotsLp.topMargin = dp(14)
-        card.addView(dotsRow, dotsLp)
+        val pulse = ObjectAnimator.ofPropertyValuesHolder(
+            startBtn,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.04f, 1f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.04f, 1f)
+        )
+        pulse.duration = 1100
+        pulse.repeatCount = ObjectAnimator.INFINITE
+        pulse.start()
+
+        val ver = TextView(this)
+        ver.text = "v" + VERSION_NAME
+        ver.textSize = 11f
+        ver.setTextColor(0x8CFFFFFF.toInt())
+        ver.gravity = Gravity.CENTER
+        ver.letterSpacing = 0.06f
+
+        bottom.addView(dotsRow, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
         val startLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        startLp.topMargin = dp(20)
-        card.addView(startBtn, startLp)
-
-        overlay.addView(card, FrameLayout.LayoutParams(dp(330), FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER))
-
-        val skip = TextView(this)
-        skip.text = "Skip"
-        skip.setTextColor(Color.WHITE)
-        skip.textSize = 13f
-        skip.setPadding(dp(12), dp(6), dp(12), dp(6))
-        skip.background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), null, null)
-        val skipLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END)
-        skipLp.topMargin = dp(20)
-        skipLp.rightMargin = dp(18)
-        overlay.addView(skip, skipLp)
+        startLp.topMargin = dp(24)
+        bottom.addView(startBtn, startLp)
+        val verLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        verLp.topMargin = dp(14)
+        bottom.addView(ver, verLp)
+        overlay.addView(bottom, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM))
 
         val dismiss: () -> Unit = { dismissWelcome() }
         startBtn.setOnClickListener {
@@ -593,11 +692,11 @@ class MainActivity : AppCompatActivity() {
             override fun run() {
                 if (overlay.visibility == View.VISIBLE) {
                     updateDots(flipper.displayedChild)
-                    flipper.postDelayed(this, 3600)
+                    flipper.postDelayed(this, 3800)
                 }
             }
         }
-        flipper.postDelayed(sync, 3600)
+        flipper.postDelayed(sync, 3800)
 
         return overlay
     }
