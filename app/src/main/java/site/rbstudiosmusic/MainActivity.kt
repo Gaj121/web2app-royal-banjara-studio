@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -31,7 +32,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.view.animation.TranslateAnimation
 import android.webkit.CookieManager
@@ -63,7 +66,7 @@ import java.io.File
 
 class NavEntry(val label: String, val url: String, val icon: Int)
 
-class ToolItem(val icon: String, val label: String, val sub: String, val action: () -> Unit)
+class ToolItem(val icon: String, val label: String, val sub: String, val accent: Int, val section: String, val action: () -> Unit)
 
 class MainActivity : AppCompatActivity() {
 
@@ -101,6 +104,13 @@ class MainActivity : AppCompatActivity() {
         const val EXIT_ITEM_ON = true
         const val LONGPRESS_DL_ON = true
         const val DESKTOP_VIEW_ON = true
+        const val AD_BLOCK_ON = true
+        const val THEME_PICKER_ON = true
+        const val FULLSCREEN_TOOL_ON = true
+        const val GO_TOP_ON = true
+        const val ROTATE_TOOL_ON = true
+        const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
+        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         const val BLOB_HOOK_JS = "(function(){\nif (window.__appbanaoDl) return; window.__appbanaoDl = 1;\nvar CH = 262144;\nfunction sendBlob(blob, name, mime) {\n  try {\n    var total = blob.size;\n    var off = 0;\n    var fr = new FileReader();\n    window.AndroidDownloads && window.AndroidDownloads.blobSaveStart(name || 'download.bin', (mime || blob.type || 'application/octet-stream').split(',')[0]);\n    fr.onload = function() {\n      try {\n        var arr = new Uint8Array(fr.result);\n        var s = '';\n        for (var i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);\n        window.AndroidDownloads && window.AndroidDownloads.blobSaveChunk(btoa(s));\n      } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); return; }\n      off += CH;\n      if (off < total) fr.readAsArrayBuffer(blob.slice(off, off + CH));\n      else window.AndroidDownloads && window.AndroidDownloads.blobSaveDone();\n    };\n    fr.onerror = function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); };\n    fr.readAsArrayBuffer(blob.slice(0, CH));\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nfunction grab(url, name) {\n  try {\n    fetch(url).then(function(r) { return r.blob(); }).then(function(b) { sendBlob(b, name, b.type); }).catch(function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); });\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nwindow.__appbanaoGrab = grab;\ndocument.addEventListener('click', function(e) {\n  var t = e.target;\n  while (t && t.tagName !== 'A') t = t.parentElement;\n  if (!t) return;\n  var href = t.getAttribute('href') || '';\n  if (href.indexOf('blob:') === 0 || href.indexOf('data:') === 0) {\n    e.preventDefault(); e.stopPropagation();\n    var nm = t.getAttribute('download') || (document.title ? document.title.replace(/[\\\\/:*?\"<>|]/g, '').slice(0, 40) : 'download.bin');\n    grab(href, nm);\n  }\n}, true);\n})();"
     }
@@ -113,6 +123,11 @@ class MainActivity : AppCompatActivity() {
     private var welcomeOverlay: FrameLayout? = null
     private var welcomeCenter: LinearLayout? = null
     private var welcomeBottom: LinearLayout? = null
+    private var welcomeHeader: LinearLayout? = null
+    private var accentColor = 0
+    private var moreBtn: TextView? = null
+    private var fullScreenOn = false
+    private var currentNavIndex = 0
     private val navIcons = mutableListOf<ImageView>()
     private val navLabels = mutableListOf<TextView>()
     private val pillHolders = mutableListOf<FrameLayout>()
@@ -146,6 +161,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        accentColor = run {
+            val idx = prefs.getInt("theme_idx", -1)
+            if (idx >= 0 && idx < THEME_PRESETS.size) {
+                try { Color.parseColor(THEME_PRESETS[idx].split("|").getOrNull(1) ?: THEME_COLOR) } catch (e: Exception) { themeColorInt }
+            } else themeColorInt
+        }
+        fullScreenOn = FULLSCREEN_ON
+
         if (KEEP_SCREEN_ON) {
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
@@ -166,7 +189,7 @@ class MainActivity : AppCompatActivity() {
 
         progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal)
         progressBar.max = 100
-        progressBar.progressTintList = ColorStateList.valueOf(themeColorInt)
+        progressBar.progressTintList = ColorStateList.valueOf(accentColor)
         progressBar.progressBackgroundTintList = ColorStateList.valueOf(0x22888888)
         content.addView(progressBar, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(3)))
 
@@ -175,7 +198,7 @@ class MainActivity : AppCompatActivity() {
         swipeRefresh.addView(webView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
         if (PULL_REFRESH) {
             swipeRefresh.setOnRefreshListener { webView.reload() }
-            swipeRefresh.setColorSchemeColors(themeColorInt)
+            swipeRefresh.setColorSchemeColors(accentColor)
         } else {
             swipeRefresh.isEnabled = false
         }
@@ -384,7 +407,7 @@ class MainActivity : AppCompatActivity() {
         tagline.letterSpacing = 0.04f
 
         val spinner = ProgressBar(this)
-        spinner.indeterminateTintList = ColorStateList.valueOf(themeColorInt)
+        spinner.indeterminateTintList = ColorStateList.valueOf(accentColor)
 
         val ring = FrameLayout(this)
         val ringBg = GradientDrawable()
@@ -436,23 +459,29 @@ class MainActivity : AppCompatActivity() {
         val ov = welcomeOverlay ?: return
         ov.alpha = 1f
         ov.visibility = View.VISIBLE
-        ov.animate().translationY(0f).setDuration(560).setInterpolator(OvershootInterpolator(0.8f)).start()
+        ov.translationY = -dp(110).toFloat()
+        ov.animate().translationY(0f).setDuration(640).setInterpolator(DecelerateInterpolator(1.7f)).start()
+        welcomeHeader?.let { h ->
+            h.alpha = 0f
+            h.translationY = -dp(30).toFloat()
+            h.animate().alpha(1f).translationY(0f).setDuration(420).setStartDelay(60).setInterpolator(DecelerateInterpolator(1.3f)).start()
+        }
         welcomeCenter?.let { c ->
             c.alpha = 0f
-            c.scaleX = 0.92f
-            c.scaleY = 0.92f
-            c.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(480).setStartDelay(160).start()
+            c.scaleX = 0.90f
+            c.scaleY = 0.90f
+            c.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(560).setStartDelay(160).setInterpolator(OvershootInterpolator(1.06f)).start()
         }
         welcomeBottom?.let { b ->
             b.alpha = 0f
-            b.translationY = dp(34).toFloat()
-            b.animate().alpha(1f).translationY(0f).setDuration(480).setStartDelay(240).start()
+            b.translationY = dp(40).toFloat()
+            b.animate().alpha(1f).translationY(0f).setDuration(500).setStartDelay(300).setInterpolator(DecelerateInterpolator(1.4f)).start()
         }
     }
 
     private fun dismissWelcome() {
         val ov = welcomeOverlay ?: return
-        ov.animate().translationY(-ov.height.toFloat()).alpha(0f).setDuration(400)
+        ov.animate().translationY(-ov.height.toFloat() * 0.45f).alpha(0f).setDuration(400).setInterpolator(AccelerateInterpolator(1.25f))
             .withEndAction { ov.visibility = View.GONE }.start()
     }
 
@@ -460,7 +489,7 @@ class MainActivity : AppCompatActivity() {
         val overlay = FrameLayout(this)
         val bgGrad = GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
-            intArrayOf(shade(splashColorInt, -0.30f), shade(themeColorInt, -0.30f), shade(splashColorInt, -0.55f))
+            intArrayOf(shade(splashColorInt, -0.30f), shade(accentColor, -0.30f), shade(splashColorInt, -0.55f))
         )
         bgGrad.setGradientCenter(0.5f, 0.3f)
         overlay.background = bgGrad
@@ -481,9 +510,9 @@ class MainActivity : AppCompatActivity() {
             rise.startDelay = (driftMs / 3)
             rise.start()
         }
-        addFloat(150, shade(themeColorInt, 0.25f), 42, -dp(36), dp(60), 3600)
+        addFloat(150, shade(accentColor, 0.25f), 42, -dp(36), dp(60), 3600)
         addFloat(95, Color.WHITE, 30, dp(235), dp(150), 4400)
-        addFloat(175, shade(themeColorInt, 0.45f), 34, dp(30), dp(430), 5200)
+        addFloat(175, shade(accentColor, 0.45f), 34, dp(30), dp(430), 5200)
         addFloat(66, Color.WHITE, 24, dp(30), dp(64), 3900)
 
         // — upar: chhota logo + app ka naam + Skip button —
@@ -527,6 +556,7 @@ class MainActivity : AppCompatActivity() {
         skip.background = RippleDrawable(ColorStateList.valueOf(0x40FFFFFF), skipBg, null)
         header.addView(skip)
         overlay.addView(header, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP))
+        welcomeHeader = header
 
         // — beech me: bade gradient bubbles wale slides —
         val center = LinearLayout(this)
@@ -538,9 +568,11 @@ class MainActivity : AppCompatActivity() {
         flipper.isAutoStart = true
         flipper.flipInterval = 3800
         val inAnim = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 1f, Animation.RELATIVE_TO_PARENT, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f)
-        inAnim.duration = 430
+        inAnim.duration = 520
+        inAnim.interpolator = DecelerateInterpolator(1.2f)
         val outAnim = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0f, Animation.RELATIVE_TO_PARENT, -1f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f)
-        outAnim.duration = 430
+        outAnim.duration = 520
+        outAnim.interpolator = AccelerateInterpolator(1.1f)
         flipper.inAnimation = inAnim
         flipper.outAnimation = outAnim
 
@@ -551,7 +583,7 @@ class MainActivity : AppCompatActivity() {
             Triple("⚡", "Smart Tools", "Night mode, screenshot, WhatsApp — sab ek jagah")
         )
         val palettes = listOf(
-            intArrayOf(shade(themeColorInt, 0.42f), shade(themeColorInt, -0.15f)),
+            intArrayOf(shade(accentColor, 0.42f), shade(accentColor, -0.15f)),
             intArrayOf(0xFF1B8A3A.toInt(), 0xFF57C863.toInt()),
             intArrayOf(0xFF6D3FC4.toInt(), 0xFF9B7BE8.toInt()),
             intArrayOf(0xFF0B7285.toInt(), 0xFF37B9CE.toInt())
@@ -601,7 +633,29 @@ class MainActivity : AppCompatActivity() {
             flipper.addView(slide, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
         }
 
-        center.addView(flipper, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(330)))
+        val stage = FrameLayout(this)
+        val glow = View(this)
+        val glowBg = GradientDrawable()
+        glowBg.shape = GradientDrawable.OVAL
+        glowBg.setColor(shade(accentColor, 0.45f))
+        glow.background = glowBg
+        glow.alpha = 0.34f
+        stage.addView(glow, FrameLayout.LayoutParams(dp(310), dp(310), Gravity.CENTER))
+        val glowPulse = ObjectAnimator.ofFloat(glow, View.ALPHA, 0.26f, 0.48f, 0.26f)
+        glowPulse.duration = 2600
+        glowPulse.repeatCount = ObjectAnimator.INFINITE
+        glowPulse.start()
+        val glowScale = ObjectAnimator.ofPropertyValuesHolder(
+            glow,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.12f, 1f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.12f, 1f)
+        )
+        glowScale.duration = 3200
+        glowScale.repeatCount = ObjectAnimator.INFINITE
+        glowScale.start()
+        stage.addView(flipper, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER))
+
+        center.addView(stage, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(330)))
         overlay.addView(center, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
         // — neeche: pill dots + Shuru Karein button + version —
@@ -647,8 +701,9 @@ class MainActivity : AppCompatActivity() {
         startBtn.gravity = Gravity.CENTER
         startBtn.letterSpacing = 0.04f
         startBtn.setPadding(dp(38), dp(14), dp(38), dp(14))
-        val btnBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, 0.38f), themeColorInt))
+        val btnBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(accentColor, 0.38f), accentColor))
         btnBg.cornerRadius = dp(30).toFloat()
+        btnBg.setStroke(dp(2), 0x66FFFFFF)
         startBtn.background = RippleDrawable(ColorStateList.valueOf(0x40FFFFFF), btnBg, null)
         startBtn.elevation = dp(14).toFloat()
 
@@ -855,11 +910,12 @@ class MainActivity : AppCompatActivity() {
         btn.setTextColor(Color.WHITE)
         btn.typeface = Typeface.DEFAULT_BOLD
         btn.gravity = Gravity.CENTER
-        val bg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, 0.35f), themeColorInt, shade(themeColorInt, -0.25f)))
+        val bg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(accentColor, 0.35f), accentColor, shade(accentColor, -0.25f)))
         bg.shape = GradientDrawable.OVAL
         bg.setStroke(dp(2), Color.WHITE)
         btn.background = bg
         btn.elevation = dp(12).toFloat()
+        moreBtn = btn
         btn.setOnClickListener { showToolsMenu() }
         return btn
     }
@@ -1659,6 +1715,7 @@ class MainActivity : AppCompatActivity() {
                 super.onPageFinished(view, url)
                 swipeRefresh.isRefreshing = false
                 if (HIDE_ON) injectHideEngine(view)
+                if (AD_BLOCK_ON) injectAdBlock(view)
                 if (DOWNLOADS_ON || LONGPRESS_DL_ON) {
                     view.evaluateJavascript(BLOB_HOOK_JS, null)
                     view.postDelayed({ view.evaluateJavascript(BLOB_HOOK_JS, null) }, 600)
@@ -1719,6 +1776,10 @@ class MainActivity : AppCompatActivity() {
         view.evaluateJavascript(HIDE_JS, null)
         view.postDelayed({ view.evaluateJavascript(HIDE_JS, null) }, 400)
         view.postDelayed({ view.evaluateJavascript(HIDE_JS, null) }, 1500)
+    }
+
+    private fun injectAdBlock(view: WebView) {
+        view.evaluateJavascript(AD_BLOCK_JS, null)
     }
 
     private fun openExternal(uri: Uri) {
