@@ -23,12 +23,16 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 - Poora website app ke andar khulta hai — fast WebView (JavaScript, cookies, downloads sab support)
 - File upload kaam karta hai — site par photo/PDF/audio choose karke upload kar sakte ho
 - Website se koi bhi file download karo — seedha phone ke **Downloads folder me save** hota hai (notification ke saath)
+- **blob:/data: wale JS downloads bhi** — jo sites JavaScript se file banati hain (song/PDF) wo bhi app ke andar download ho kar Downloads me save hoti hai
 - Download ki hui **photo/video automatic Gallery me bhi** save hoti hai — Gallery app me turant dikhti hai
+- Website ki **cookies bhi download ke saath jaati hain** — login ke piche wali file bhi download hoti hai
+- **Photo par long-press karo — seedha download** ho kar Gallery me save hogi
+- ⋮ menu me **Desktop view ON/OFF** — poori website computer jaisi desktop mode me kholo
 - ⋮ floating button: **Print / Save as PDF**, Share, Downloads — sab kuch ek stylish menu me
 - ⋮ menu me **Mere Downloads** — app ke andar hi saari download files ki stylish list (tap = kholo, Share, dabaye rakho = delete)
 - App khulte hi **animated logo intro** — logo bada hoke aata hai, naam slide hota hai, phir app khul jaata hai
 - **Welcome slider** — app ke upar se slide hoke “Welcome to Royal Banjara Studio Music Distribution Company” ke saath stylish swagat screen (Skip / Get Started ke saath)
-- Stylish floating neeche menu bar: Home, Login , Contact, Support  — gradient pill design, scroll karo to apne aap chhup jaata hai
+- Stylish floating neeche menu bar: Home, Login , Contact, Support , Official web — gradient pill design, scroll karo to apne aap chhup jaata hai
 - Website ka footer automatic hide
 - “Created with Kliv / Made with Wix” jaisi builder-branding automatic + permanent hide ( MutationObserver se late-load par bhi)
 - Tumhari “kya chhupana hai” list permanent hide: "Created with Kliv"
