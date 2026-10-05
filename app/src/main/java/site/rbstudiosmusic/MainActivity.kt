@@ -142,8 +142,15 @@ class MainActivity : AppCompatActivity() {
         const val VOL_SCROLL_ON = true
         const val BT_SETTINGS_ON = true
         const val SOUND_MODE_ON = true
-        const val THEME_COLOR = "#F472B6"
-        const val SPLASH_COLOR = "#2B0B1C"
+        const val NOTES_TOOL_ON = true
+        const val HAPTIC_TOOL_ON = true
+        const val DATETIME_TOOL_ON = true
+        const val CALC_TOOL_ON = true
+        const val STORAGE_TOOL_ON = true
+        const val CLEAR_HIST_ON = true
+        const val DND_TOOL_ON = true
+        const val THEME_COLOR = "#EC4899"
+        const val SPLASH_COLOR = "#2B0A1D"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -175,6 +182,7 @@ class MainActivity : AppCompatActivity() {
         const val AD_BLOCK_ON = true
         const val THEME_PICKER_ON = true
         const val FULLSCREEN_TOOL_ON = true
+        const val THEME_FAB_ON = true
         const val GO_TOP_ON = true
         const val ROTATE_TOOL_ON = true
         const val FIND_TOOL_ON = true
@@ -236,6 +244,7 @@ class MainActivity : AppCompatActivity() {
     private var textZoomLevel = 100
     private var lastBackAt = 0L
     private var whatsappFab: FrameLayout? = null
+        private var themeFab: FrameLayout? = null
     private val blobBuffer = ByteArrayOutputStream()
     private var blobName = "download.bin"
     private var blobMime = "application/octet-stream"
@@ -332,6 +341,19 @@ class MainActivity : AppCompatActivity() {
             waLp.rightMargin = dp(14)
             waLp.bottomMargin = if (TOOLS_ON) dp(156) else if (SHOW_NAV) dp(98) else dp(22)
             root.addView(wa, waLp)
+        }
+
+        if (THEME_FAB_ON) {
+            val tb = buildThemeButton()
+            themeFab = tb
+            val tbLp = FrameLayout.LayoutParams(dp(48), dp(48), Gravity.BOTTOM or Gravity.END)
+            tbLp.rightMargin = dp(14)
+            val aboveWhatsapp = WHATSAPP_ON
+            val aboveTools = TOOLS_ON
+            val aboveNav = SHOW_NAV
+            val baseMargin = if (aboveWhatsapp && aboveTools) 208 else if (aboveWhatsapp && aboveNav) 150 else if (aboveWhatsapp) 74 else if (aboveTools) 156 else if (aboveNav) 98 else 22
+            tbLp.bottomMargin = dp(baseMargin)
+            root.addView(tb, tbLp)
         }
 
         root.addView(content, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
@@ -674,52 +696,104 @@ class MainActivity : AppCompatActivity() {
         val header = LinearLayout(this)
         header.orientation = LinearLayout.VERTICAL
         header.gravity = Gravity.CENTER_HORIZONTAL
-        header.setPadding(0, dp(38), 0, 0)
+        header.setPadding(0, dp(34), 0, 0)
+
+        val skip = TextView(this)
+        skip.text = "Skip ▸"
+        skip.textSize = 13f
+        skip.setTextColor(Color.WHITE)
+        skip.setPadding(dp(16), dp(7), dp(16), dp(7))
+        val skipBg = GradientDrawable()
+        skipBg.shape = GradientDrawable.RECTANGLE
+        skipBg.cornerRadius = dp(20).toFloat()
+        skipBg.setColor(0x33FFFFFF)
+        skipBg.setStroke(dp(1), 0x4DFFFFFF)
+        skip.background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), skipBg, null)
+        header.addView(skip)
+        overlay.addView(header, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP))
+
+        val center = LinearLayout(this)
+        center.orientation = LinearLayout.VERTICAL
+        center.gravity = Gravity.CENTER
+
+        // ——— V15: company logo ka premium center hero — double halo ring, glow, sparkle ———
+        val heroWrap = FrameLayout(this)
+        val heroSize = dp(150)
+        val haloOuter = View(this)
+        val haloOuterBg = GradientDrawable()
+        haloOuterBg.shape = GradientDrawable.OVAL
+        haloOuterBg.setStroke(dp(10), Color.argb(26, 255, 255, 255))
+        haloOuter.background = haloOuterBg
+        heroWrap.addView(haloOuter, FrameLayout.LayoutParams(dp(150), dp(150), Gravity.CENTER))
+        val haloInner = View(this)
+        val haloInnerBg = GradientDrawable()
+        haloInnerBg.shape = GradientDrawable.OVAL
+        haloInnerBg.setStroke(dp(4), Color.argb(64, 255, 255, 255))
+        haloInner.background = haloInnerBg
+        heroWrap.addView(haloInner, FrameLayout.LayoutParams(dp(126), dp(126), Gravity.CENTER))
+        val haloSpin = ObjectAnimator.ofFloat(heroWrap, View.ROTATION, 0f, 360f)
+        haloSpin.duration = 34000
+        haloSpin.repeatCount = ObjectAnimator.INFINITE
+        haloSpin.start()
 
         val logoRing = FrameLayout(this)
         val ringBg = GradientDrawable()
         ringBg.shape = GradientDrawable.RECTANGLE
-        ringBg.cornerRadius = dp(19).toFloat()
+        ringBg.cornerRadius = dp(26).toFloat()
         ringBg.setColor(0x3DFFFFFF)
         ringBg.setStroke(dp(1), 0x59FFFFFF)
         logoRing.background = ringBg
-        logoRing.setPadding(dp(5), dp(5), dp(5), dp(5))
+        logoRing.setPadding(dp(6), dp(6), dp(6), dp(6))
 
         val logoCard = FrameLayout(this)
         val cardBg = GradientDrawable()
         cardBg.shape = GradientDrawable.RECTANGLE
-        cardBg.cornerRadius = dp(18).toFloat()
+        cardBg.cornerRadius = dp(24).toFloat()
         cardBg.setColor(Color.WHITE)
         logoCard.background = cardBg
-        logoCard.elevation = dp(10).toFloat()
+        logoCard.elevation = dp(14).toFloat()
         // — Asli company logo (ic_brand_full) — warna launcher icon — hamesha dikhta hai —
         val logoMark = ImageView(this)
         val fullRes = resources.getIdentifier("ic_brand_full", "drawable", packageName)
         logoMark.setImageResource(if (fullRes != 0) fullRes else R.mipmap.ic_launcher)
         logoMark.scaleType = ImageView.ScaleType.FIT_CENTER
-        logoCard.setPadding(dp(6), dp(6), dp(6), dp(6))
-        logoCard.addView(logoMark, FrameLayout.LayoutParams(dp(64), dp(64), Gravity.CENTER))
+        logoCard.setPadding(dp(8), dp(8), dp(8), dp(8))
+        logoCard.addView(logoMark, FrameLayout.LayoutParams(dp(86), dp(86), Gravity.CENTER))
         // — logo ke soft glow pulse —
         val logoPulse = ObjectAnimator.ofPropertyValuesHolder(
             logoCard,
-            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.05f, 1f),
-            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.05f, 1f))
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.06f, 1f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.06f, 1f))
         logoPulse.duration = 2600
         logoPulse.repeatCount = ObjectAnimator.INFINITE
         logoPulse.start()
         logoRing.addView(logoCard, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT))
-        header.addView(logoRing)
+        heroWrap.addView(logoRing, FrameLayout.LayoutParams(heroSize, heroSize, Gravity.CENTER))
+
+        // — chhota sparkle dot jo logo ke ghumta hai —
+        val sparkle = View(this)
+        val sparkleBg = GradientDrawable()
+        sparkleBg.shape = GradientDrawable.OVAL
+        sparkleBg.setColor(0xCCFFFFFF.toInt())
+        sparkle.background = sparkleBg
+        heroWrap.addView(sparkle, FrameLayout.LayoutParams(dp(12), dp(12), Gravity.TOP or Gravity.CENTER_HORIZONTAL))
+        val sparkleOrbit = ObjectAnimator.ofFloat(sparkle, View.ROTATION, 0f, 360f)
+        sparkleOrbit.duration = 6000
+        sparkleOrbit.repeatCount = ObjectAnimator.INFINITE
+        sparkleOrbit.start()
+        center.addView(heroWrap, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
         val name = TextView(this)
         name.text = APP_NAME
-        name.textSize = 23f
+        name.textSize = 25f
         name.setTextColor(Color.WHITE)
         name.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
         name.letterSpacing = 0.05f
+        name.gravity = Gravity.CENTER
         name.setShadowLayer(dp(8).toFloat(), 0f, dp(3).toFloat(), 0x80000000.toInt())
-        val nameLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        nameLp.topMargin = dp(14)
-        header.addView(name, nameLp)
+        val nameLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        nameLp.topMargin = dp(16)
+        center.addView(name, nameLp)
 
         // — site ka naam pill (brand domain) — app name se alag ho tabhi —
         if (SITE_LABEL.isNotBlank() && SITE_LABEL != APP_NAME) {
@@ -736,29 +810,10 @@ class MainActivity : AppCompatActivity() {
             pillBg.setStroke(dp(1), 0x4DFFFFFF)
             sitePill.background = pillBg
             val pillLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            pillLp.topMargin = dp(8)
-            header.addView(sitePill, pillLp)
+            pillLp.topMargin = dp(6)
+            center.addView(sitePill, pillLp)
         }
 
-        val skip = TextView(this)
-        skip.text = "Skip ▸"
-        skip.textSize = 13f
-        skip.setTextColor(Color.WHITE)
-        skip.setPadding(dp(16), dp(7), dp(16), dp(7))
-        val skipBg = GradientDrawable()
-        skipBg.shape = GradientDrawable.RECTANGLE
-        skipBg.cornerRadius = dp(20).toFloat()
-        skipBg.setColor(0x33FFFFFF)
-        skipBg.setStroke(dp(1), 0x4DFFFFFF)
-        skip.background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), skipBg, null)
-        val skipLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        skipLp.topMargin = dp(10)
-        header.addView(skip, skipLp)
-        overlay.addView(header, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP))
-
-        val center = LinearLayout(this)
-        center.orientation = LinearLayout.VERTICAL
-        center.gravity = Gravity.CENTER
 
         val flipper = ViewFlipper(this)
         flipper.setInAnimation(this, android.R.anim.fade_in)
@@ -986,6 +1041,36 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(this, "WhatsApp nahi khul paya", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun buildThemeButton(): FrameLayout {
+        val holder = FrameLayout(this)
+        val circle = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(accentColor, 0.45f), accentColor, shade(accentColor, -0.35f)))
+        circle.shape = GradientDrawable.OVAL
+        holder.background = circle
+        holder.elevation = dp(10).toFloat()
+
+        val logo = ImageView(this)
+        logo.setImageResource(R.drawable.ic_tool_palette)
+        logo.setPadding(dp(12), dp(12), dp(12), dp(12))
+        holder.addView(logo, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+
+        val pulse = ObjectAnimator.ofPropertyValuesHolder(
+            holder,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.06f, 1f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.06f, 1f)
+        )
+        pulse.duration = 800
+        pulse.repeatCount = ObjectAnimator.INFINITE
+        pulse.repeatMode = ObjectAnimator.REVERSE
+        pulse.start()
+
+        holder.setOnClickListener { bounce(holder); showThemeSheet() }
+        holder.setOnLongClickListener {
+            Toast.makeText(this, "Tap karo — rang turant badlo", Toast.LENGTH_SHORT).show()
+            true
+        }
+        return holder
     }
 
     private fun applyNight(on: Boolean) {
@@ -1773,7 +1858,6 @@ class MainActivity : AppCompatActivity() {
         if (TTS_SPEED_ON) items.add(ToolItem(R.drawable.ic_tool_speed, "Sunne ki raftaar", "awaaz tez/dheemi", 0xFF4F46E5.toInt(), "Padhai ke Tools") { ttsSpeedDialog() })
         if (TRANSLATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_translate, "Hindi me padho", "page translate", 0xFF0F766E.toInt(), "Padhai ke Tools") { translatePage() })
         if (DICT_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_dict, "Shabd ka matlab", "meaning turant", 0xFF7C2D12.toInt(), "Padhai ke Tools") { dictDialog() })
-        if (SITE_SEARCH_ON) items.add(ToolItem(R.drawable.ic_tool_sitesearch, "Site me dhoondo", "Google se isi site me", 0xFF0E7490.toInt(), "Padhai ke Tools") { siteSearchDialog() })
         if (VOICE_SEARCH_ON) items.add(ToolItem(R.drawable.ic_tool_voice, "Bolke dhoondo", "bolkar search karo", 0xFF7C3AED.toInt(), "Padhai ke Tools") { voiceSearchTool() })
         if (COPY_TEXT_ON) items.add(ToolItem(R.drawable.ic_tool_copy, "Text copy karo", "poora page ka likha", 0xFF4338CA.toInt(), "Padhai ke Tools") { copyPageText() })
         if (FONT_STYLE_ON) items.add(ToolItem(R.drawable.ic_tool_fontstyle, "Font style badlo", "lekhe ka style", 0xFF9F1239.toInt(), "Padhai ke Tools") { fontStyleDialog() })
@@ -1811,7 +1895,6 @@ class MainActivity : AppCompatActivity() {
         if (SOUND_MODE_ON) items.add(ToolItem(R.drawable.ic_tool_soundmode, "Sound profile", "ring / vibrate / silent", 0xFFDB2777.toInt(), "Screen ke Tools") { soundModeDialog() })
         if (CONTRAST_ON) items.add(ToolItem(R.drawable.ic_tool_contrast, if (contrastOn) "Saaf likhai band" else "Saaf likhai on", "rang ujle, saaf dikhe", 0xFF1D4ED8.toInt(), "Screen ke Tools") { toggleHighContrast() })
         if (SWIPE_NAV_ON) items.add(ToolItem(R.drawable.ic_tool_swipe, "Swipe karo", "ungli ghumao, page badlo", 0xFF6366F1.toInt(), "Page ke Tools") { Toast.makeText(this, "Ungli ghumao — peeche/aage", Toast.LENGTH_SHORT).show() })
-        if (BROWSER_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_browser, "Chrome me kholo", "page bahar browser me", 0xFF4285F4.toInt(), "Page ke Tools") { openInBrowserTool() })
         items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
         items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
         items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
@@ -1831,9 +1914,13 @@ class MainActivity : AppCompatActivity() {
         if (VIDEO_BLOCK_ON) items.add(ToolItem(R.drawable.ic_tool_videoblock, if (videoBlockOn) "Video autoplay chalu" else "Video autoplay band", "video khud na chale, data bacho", 0xFF0F766E.toInt(), "Suraksha aur Bachat") { toggleVideoBlock() })
         if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "Suraksha aur Bachat") { clearAppCache() })
         if (COOKIES_CLEAR_ON) items.add(ToolItem(R.drawable.ic_tool_cookie, "Cookies clear", "login data saaf", 0xFFB45309.toInt(), "Suraksha aur Bachat") { clearCookiesNow() })
+        if (CLEAR_HIST_ON) items.add(ToolItem(R.drawable.ic_tool_historyclear, "History mitao", "khole page ki list saaf", 0xFF64748B.toInt(), "Suraksha aur Bachat") { clearHistoryNow() })
+        if (STORAGE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_storageinfo, "Storage kitna bacha", "phone ki memory", 0xFF0F766E.toInt(), "Suraksha aur Bachat") { storageInfoDialog() })
+        if (DND_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_dnd, "Disturb mat karo", "DND ek tap me", 0xFFB91C1C.toInt(), "Screen ke Tools") { dndToggle() })
         if (BATTERY_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_battery, if (batteryOn) "Battery bachao band" else "Battery bachao", "ek tap me sab bachat", 0xFF65A30D.toInt(), "Suraksha aur Bachat") { batterySaverToggle() })
         if (INCOGNITO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_incognito, if (noHistoryOn) "Chhupa mode band" else "Chhupa mode", "history me kuch nahi likhe", 0xFF334155.toInt(), "Suraksha aur Bachat") { toggleNoHistory() })
-        if (APP_LOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (prefs.getString("app_pin", null) == null) "App lock lagao" else "App lock kholo/change", "PIN se app ki suraksha", 0xFF0F172A.toInt(), "Suraksha aur Bachat") { if (prefs.getString("app_pin", null) == null) setupAppPinDialog() else showAppLockDialog() })
+        if (APP_LOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (prefs.getString("app_pin", null) == null) "App lock lagao" else "App lock kholo", "PIN se app ki suraksha", 0xFF0F172A.toInt(), "Suraksha aur Bachat") { if (prefs.getString("app_pin", null) == null) setupAppPinDialog() else showAppLockDialog() })
+        if (APP_LOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, "PIN badlo", "naya PIN banao", 0xFF334155.toInt(), "Suraksha aur Bachat") { pinChangeToolDialog() })
         if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
         if (RATE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_ratestar, "5 star rating do", "app ko pasand batao", 0xFFF59E0B.toInt(), "App") { rateAppNow() })
         if (CONTACT_CARD_ON) items.add(ToolItem(R.drawable.ic_tool_contact, "Sampark karo", "WhatsApp / call / email sab ek saath", 0xFF0D9488.toInt(), "Madad") { showContactSheet() })
@@ -1842,6 +1929,10 @@ class MainActivity : AppCompatActivity() {
         if (USAGE_TIMER_ON) items.add(ToolItem(R.drawable.ic_tool_usage, "Kitna time laga", "aaj ka use dekho", 0xFFB45309.toInt(), "App") { showUsageDialog() })
         if (PDF_VIEWER_ON) items.add(ToolItem(R.drawable.ic_tool_pdf, "PDF kholo (app me)", "PDF bahar nahi jaana", 0xFFDC2626.toInt(), "Files aur Print") { Toast.makeText(this, "Kisi PDF link par click karo — app ke andar hi khulega", Toast.LENGTH_LONG).show() })
         if (RESTART_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_restart, "App restart karo", "ek tap me wapas khule", 0xFF475569.toInt(), "App") { restartApp() })
+        if (NOTES_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_notes, "Chitthi likho", "app me hi save", 0xFF7E22CE.toInt(), "Padhai ke Tools") { notesToolDialog() })
+        if (HAPTIC_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_haptic, "Phone vibrate", "halka buzz", 0xFF0EA5E9.toInt(), "Screen ke Tools") { vibrateNow() })
+        if (DATETIME_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_datetime, "Aaj ki tareekh", "din, date aur time", 0xFFCA8A04.toInt(), "Madad") { dateTimeDialog() })
+        if (CALC_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_calc, "Calculator kholo", "seedha khulega", 0xFF2563EB.toInt(), "App") { openCalculatorApp() })
         if (RESET_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_reset, "Sab reset karo", "saare settings normal", 0xFF64748B.toInt(), "App") { resetAllSettings() })
         if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
         if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
@@ -1978,28 +2069,7 @@ class MainActivity : AppCompatActivity() {
         return if (clean.isBlank()) "Home page" else clean
     }
 
-    // — Site me dhoondo: Google se sirf is site ke andar search —
-    private fun siteSearchDialog() {
-        val input = EditText(this)
-        input.hint = "kya dhoondna hai is site me?"
-        input.inputType = InputType.TYPE_CLASS_TEXT
-        input.setSingleLine(true)
-        val wrap = FrameLayout(this)
-        wrap.setPadding(dp(16), dp(10), dp(16), 0)
-        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
-        AlertDialog.Builder(this)
-            .setTitle("Site me dhoondo")
-            .setView(wrap)
-            .setPositiveButton("Dhoondo") { _, _ ->
-                val q = input.text.toString().trim()
-                if (q.isNotEmpty()) {
-                    val host = Uri.parse(HOME_URL).host ?: ""
-                    webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q, "UTF-8") + "&as_sitesearch=" + host)
-                }
-            }
-            .setNegativeButton("Band", null)
-            .show()
-    }
+
 
     // — Shabd ka matlab: kisi bhi shabd ka Hindi meaning —
     private fun dictDialog() {
@@ -2538,65 +2608,177 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ——— V12 ke 6 naye tools — app lock, swipe, browser, shake, surprise theme, rating ———
+    // ——— V12 ke tools — swipe, browser, shake, surprise theme, rating + V15 premium App Lock ———
     private var lastShakeMs = 0L
 
-    // — App lock: 4 digit ka PIN — pehli baar set hota hai, uske baad wahi mangta hai —
-    private fun showAppLockDialog() {
-        val savedPin = prefs.getString("app_pin", null)
-        if (savedPin == null) { setupAppPinDialog(); return }
-        val box = android.widget.EditText(this)
-        box.hint = "4 digit ka PIN"
-        box.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
-        box.filters = arrayOf(android.text.InputFilter.LengthFilter(4))
-        val wrap = LinearLayout(this)
-        wrap.orientation = LinearLayout.VERTICAL
-        wrap.setPadding(dp(22), dp(8), dp(22), 0)
-        wrap.addView(box, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-        val dlg = AlertDialog.Builder(this)
-            .setTitle("🔒 App lock")
-            .setMessage("App kholne ke liye PIN daalo")
-            .setView(wrap)
-            .setPositiveButton("Kholo", null)
-            .setCancelable(false)
-            .create()
-        dlg.setOnShowListener {
-            dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val typed = box.text.toString().trim()
-                if (typed == savedPin) dlg.dismiss()
-                else { Toast.makeText(this, "Galat PIN — dobara try karo", Toast.LENGTH_SHORT).show(); box.setText("") }
-            }
-        }
-        dlg.show()
+    // ——— V15 premium App Lock — asli company logo, PIN dots, number pad — koi keyboard nahi ———
+    private fun showAppLockDialog() { showPremiumLock("unlock") }
+    private fun setupAppPinDialog() { showPremiumLock("set") }
+
+    private fun pinChangeToolDialog() {
+        if (prefs.getString("app_pin", null) == null) setupAppPinDialog() else showPremiumLock("change-old")
     }
 
-    private fun setupAppPinDialog() {
-        val box = android.widget.EditText(this)
-        box.hint = "Naya 4 digit PIN chuno"
-        box.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
-        box.filters = arrayOf(android.text.InputFilter.LengthFilter(4))
-        val wrap = LinearLayout(this)
-        wrap.orientation = LinearLayout.VERTICAL
-        wrap.setPadding(dp(22), dp(8), dp(22), 0)
-        wrap.addView(box, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-        AlertDialog.Builder(this)
-            .setTitle("🔒 App lock lagao")
-            .setMessage("4 digit ka PIN chuno — agli baar app isi se khulegi")
-            .setView(wrap)
-            .setPositiveButton("Set karo", null)
-            .setNegativeButton("Abhi nahi", null)
-            .setOnDismissListener { }
-            .show()
-            .let { d ->
-                d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                    val typed = box.text.toString().trim()
-                    if (typed.length == 4) {
-                        prefs.edit().putString("app_pin", typed).apply()
-                        d.dismiss()
-                        Toast.makeText(this, "App lock lag gaya 🔒", Toast.LENGTH_SHORT).show()
-                    } else Toast.makeText(this, "Poore 4 digit daalo", Toast.LENGTH_SHORT).show()
-                }
+    private fun showPremiumLock(stageIn: String) {
+        var stage = stageIn
+        var pending = ""
+        val typed = StringBuilder()
+        val dlg = Dialog(this)
+        dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dlg.setCancelable(false)
+        dlg.setCanceledOnTouchOutside(false)
+
+        val card = LinearLayout(this)
+        card.orientation = LinearLayout.VERTICAL
+        card.gravity = Gravity.CENTER_HORIZONTAL
+        card.setPadding(dp(24), dp(30), dp(24), dp(24))
+        val cardBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, -0.58f), shade(themeColorInt, -0.22f), shade(themeColorInt, 0.10f)))
+        cardBg.cornerRadius = dp(30).toFloat()
+        card.background = cardBg
+
+        val logoCard = FrameLayout(this)
+        val logoBg = GradientDrawable()
+        logoBg.shape = GradientDrawable.RECTANGLE
+        logoBg.cornerRadius = dp(26).toFloat()
+        logoBg.setColor(Color.WHITE)
+        logoCard.background = logoBg
+        logoCard.elevation = dp(12).toFloat()
+        logoCard.setPadding(dp(8), dp(8), dp(8), dp(8))
+        val logoMark = ImageView(this)
+        val fullRes = resources.getIdentifier("ic_brand_full", "drawable", packageName)
+        logoMark.setImageResource(if (fullRes != 0) fullRes else R.mipmap.ic_launcher)
+        logoMark.scaleType = ImageView.ScaleType.FIT_CENTER
+        logoCard.addView(logoMark, FrameLayout.LayoutParams(dp(74), dp(74), Gravity.CENTER))
+        val logoLp = LinearLayout.LayoutParams(dp(90), dp(90))
+        card.addView(logoCard, logoLp)
+        val logoPulse = ObjectAnimator.ofPropertyValuesHolder(
+            logoCard,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.05f, 1f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.05f, 1f))
+        logoPulse.duration = 2400
+        logoPulse.repeatCount = ObjectAnimator.INFINITE
+        logoPulse.start()
+
+        val title = TextView(this)
+        title.textSize = 20f
+        title.setTextColor(Color.WHITE)
+        title.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
+        title.gravity = Gravity.CENTER
+        val titleLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        titleLp.topMargin = dp(14)
+        card.addView(title, titleLp)
+        val sub = TextView(this)
+        sub.textSize = 13f
+        sub.setTextColor(0xD9FFFFFF.toInt())
+        sub.gravity = Gravity.CENTER
+        val subLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        subLp.topMargin = dp(3)
+        card.addView(sub, subLp)
+
+        val dots = LinearLayout(this)
+        dots.orientation = LinearLayout.HORIZONTAL
+        dots.gravity = Gravity.CENTER
+        val dotViews = mutableListOf<View>()
+        for (i in 0 until 4) {
+            val d = View(this)
+            val dBg = GradientDrawable()
+            dBg.shape = GradientDrawable.OVAL
+            dBg.setColor(0x33FFFFFF)
+            dBg.setStroke(dp(1), 0x66FFFFFF)
+            d.background = dBg
+            val dLp = LinearLayout.LayoutParams(dp(16), dp(16))
+            dLp.marginEnd = dp(12)
+            dots.addView(d, dLp)
+            dotViews.add(d)
+        }
+        val dotsLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        dotsLp.topMargin = dp(18)
+        card.addView(dots, dotsLp)
+
+        fun labelsFor(s: String): Pair<String, String> = when (s) {
+            "unlock" -> Pair("🔒 App lock hai", "PIN daalo — app khulegi")
+            "set" -> Pair("🔒 Naya PIN banao", "4 digit ka PIN chuno")
+            "confirm" -> Pair("✅ PIN dobara likho", "confirm karne ke liye wahi PIN")
+            "change-old" -> Pair("🔒 PIN badlo", "pehle purana PIN daalo")
+            "change-new" -> Pair("🔒 Naya PIN chuno", "naya 4 digit PIN")
+            else -> Pair("🔒 PIN dobara likho", "confirm karne ke liye wahi PIN")
+        }
+        fun applyLabels() { val p = labelsFor(stage); title.text = p.first; sub.text = p.second }
+        fun updateDots() {
+            for (i in 0 until 4) {
+                val dv = dotViews[i]
+                val nb = GradientDrawable()
+                nb.shape = GradientDrawable.OVAL
+                nb.setColor(if (i < typed.length) Color.WHITE else 0x33FFFFFF)
+                nb.setStroke(dp(1), 0x66FFFFFF)
+                dv.background = nb
             }
+        }
+        fun shakeWrong() {
+            typed.clear()
+            updateDots()
+            val sh = ObjectAnimator.ofFloat(dots, View.TRANSLATION_X, 0f, dp(-12).toFloat(), dp(12).toFloat(), dp(-8).toFloat(), dp(8).toFloat(), 0f)
+            sh.duration = 420
+            sh.start()
+            Toast.makeText(this, "Galat PIN — dobara try karo", Toast.LENGTH_SHORT).show()
+        }
+        fun savePin(pin: String) {
+            prefs.edit().putString("app_pin", pin).apply()
+            Toast.makeText(this, "App lock lag gaya 🔒", Toast.LENGTH_SHORT).show()
+            dlg.dismiss()
+        }
+        fun handleFull() {
+            val pin = typed.toString()
+            val saved = prefs.getString("app_pin", null)
+            when (stage) {
+                "unlock" -> if (saved != null && pin == saved) dlg.dismiss() else shakeWrong()
+                "set" -> { pending = pin; stage = "confirm"; typed.clear(); updateDots(); applyLabels() }
+                "confirm" -> if (pin == pending) savePin(pin) else { stage = "set"; applyLabels(); shakeWrong() }
+                "change-old" -> if (saved != null && pin == saved) { stage = "change-new"; typed.clear(); updateDots(); applyLabels() } else shakeWrong()
+                "change-new" -> { pending = pin; stage = "confirm"; typed.clear(); updateDots(); applyLabels() }
+            }
+        }
+        fun pressDigit(c: String) {
+            if (typed.length >= 4) return
+            typed.append(c)
+            updateDots()
+            if (typed.length == 4) handleFull()
+        }
+
+        val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫")
+        keys.chunked(3).forEach { rowKeys ->
+            val row = LinearLayout(this)
+            row.orientation = LinearLayout.HORIZONTAL
+            row.gravity = Gravity.CENTER
+            val rowLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            rowLp.topMargin = dp(10)
+            rowKeys.forEach { k ->
+                val btn = TextView(this)
+                btn.text = k
+                btn.textSize = 21f
+                btn.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
+                btn.setTextColor(Color.WHITE)
+                btn.gravity = Gravity.CENTER
+                val btnBg = GradientDrawable()
+                btnBg.shape = GradientDrawable.OVAL
+                btnBg.setColor(0x2EFFFFFF)
+                btnBg.setStroke(dp(1), 0x59FFFFFF)
+                btn.background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), btnBg, null)
+                val btnLp = LinearLayout.LayoutParams(dp(62), dp(62))
+                btnLp.marginEnd = dp(12)
+                row.addView(btn, btnLp)
+                if (k.isNotEmpty() && k != "⌫") btn.setOnClickListener { bounce(btn); pressDigit(k) }
+                if (k == "⌫") btn.setOnClickListener { bounce(btn); if (typed.isNotEmpty()) { typed.deleteCharAt(typed.length - 1); updateDots() } }
+            }
+            card.addView(row, rowLp)
+        }
+
+        applyLabels()
+        updateDots()
+        dlg.setContentView(card)
+        dlg.window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+        dlg.show()
+        dlg.window?.setLayout((resources.displayMetrics.widthPixels * 0.86).toInt(), LinearLayout.LayoutParams.WRAP_CONTENT)
     }
 
     // — Swipe se peeche/aage — ungli ghumao, page badlo —
@@ -2741,7 +2923,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun linkLongPressDialog(url: String, title: String) {
         if (url.isBlank() || !url.startsWith("http")) return
-        val opts = arrayOf("Kholo", "Link copy kar lo", "Chrome me kholo")
+        val opts = arrayOf("Kholo")
         AlertDialog.Builder(this)
             .setTitle(if (title.isBlank()) "Link ka menu" else title)
             .setMessage(prettyUrl(url))
@@ -2963,6 +3145,114 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton("Band", null)
             .show()
+    }
+
+
+    // ——— V15 ke 7 naye tools — chitthi, vibrate, tareekh, calculator, storage, history-mitao, DND ———
+
+    // — Chitthi likho: app ke andar hi save hoti hai —
+    private fun notesToolDialog() {
+        val box = android.widget.EditText(this)
+        box.hint = "Yahan chitthi likho…"
+        box.minLines = 4
+        box.gravity = Gravity.TOP or Gravity.START
+        box.setText(prefs.getString("quick_note", ""))
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.setPadding(dp(22), dp(10), dp(22), 0)
+        wrap.addView(box, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("📝 Chitthi likho")
+            .setMessage("Ye chitthi app me hi save rehti hai — kabhi bhi dekho")
+            .setView(wrap)
+            .setPositiveButton("Save karo") { _, _ ->
+                prefs.edit().putString("quick_note", box.text.toString()).apply()
+                Toast.makeText(this, "Chitthi save ho gayi ✓", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Phone vibrate: ek tap me halka vibration —
+    private fun vibrateNow() {
+        try {
+            val v = getSystemService(Context.VIBRATOR_SERVICE) as android.os.Vibrator
+            if (Build.VERSION.SDK_INT >= 26) v.vibrate(android.os.VibrationEffect.createOneShot(120, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
+            else @Suppress("DEPRECATION") v.vibrate(120)
+            Toast.makeText(this, "Buzz! 📳", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Vibration nahi hui", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Aaj ki tareekh: din, date aur time —
+    private fun dateTimeDialog() {
+        val fmt = java.text.SimpleDateFormat("EEEE, d MMMM yyyy
+ hh:mm a", java.util.Locale.getDefault())
+        AlertDialog.Builder(this)
+            .setTitle("📅 Aaj ka din")
+            .setMessage(fmt.format(java.util.Date()))
+            .setPositiveButton("Theek hai", null)
+            .show()
+    }
+
+    // — Calculator kholo: phone ka calculator seedha —
+    private fun openCalculatorApp() {
+        val pkgs = arrayOf("com.android.calculator2", "com.google.android.calculator", "com.miui.calculator", "com.sec.android.app.popupcalculator")
+        for (p in pkgs) {
+            try {
+                val i = packageManager.getLaunchIntentForPackage(p)
+                if (i != null) { startActivity(i); return }
+            } catch (e: Exception) { }
+        }
+        Toast.makeText(this, "Phone me calculator app nahi mila", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Storage kitna bacha: phone ki memory —
+    private fun storageInfoDialog() {
+        try {
+            val st = android.os.StatFs(getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath)
+            val gb = 1024.0 * 1024.0 * 1024.0
+            val total = st.totalBytes / gb
+            val free = st.availableBytes / gb
+            val used = total - free
+            val pct = if (total > 0) ((used / total) * 100).toInt() else 0
+            val bars = "█".repeat(pct / 10) + "░".repeat(10 - pct / 10)
+            AlertDialog.Builder(this)
+                .setTitle("💾 Storage ki jaankari")
+                .setMessage(bars + "\n\n" + String.format(java.util.Locale.US, "%.1f GB istemaal, %.1f GB khaali", used, free))
+                .setPositiveButton("Theek hai", null)
+                .show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Storage ki jaankari nahi mili", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — History mitao: khole hue pages ki list saaf —
+    private fun clearHistoryNow() {
+        try {
+            webView.clearHistory()
+            Toast.makeText(this, "History mit gayi ✓", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "History nahi mit payi", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Disturb mat karo (DND): permission ho to turant, warna settings —
+    private fun dndToggle() {
+        try {
+            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+            if (nm.isNotificationPolicyAccessGranted) {
+                val on = nm.getCurrentInterruptionFilter() == android.app.NotificationManager.INTERRUPTION_FILTER_ALL
+                nm.setInterruptionFilter(if (on) android.app.NotificationManager.INTERRUPTION_FILTER_PRIORITY else android.app.NotificationManager.INTERRUPTION_FILTER_ALL)
+                Toast.makeText(this, if (on) "Disturb mat karo ON 🔕" else "Aawaz wapas chalu 🔔", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Ek baar permission dena — phir ek tap me chalega", Toast.LENGTH_LONG).show()
+                try { startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)) } catch (e: Exception) { }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "DND nahi badal paya", Toast.LENGTH_SHORT).show()
+        }
     }
 
 
