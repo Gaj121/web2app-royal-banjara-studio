@@ -32,6 +32,11 @@ jobs:
         working-directory: desktop
         run: npx electron-builder --win nsis --publish never
 
+      - name: Purani release hatado (asset conflict fix)
+        run: gh release delete windows-v1 --yes --cleanup-tag || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Release me upload karo
         uses: softprops/action-gh-release@v2
         with:
@@ -62,6 +67,11 @@ jobs:
       - name: Build Linux .deb (Ubuntu/Debian)
         working-directory: desktop
         run: npx electron-builder --linux deb --publish never
+
+      - name: Purani release hatado (asset conflict fix)
+        run: gh release delete linux-v1 --yes --cleanup-tag || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release me upload karo
         uses: softprops/action-gh-release@v2
@@ -96,6 +106,11 @@ jobs:
         working-directory: desktop
         run: npx electron-builder --mac dmg --universal --publish never
 
+      - name: Purani release hatado (asset conflict fix)
+        run: gh release delete macos-v1 --yes --cleanup-tag || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Release me upload karo
         uses: softprops/action-gh-release@v2
         with:
@@ -122,6 +137,11 @@ jobs:
           cd build
           zip -qry royal-banjara-studio-unsigned.ipa Payload
           ls -la
+
+      - name: Purani release hatado (asset conflict fix)
+        run: gh release delete ios-v1 --yes --cleanup-tag || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release me upload karo
         uses: softprops/action-gh-release@v2
