@@ -3187,8 +3187,7 @@ class MainActivity : AppCompatActivity() {
 
     // — Aaj ki tareekh: din, date aur time —
     private fun dateTimeDialog() {
-        val fmt = java.text.SimpleDateFormat("EEEE, d MMMM yyyy
- hh:mm a", java.util.Locale.getDefault())
+        val fmt = java.text.SimpleDateFormat("EEEE, d MMMM yyyy\n hh:mm a", java.util.Locale.getDefault())
         AlertDialog.Builder(this)
             .setTitle("📅 Aaj ka din")
             .setMessage(fmt.format(java.util.Date()))
