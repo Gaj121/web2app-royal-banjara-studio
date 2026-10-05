@@ -132,14 +132,18 @@ class MainActivity : AppCompatActivity() {
         const val CONTACT_CARD_ON = true
         const val LINK_PREVIEW_ON = true
         const val FAST_START_ON = true
-        const val FLOAT_HOME_ON = true
         const val BACKUP_TOOL_ON = true
         const val USAGE_TIMER_ON = true
         const val PDF_VIEWER_ON = true
         const val LINK_HOOK_JS = "(function(){if(window.__rbLinkHook)return;window.__rbLinkHook=true;var t=null;document.addEventListener('touchstart',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;t=setTimeout(function(){try{AndroidLinks.linkLongPress(a.href||'',(a.innerText||'').trim().slice(0,60))}catch(x){}},550)},true);['touchend','touchmove','touchcancel'].forEach(function(ev){document.addEventListener(ev,function(){if(t){clearTimeout(t);t=null}},true)});document.addEventListener('contextmenu',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(a){e.preventDefault();try{AndroidLinks.linkLongPress(a.href||'',(a.innerText||'').trim().slice(0,60))}catch(x){}}},true)})();"
         const val PDF_HOOK_JS = "(function(){if(window.__rbPdfHook)return;window.__rbPdfHook=true;document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;var h=a.getAttribute('href')||'';if(/\\.pdf(\\?|#|$)/i.test(h)){e.preventDefault();e.stopPropagation();try{AndroidPdf.pdfOpen(a.href)}catch(x){}}},true)})();"
-        const val THEME_COLOR = "#3DDC84"
-        const val SPLASH_COLOR = "#0C0F14"
+        const val TORCH_TOOL_ON = true
+        const val BATTERY_STAT_ON = true
+        const val VOL_SCROLL_ON = true
+        const val BT_SETTINGS_ON = true
+        const val SOUND_MODE_ON = true
+        const val THEME_COLOR = "#F472B6"
+        const val SPLASH_COLOR = "#2B0B1C"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -355,7 +359,6 @@ class MainActivity : AppCompatActivity() {
         if (SHAKE_REFRESH_ON) setupShakeRefresh()
         if (FAST_START_ON) fastStartWarmUp()
         if (USAGE_TIMER_ON) startUsageTimer()
-        if (FLOAT_HOME_ON) setupFloatingHome()
 
         setupWebView()
         if (NIGHT_MODE_ON && prefs.getBoolean("night_on", false)) {
@@ -685,29 +688,57 @@ class MainActivity : AppCompatActivity() {
         val logoCard = FrameLayout(this)
         val cardBg = GradientDrawable()
         cardBg.shape = GradientDrawable.RECTANGLE
-        cardBg.cornerRadius = dp(14).toFloat()
+        cardBg.cornerRadius = dp(18).toFloat()
         cardBg.setColor(Color.WHITE)
         logoCard.background = cardBg
-        val logoMark = TextView(this)
-        logoMark.text = APP_NAME.trim().take(1).uppercase(Locale.getDefault())
-        logoMark.textSize = 30f
-        logoMark.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
-        logoMark.setTextColor(themeColorInt)
-        logoMark.gravity = Gravity.CENTER
-        logoCard.addView(logoMark, FrameLayout.LayoutParams(dp(52), dp(52)))
+        logoCard.elevation = dp(10).toFloat()
+        // — Asli company logo (ic_brand_full) — warna launcher icon — hamesha dikhta hai —
+        val logoMark = ImageView(this)
+        val fullRes = resources.getIdentifier("ic_brand_full", "drawable", packageName)
+        logoMark.setImageResource(if (fullRes != 0) fullRes else R.mipmap.ic_launcher)
+        logoMark.scaleType = ImageView.ScaleType.FIT_CENTER
+        logoCard.setPadding(dp(6), dp(6), dp(6), dp(6))
+        logoCard.addView(logoMark, FrameLayout.LayoutParams(dp(64), dp(64), Gravity.CENTER))
+        // — logo ke soft glow pulse —
+        val logoPulse = ObjectAnimator.ofPropertyValuesHolder(
+            logoCard,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.05f, 1f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.05f, 1f))
+        logoPulse.duration = 2600
+        logoPulse.repeatCount = ObjectAnimator.INFINITE
+        logoPulse.start()
         logoRing.addView(logoCard, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT))
         header.addView(logoRing)
 
         val name = TextView(this)
         name.text = APP_NAME
-        name.textSize = 19f
+        name.textSize = 23f
         name.setTextColor(Color.WHITE)
         name.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
-        name.letterSpacing = 0.04f
-        name.setShadowLayer(dp(6).toFloat(), 0f, dp(2).toFloat(), 0x66000000)
+        name.letterSpacing = 0.05f
+        name.setShadowLayer(dp(8).toFloat(), 0f, dp(3).toFloat(), 0x80000000.toInt())
         val nameLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        nameLp.topMargin = dp(12)
+        nameLp.topMargin = dp(14)
         header.addView(name, nameLp)
+
+        // — site ka naam pill (brand domain) — app name se alag ho tabhi —
+        if (SITE_LABEL.isNotBlank() && SITE_LABEL != APP_NAME) {
+            val sitePill = TextView(this)
+            sitePill.text = SITE_LABEL
+            sitePill.textSize = 12f
+            sitePill.setTextColor(0xE6FFFFFF.toInt())
+            sitePill.letterSpacing = 0.06f
+            sitePill.setPadding(dp(14), dp(5), dp(14), dp(5))
+            val pillBg = GradientDrawable()
+            pillBg.shape = GradientDrawable.RECTANGLE
+            pillBg.cornerRadius = dp(16).toFloat()
+            pillBg.setColor(0x2EFFFFFF)
+            pillBg.setStroke(dp(1), 0x4DFFFFFF)
+            sitePill.background = pillBg
+            val pillLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            pillLp.topMargin = dp(8)
+            header.addView(sitePill, pillLp)
+        }
 
         val skip = TextView(this)
         skip.text = "Skip ▸"
@@ -1774,13 +1805,16 @@ class MainActivity : AppCompatActivity() {
         if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
         if (ROTATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen ke Tools") { toggleRotation() })
         if (VOLUME_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_volumeup, "Aawaz ki matra", "volume slider", 0xFFDB2777.toInt(), "Screen ke Tools") { volumeDialog() })
+        if (TORCH_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_torch, if (torchOn) "Torch band karo" else "Torch jalao", "phone ki batti", 0xFFF59E0B.toInt(), "Screen ke Tools") { toggleTorch() })
+        if (BATTERY_STAT_ON) items.add(ToolItem(R.drawable.ic_tool_batterystat, "Battery kitni bachi", "charge ka status", 0xFF16A34A.toInt(), "Screen ke Tools") { batteryStatusDialog() })
+        if (VOL_SCROLL_ON) items.add(ToolItem(R.drawable.ic_tool_volumescroll, if (volScrollOn) "Volume se scroll band" else "Volume se scroll", "volume button se page chale", 0xFF8B5CF6.toInt(), "Screen ke Tools") { toggleVolumeScroll() })
+        if (SOUND_MODE_ON) items.add(ToolItem(R.drawable.ic_tool_soundmode, "Sound profile", "ring / vibrate / silent", 0xFFDB2777.toInt(), "Screen ke Tools") { soundModeDialog() })
         if (CONTRAST_ON) items.add(ToolItem(R.drawable.ic_tool_contrast, if (contrastOn) "Saaf likhai band" else "Saaf likhai on", "rang ujle, saaf dikhe", 0xFF1D4ED8.toInt(), "Screen ke Tools") { toggleHighContrast() })
         if (SWIPE_NAV_ON) items.add(ToolItem(R.drawable.ic_tool_swipe, "Swipe karo", "ungli ghumao, page badlo", 0xFF6366F1.toInt(), "Page ke Tools") { Toast.makeText(this, "Ungli ghumao — peeche/aage", Toast.LENGTH_SHORT).show() })
         if (BROWSER_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_browser, "Chrome me kholo", "page bahar browser me", 0xFF4285F4.toInt(), "Page ke Tools") { openInBrowserTool() })
         items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
         items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
         items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
-        items.add(ToolItem(R.drawable.ic_tool_home, "Home page", "shuruati page", 0xFF111827.toInt(), "Page ke Tools") { webView.loadUrl(HOME_URL) })
         if (URL_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_globe, "Kholo (URL likho)", "seedha page kholo", 0xFF0284C7.toInt(), "Page ke Tools") { openUrlDialog() })
         if (AUTO_REFRESH_ON) items.add(ToolItem(R.drawable.ic_tool_autorefresh, if (autoRefreshOn) "Auto refresh band" else "Auto refresh karo", "har 30s update", 0xFF3F6212.toInt(), "Page ke Tools") { toggleAutoRefresh() })
         if (QR_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_qr, "QR banao", "page ka QR code", 0xFF374151.toInt(), "Page ke Tools") { showQrDialog() })
@@ -1805,8 +1839,6 @@ class MainActivity : AppCompatActivity() {
         if (CONTACT_CARD_ON) items.add(ToolItem(R.drawable.ic_tool_contact, "Sampark karo", "WhatsApp / call / email sab ek saath", 0xFF0D9488.toInt(), "Madad") { showContactSheet() })
         if (LINK_PREVIEW_ON) items.add(ToolItem(R.drawable.ic_tool_linkinfo, "Link ka menu", "link par dabaye rakho", 0xFF475569.toInt(), "Page ke Tools") { Toast.makeText(this, "Kisi bhi link par ungli dabaye rakho — chhota menu khulega", Toast.LENGTH_LONG).show() })
         if (FAST_START_ON) items.add(ToolItem(R.drawable.ic_tool_faststart, "Tez start", "app jaldi khulta hai", 0xFF059669.toInt(), "App") { fastStartWarmUp(); Toast.makeText(this, "Tez start chalu — app ab jaldi khulega", Toast.LENGTH_SHORT).show() })
-        if (FLOAT_HOME_ON) items.add(ToolItem(R.drawable.ic_tool_homefloat, "Home button", "ghar button screen par", 0xFF2563EB.toInt(), "Screen ke Tools") { setupFloatingHome() })
-        if (BACKUP_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_backup, "Backup banao", "bookmarks sambhal ke rakho", 0xFF7C3AED.toInt(), "Padhai ke Tools") { backupDialog() })
         if (USAGE_TIMER_ON) items.add(ToolItem(R.drawable.ic_tool_usage, "Kitna time laga", "aaj ka use dekho", 0xFFB45309.toInt(), "App") { showUsageDialog() })
         if (PDF_VIEWER_ON) items.add(ToolItem(R.drawable.ic_tool_pdf, "PDF kholo (app me)", "PDF bahar nahi jaana", 0xFFDC2626.toInt(), "Files aur Print") { Toast.makeText(this, "Kisi PDF link par click karo — app ke andar hi khulega", Toast.LENGTH_LONG).show() })
         if (RESTART_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_restart, "App restart karo", "ek tap me wapas khule", 0xFF475569.toInt(), "App") { restartApp() })
@@ -1817,6 +1849,8 @@ class MainActivity : AppCompatActivity() {
         items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         if (WIFI_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_wifi, "WiFi settings", "internet jodne ke liye", 0xFF0284C7.toInt(), "Madad") { openWifiSettings() })
+        if (BT_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_bluetooth, "Bluetooth settings", "headphone jodne ke liye", 0xFF2563EB.toInt(), "Madad") { openBluetoothSettings() })
+        if (BACKUP_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_backup, "Backup banao", "bookmarks sambhal ke rakho", 0xFF7C3AED.toInt(), "Padhai ke Tools") { backupDialog() })
         return items
     }
 
@@ -2710,7 +2744,7 @@ class MainActivity : AppCompatActivity() {
         val opts = arrayOf("Kholo", "Link copy kar lo", "Chrome me kholo")
         AlertDialog.Builder(this)
             .setTitle(if (title.isBlank()) "Link ka menu" else title)
-            .setMessage(url)
+            .setMessage(prettyUrl(url))
             .setItems(opts) { _, which ->
                 when (which) {
                     0 -> webView.loadUrl(url)
@@ -2742,34 +2776,6 @@ class MainActivity : AppCompatActivity() {
         }.start()
     }
 
-    // — Floating Home button — screen par gol ghar button, tap = homepage —
-    private var floatHomeView: ImageView? = null
-
-    private fun setupFloatingHome() {
-        if (floatHomeView != null) return
-        val btn = ImageView(this)
-        btn.setImageResource(R.drawable.ic_tool_homefloat)
-        val chip = GradientDrawable()
-        chip.setColor((accentColor and 0x00FFFFFF.toInt()) or 0xDD000000.toInt())
-        chip.cornerRadius = dp(26).toFloat()
-        chip.setStroke(dp(2), 0xFFFFFFFF.toInt())
-        btn.background = chip
-        btn.setPadding(dp(9), dp(9), dp(9), dp(9))
-        btn.alpha = 0.9f
-        floatHomeView = btn
-        val lp = FrameLayout.LayoutParams(dp(52), dp(52))
-        lp.gravity = Gravity.BOTTOM or Gravity.END
-        lp.bottomMargin = dp(132)
-        lp.rightMargin = dp(14)
-        val container = findViewById<android.view.ViewGroup>(android.R.id.content)
-        if (container == null) return
-        container.addView(btn, lp)
-        btn.setOnClickListener { webView.loadUrl(HOME_URL) }
-        btn.setOnLongClickListener { btn.visibility = if (btn.visibility == View.VISIBLE) View.GONE else View.VISIBLE; true }
-        Toast.makeText(this, "Home button lag gaya — dabao seedha homepage", Toast.LENGTH_SHORT).show()
-    }
-
-    // — Backup — bookmarks ka backup bhejo aur wapas laao —
     private fun backupDialog() {
         val opts = arrayOf("Backup banao (share karo)", "Wapas laao (paste karo)")
         AlertDialog.Builder(this)
@@ -2875,6 +2881,90 @@ class MainActivity : AppCompatActivity() {
             try { openExternal(Uri.parse(url)) } catch (e2: Exception) { }
         }
     }
+    // ——— V14: 5 naye tools + prettyUrl (link menu me domain hamesha brand naam se dikhta hai) ———
+
+    // — Domain-chhupao display URL — Link ka menu / dialogs me site ka asli hosting domain kabhi nahi dikhta —
+    private fun prettyUrl(raw: String): String {
+        val host = Uri.parse(HOME_URL).host ?: ""
+        if (host.isBlank() || host == SITE_LABEL) return raw
+        return raw.replace(host, SITE_LABEL)
+    }
+
+    // — Torch (flashlight) — phone ki batti ek tap me —
+    private var torchOn = false
+
+    private fun toggleTorch() {
+        try {
+            val cm = getSystemService(Context.CAMERA_SERVICE) as android.hardware.camera2.CameraManager
+            val cam = cm.cameraIdList.firstOrNull() ?: throw Exception("no camera")
+            torchOn = !torchOn
+            cm.setTorchMode(cam, torchOn)
+            Toast.makeText(this, if (torchOn) "Torch jal gayi 🔦" else "Torch band ho gayi", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            torchOn = false
+            Toast.makeText(this, "Torch nahi chal paayi", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Battery kitni bachi — charge ka % turant —
+    private fun batteryStatusDialog() {
+        val batt = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        val level = batt?.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1) ?: -1
+        val scale = batt?.getIntExtra(android.os.BatteryManager.EXTRA_SCALE, 100) ?: 100
+        val status = batt?.getIntExtra(android.os.BatteryManager.EXTRA_STATUS, -1) ?: -1
+        val charging = status == android.os.BatteryManager.BATTERY_STATUS_CHARGING || status == android.os.BatteryManager.BATTERY_STATUS_FULL
+        val pct = if (level >= 0 && scale > 0) (level * 100) / scale else -1
+        val bars = if (pct >= 0) "█".repeat(pct / 10) + "░".repeat(10 - pct / 10) else ""
+        AlertDialog.Builder(this)
+            .setTitle("🔋 Battery ki haalat")
+            .setMessage(if (pct >= 0) bars + "\n\n" + pct + "% bachi hai" + (if (charging) "\n⚡ Charge ho rahi hai" else "") else "Battery ki jaankari nahi mili")
+            .setPositiveButton("Theek hai", null)
+            .show()
+    }
+
+    // — Volume button se page scroll — padhte waqt haath aage nahi karna padta —
+    private var volScrollOn = false
+
+    private fun toggleVolumeScroll() {
+        volScrollOn = !volScrollOn
+        Toast.makeText(this, if (volScrollOn) "Volume button se page upar/neeche chalega" else "Volume se scroll band", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun dispatchKeyEvent(ev: android.view.KeyEvent): Boolean {
+        if (volScrollOn && ev.action == android.view.KeyEvent.ACTION_DOWN &&
+            (ev.keyCode == android.view.KeyEvent.KEYCODE_VOLUME_UP || ev.keyCode == android.view.KeyEvent.KEYCODE_VOLUME_DOWN)) {
+            webView.evaluateJavascript("(function(){window.scrollBy(0," + (if (ev.keyCode == android.view.KeyEvent.KEYCODE_VOLUME_UP) "-280" else "280") + ")})()", null)
+            return true
+        }
+        return super.dispatchKeyEvent(ev)
+    }
+
+    // — Bluetooth settings — headphone/speaker jodne ka shortcut —
+    private fun openBluetoothSettings() {
+        try { startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS)) } catch (e: Exception) { openAppSettings() }
+    }
+
+    // — Sound profile — ring / vibrate / silent —
+    private fun soundModeDialog() {
+        val am = getSystemService(Context.AUDIO_SERVICE) as android.media.AudioManager
+        AlertDialog.Builder(this)
+            .setTitle("🔊 Sound profile")
+            .setItems(arrayOf("🔔 Ring (awaz on)", "📳 Vibrate", "🔇 Silent")) { _, which ->
+                try {
+                    when (which) {
+                        0 -> am.ringerMode = android.media.AudioManager.RINGER_MODE_NORMAL
+                        1 -> am.ringerMode = android.media.AudioManager.RINGER_MODE_VIBRATE
+                        else -> am.ringerMode = android.media.AudioManager.RINGER_MODE_SILENT
+                    }
+                    Toast.makeText(this, "Sound profile lag gaya", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Phone settings se badlo — permission nahi mili", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
 
     // — Padhai mode: sirf text — image, video, ad sab chhup jaate hain — aaram se padho —
     private fun toggleReadingMode() {

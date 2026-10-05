@@ -54,6 +54,22 @@
       "icon": "icon.png",
       "category": "public.app-category.utilities",
       "identity": null
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "icon.png",
+      "category": "Utility"
+    },
+    "msix": {
+      "publisher": "CN=Royal Banjara Studio",
+      "artifactName": "${productName}.${ext}"
     }
   }
 }

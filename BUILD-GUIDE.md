@@ -25,7 +25,7 @@
 - Website se koi file (PDF, photo, song, zip) download karo — app use **phone ke Downloads folder** me save karta hai aur notification deta hai
 - Photo/video download hone par wo **Gallery me bhi** dikhti hai — file manager (Downloads) aur Gallery dono jagah milti hai
 - ⋮ gol button dabao → **Mere Downloads** — app ke andar hi download files ki list: tap karke kholo, Share bhejo, dabaye rakho = delete
-- Wahi menu ek stylish **Quick Tools sheet** kholta hai — **⚡ gradient banner** ke saath. Sabse upar **Padhai ke Tools** (Page me dhoondo, Padh ke sunao, Hindi me padho, Text A+/A−, Bookmark, **Page save karo — offline**), phir **Screen ke Tools** (Night mode, Screenshot, Full screen, Desktop view, Theme badlo, Top par jao, Ghumao), **Page ke Tools** (**Peeche jao, Aage jao**, Refresh, Home, History), **Files aur Print** aur **Madad** — sab icon-cards me
+- Wahi menu ek stylish **Quick Tools sheet** kholta hai — **⚡ gradient banner** ke saath. Sabse upar **Padhai ke Tools** (Page me dhoondo, Padh ke sunao, Hindi me padho, Text A+/A−, Bookmark, **Page save karo — offline**), phir **Screen ke Tools** (Night mode, Screenshot, Full screen, Desktop view, Theme badlo, Top par jao, Ghumao, **Torch jalao, Battery kitni bachi, Volume se scroll, Sound profile**), **Page ke Tools** (**Peeche jao, Aage jao**, Refresh, History), **Files aur Print** aur **Madad** (WiFi, **Bluetooth settings**) — sab icon-cards me
 
 ## 🚀 Play Store upload (.aab) — automatic
 
@@ -52,10 +52,12 @@ Is ZIP ka `ios/` folder **asli Xcode project** hai — apne iPhone par 10 minute
 
 ## 🖥️ Windows / Mac / iPhone ke liye automatic builds
 
-Repo me `.github/workflows/build-desktop.yml` bhi hai — push hone par GitHub khud teeno banata hai:
+Repo me `.github/workflows/build-desktop.yml` bhi hai — push hone par GitHub khud sab banata hai:
 - **Windows**: `windows-v1` release me `*-Setup.exe` — double-click se install
+- **Windows .msix**: `windows-msix-v1` release me Store-style `.msix`
 - **Mac**: `macos-v1` release me universal `.dmg` (Intel + M1/M2/M3) — kholo, app ko Applications me drag karo
 - **iPhone**: `ios-v1` release me `.ipa` — [Sideloadly](https://sideloadly.net) se apne Apple ID par install (free, 7 din)
+- **Linux**: `linux-v1` release me `.deb` — Ubuntu/Debian me `sudo dpkg -i` se install
 
 Repo ke **Releases** tab me jaake seedha download karo.
 
