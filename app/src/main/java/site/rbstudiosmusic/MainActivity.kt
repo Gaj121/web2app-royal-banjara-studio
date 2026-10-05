@@ -160,6 +160,8 @@ class MainActivity : AppCompatActivity() {
         const val CALENDAR_TOOL_ON = true
         const val CONTACT_SAVE_ON = true
         const val INVERT_TOOL_ON = true
+        const val SHORTCUT_TOOL_ON = true
+        const val SS_BLOCK_ON = true
         const val THEME_COLOR = "#EC4899"
         const val SPLASH_COLOR = "#2B0A1D"
         const val HIDE_ON = true
@@ -172,7 +174,7 @@ class MainActivity : AppCompatActivity() {
         const val INTRO_ON = true
         const val WELCOME_ON = true
         const val WELCOME_TEXT = "Welcome to Royal Banjara Studio Music Distribution Company"
-        const val VERSION_NAME = "1.2"
+        const val VERSION_NAME = "1.1"
         const val TOOLS_ON = true
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
@@ -193,14 +195,14 @@ class MainActivity : AppCompatActivity() {
         const val AD_BLOCK_ON = true
         const val THEME_PICKER_ON = true
         const val FULLSCREEN_TOOL_ON = true
-        const val THEME_FAB_ON = false
+        const val THEME_FAB_ON = true
         const val GO_TOP_ON = true
         const val ROTATE_TOOL_ON = true
         const val FIND_TOOL_ON = true
         const val APPINFO_TOOL_ON = true
         const val READ_ALOUD_ON = true
         const val BOOKMARKS_ON = true
-        const val SUPPORT_EMAIL = "support@rbstudiosmusic.site"
+        const val SUPPORT_EMAIL = "adegajanancsc8@gmail.com"
         const val DIRECTION_TOOL_ON = true
         const val MAP_QUERY = "Royal Banjara Studio Music Distribution"
         const val TRANSLATE_TOOL_ON = true
@@ -217,7 +219,7 @@ class MainActivity : AppCompatActivity() {
         const val DATA_SAVE_ON = true
         const val URL_TOOL_ON = true
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
-        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF", "Ink Blue|#1A237E", "Terracotta Mitti|#C0563B", "Spearmint Green|#00C853", "Bubblegum Pink|#FF69B4", "Bright Sky|#00B0FF", "Deep Teal|#00695C", "Sunrise Peach|#FF8A65", "Velvet Night|#311B92", "Leaf Green|#43A047", "Desert Sand|#C2A878", "Sindoor Red|#E53935", "Nilkamal Blue|#3949AB", "Kesar Saffron|#FF9800", "Jamun Purple|#6A1B9A", "Amaltas Yellow|#FBC02D", "Moong Green|#7CB342", "Mehendi Green|#558B2F", "Rani Pink|#D81B60", "Badal Grey Blue|#546E7A", "Chandan Brown|#8D6E63", "Aasmaan Blue|#29B6F6", "Angoori Purple|#AB47BC", "Genda Marigold|#FFA000", "Faagun Pink|#FF4081", "Samudra Aqua|#00BFA5", "Baingani Violet|#7E57C2", "Aam Mango|#FFB300", "Sitaphal Green|#689F38", "Morpankh Teal|#00838F", "Raat Purple|#4527A0", "Narangi Orange|#FF6D00", "Raakh Grey|#78909C", "Gulmohar Red|#FF1744", "Barish Blue|#4E7EA8", "Pankhudi Orange|#F4511E", "Khubani Apricot|#FB8C00", "Bargad Green|#33691E", "Kadam Pink|#AD1457", "Shankh Aqua|#26C6DA", "Manik Ruby|#C62828", "Neelam Sapphire|#0D47A1", "Anaar Red|#B71C1C", "Mausami Green|#9CCC65", "Tota Parrot|#00E676", "Mor Blue|#2979FF", "Surkhi Rust|#BF360C", "Phool Gulabi|#F06292", "Kohinoor Ice|#4FC3F7", "Basanti Yellow|#FFD600", "Sharbati Wheat|#D4B483", "Surmai Navy|#1F3A5F", "Kokum Purple|#7B2D8B", "Dhani Green|#2E7D4F", "Dhoop Gold|#C9A227", "Mogra Sandal|#C7A85C", "Imli Brown|#5D4037", "Kumkum Maroon|#AD1457", "Sharad Cyan|#0097A7", "Jharokha Indigo|#303F9F", "Pukhraj Amber|#F57F17", "Firozi Teal|#009688", "Lajwanti Magenta|#C2185B", "Megh Slate Blue|#4E6E81", "Amarbel Orange|#E64A19", "Neem Light Green|#8BC34A", "Angoor Wine|#7B1FA2", "Haldi Turmeric|#FFC107", "Dhuan Smoke Purple|#5E35B1", "Patakha Pink|#EC407A", "Ratan Walnut|#6D4C41", "Chandni Silver|#90A4AE", "Sheesham Wood|#855E42", "Zamurrad Emerald|#0C9B6E", "Laajawab Coral|#FF7A59", "Muskmelon Soft|#E8A87C", "Bhagalpur Indigo|#283593", "Patola Rani|#C2185B", "Banarasi Gold|#C6A136", "Chikankari Aqua|#4DD0C4", "Bandhani Pink|#E91E8C", "Kota Doria Teal|#0E8F8F", "Phulkari Orange|#F1652B", "Kalamkari Rust|#A64B35", "Pashmina Wine|#7A1F3D", "Kanjivaram Purple|#5E2B97", "Chikoo Brown|#9C6B4F", "Jamdani Sky|#6EC1E4", "Liji Litchi|#E4536B", "Shahi Maroon|#6E1423", "Surkhab Flame|#E63946", "Sitara Blue|#1E88E5", "Motia Cream|#DECBA4", "Koyal Slate|#37474F", "Neon Green|#39FF14", "Cyber Cyan|#00B4D8", "Lava Red|#FF3B30", "Jungle Green|#1B4332", "Toofani Teal|#147D8C", "Neelkanth Blue|#0277BD", "Kamal Lotus|#EF7BA0", "Denim Blue|#4A6FA5", "Salmon Pink|#FA8072", "Periwinkle|#7B8CDE", "Sage Green|#9CAF88", "Mocha Brown|#6F5849", "Army Olive|#5A6B2F", "Charcoal Grey|#36454F", "Cherry Red|#D2042F", "Lilac Soft|#C8A2C8", "Sher Orange|#D2691E")
+        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF", "Ink Blue|#1A237E", "Terracotta Mitti|#C0563B", "Spearmint Green|#00C853", "Bubblegum Pink|#FF69B4", "Bright Sky|#00B0FF", "Deep Teal|#00695C", "Sunrise Peach|#FF8A65", "Velvet Night|#311B92", "Leaf Green|#43A047", "Desert Sand|#C2A878", "Sindoor Red|#E53935", "Nilkamal Blue|#3949AB", "Kesar Saffron|#FF9800", "Jamun Purple|#6A1B9A", "Amaltas Yellow|#FBC02D", "Moong Green|#7CB342", "Mehendi Green|#558B2F", "Rani Pink|#D81B60", "Badal Grey Blue|#546E7A", "Chandan Brown|#8D6E63", "Aasmaan Blue|#29B6F6", "Angoori Purple|#AB47BC", "Genda Marigold|#FFA000", "Faagun Pink|#FF4081", "Samudra Aqua|#00BFA5", "Baingani Violet|#7E57C2", "Aam Mango|#FFB300", "Sitaphal Green|#689F38", "Morpankh Teal|#00838F", "Raat Purple|#4527A0", "Narangi Orange|#FF6D00", "Raakh Grey|#78909C", "Gulmohar Red|#FF1744", "Barish Blue|#4E7EA8", "Pankhudi Orange|#F4511E", "Khubani Apricot|#FB8C00", "Bargad Green|#33691E", "Kadam Pink|#AD1457", "Shankh Aqua|#26C6DA", "Manik Ruby|#C62828", "Neelam Sapphire|#0D47A1", "Anaar Red|#B71C1C", "Mausami Green|#9CCC65", "Tota Parrot|#00E676", "Mor Blue|#2979FF", "Surkhi Rust|#BF360C", "Phool Gulabi|#F06292", "Kohinoor Ice|#4FC3F7", "Basanti Yellow|#FFD600", "Sharbati Wheat|#D4B483", "Surmai Navy|#1F3A5F", "Kokum Purple|#7B2D8B", "Dhani Green|#2E7D4F", "Dhoop Gold|#C9A227", "Mogra Sandal|#C7A85C", "Imli Brown|#5D4037", "Kumkum Maroon|#AD1457", "Sharad Cyan|#0097A7", "Jharokha Indigo|#303F9F", "Pukhraj Amber|#F57F17", "Firozi Teal|#009688", "Lajwanti Magenta|#C2185B", "Megh Slate Blue|#4E6E81", "Amarbel Orange|#E64A19", "Neem Light Green|#8BC34A", "Angoor Wine|#7B1FA2", "Haldi Turmeric|#FFC107", "Dhuan Smoke Purple|#5E35B1", "Patakha Pink|#EC407A", "Ratan Walnut|#6D4C41", "Chandni Silver|#90A4AE", "Sheesham Wood|#855E42", "Zamurrad Emerald|#0C9B6E", "Laajawab Coral|#FF7A59", "Muskmelon Soft|#E8A87C", "Bhagalpur Indigo|#283593", "Patola Rani|#C2185B", "Banarasi Gold|#C6A136", "Chikankari Aqua|#4DD0C4", "Bandhani Pink|#E91E8C", "Kota Doria Teal|#0E8F8F", "Phulkari Orange|#F1652B", "Kalamkari Rust|#A64B35", "Pashmina Wine|#7A1F3D", "Kanjivaram Purple|#5E2B97", "Chikoo Brown|#9C6B4F", "Jamdani Sky|#6EC1E4", "Liji Litchi|#E4536B", "Shahi Maroon|#6E1423", "Surkhab Flame|#E63946", "Sitara Blue|#1E88E5", "Motia Cream|#DECBA4", "Koyal Slate|#37474F", "Neon Green|#39FF14", "Cyber Cyan|#00B4D8", "Lava Red|#FF3B30", "Jungle Green|#1B4332", "Toofani Teal|#147D8C", "Neelkanth Blue|#0277BD", "Kamal Lotus|#EF7BA0", "Denim Blue|#4A6FA5", "Salmon Pink|#FA8072", "Periwinkle|#7B8CDE", "Sage Green|#9CAF88", "Mocha Brown|#6F5849", "Army Olive|#5A6B2F", "Charcoal Grey|#36454F", "Cherry Red|#D2042F", "Lilac Soft|#C8A2C8", "Sher Orange|#D2691E", "Aurora Green|#4ADE80", "Acid Neon|#CCFF00", "Galaxy Purple|#5B21B6", "Royal Orchid|#9D4EDD", "Rose Gold|#B76E79", "Holi Rang|#F72585", "Samundar Toofan|#155E75", "Glacier Ice|#BFDBFE", "Raspberry Dark|#880E4F", "Espresso Dark|#3E2723", "Samundar Gehra|#004D40", "Lavender Violet|#B388FF", "Olive Smoke|#6B705C", "Wasabi Tez|#AEEA00", "Raat ki Rani|#2E1065", "Bijli Cyan|#00E5FF", "Mitti Soft|#A1887F", "Pista Aqua|#B2DFDB", "Chand Raat|#0F1E38", "Gulabi Pastel|#F8A5C2")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         const val BLOB_HOOK_JS = "(function(){\nif (window.__appbanaoDl) return; window.__appbanaoDl = 1;\nvar CH = 262144;\nfunction sendBlob(blob, name, mime) {\n  try {\n    var total = blob.size;\n    var off = 0;\n    var fr = new FileReader();\n    window.AndroidDownloads && window.AndroidDownloads.blobSaveStart(name || 'download.bin', (mime || blob.type || 'application/octet-stream').split(',')[0]);\n    fr.onload = function() {\n      try {\n        var arr = new Uint8Array(fr.result);\n        var s = '';\n        for (var i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);\n        window.AndroidDownloads && window.AndroidDownloads.blobSaveChunk(btoa(s));\n      } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); return; }\n      off += CH;\n      if (off < total) fr.readAsArrayBuffer(blob.slice(off, off + CH));\n      else window.AndroidDownloads && window.AndroidDownloads.blobSaveDone();\n    };\n    fr.onerror = function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); };\n    fr.readAsArrayBuffer(blob.slice(0, CH));\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nfunction grab(url, name) {\n  try {\n    fetch(url).then(function(r) { return r.blob(); }).then(function(b) { sendBlob(b, name, b.type); }).catch(function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); });\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nwindow.__appbanaoGrab = grab;\ndocument.addEventListener('click', function(e) {\n  var t = e.target;\n  while (t && t.tagName !== 'A') t = t.parentElement;\n  if (!t) return;\n  var href = t.getAttribute('href') || '';\n  if (href.indexOf('blob:') === 0 || href.indexOf('data:') === 0) {\n    e.preventDefault(); e.stopPropagation();\n    var nm = t.getAttribute('download') || (document.title ? document.title.replace(/[\\\\/:*?\"<>|]/g, '').slice(0, 40) : 'download.bin');\n    grab(href, nm);\n  }\n}, true);\n})();"
     }
@@ -270,10 +272,8 @@ class MainActivity : AppCompatActivity() {
 
     private val navEntries: Array<NavEntry> = arrayOf(
         NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
-        NavEntry("Login", "https://rbstudiosmusic.kliv.site/login", R.drawable.ic_nav_user),
-        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone),
-        NavEntry("Support ", "https://rbstudiosmusic.raiseaticket.com/support/#/login", R.drawable.ic_nav_chat),
-        NavEntry("Official Web", "https://rbstudiosmusic.site", R.drawable.ic_nav_globe)
+        NavEntry("Products", "https://rbstudiosmusic.kliv.site/products", R.drawable.ic_nav_grid),
+        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -391,6 +391,8 @@ class MainActivity : AppCompatActivity() {
         if (APP_LOCK_ON && !prefs.getString("app_pin", null).isNullOrEmpty()) showAppLockDialog()
         else if (APP_LOCK_ON) setupAppPinDialog()
         if (SWIPE_NAV_ON) setupSwipeNav()
+        ssBlockCache = prefs.getBoolean("ss_block", SS_BLOCK_ON)
+        applyScreenshotBlock()
         if (SHAKE_REFRESH_ON) setupShakeRefresh()
         if (FAST_START_ON) fastStartWarmUp()
         if (USAGE_TIMER_ON) startUsageTimer()
@@ -855,11 +857,16 @@ class MainActivity : AppCompatActivity() {
         bottom.orientation = LinearLayout.VERTICAL
         bottom.gravity = Gravity.CENTER_HORIZONTAL
         bottom.setPadding(dp(20), 0, dp(20), dp(30))
-        // V7: gesture-bar wale phones par bhi button poora dikhe —
+        // V18 crash-fix: window-metrics API sirf Android 11+ par hai — purane phone par
+        // NoSuchMethodError aata hai jo catch(e: Exception) pakad nahi pata tha, isliye
+        // app launch hote hi crash-loop (failed to start) ho raha tha. Ab SDK check +
+        // Throwable catch — har phone par welcome khulta hai ———
         try {
-            val navInset = windowManager.currentWindowMetrics.windowInsets.getInsets(android.view.WindowInsets.Type.navigationBars()).bottom
-            bottom.setPadding(dp(20), 0, dp(20), dp(30) + navInset)
-        } catch (e: Exception) { }
+            if (Build.VERSION.SDK_INT >= 30) {
+                val navInset = windowManager.currentWindowMetrics.windowInsets.getInsets(android.view.WindowInsets.Type.navigationBars()).bottom
+                bottom.setPadding(dp(20), 0, dp(20), dp(30) + navInset)
+            }
+        } catch (e: Throwable) { }
 
         val dots = LinearLayout(this)
         dots.orientation = LinearLayout.HORIZONTAL
@@ -1863,6 +1870,8 @@ class MainActivity : AppCompatActivity() {
         if (CALENDAR_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_calendaradd, "Calendar me jodo", "reminder phone me", 0xFF2563EB.toInt(), "Padhai ke Tools") { calendarToolDialog() })
         if (CONTACT_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_contactadd, "Contact save karo", "number phone me jodo", 0xFF059669.toInt(), "Madad") { contactSaveDialog() })
         if (INVERT_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_invert, if (invertOn) "Ulta rang off" else "Ulta rang", "dark jaisa aaram", 0xFF475569.toInt(), "Screen ke Tools") { toggleInvertColors() })
+        if (SHORTCUT_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_shortcut, "Home par icon lagao", "site ka shortcut — Chrome ki zaroorat nahi", 0xFF0EA5E9.toInt(), "App") { addHomeScreenShortcut() })
+        if (SS_BLOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (ssBlockCache) "Screenshot lock off" else "Screenshot lock", "app ki photo na bane — privacy", 0xFFDC2626.toInt(), "Suraksha aur Bachat") { toggleScreenshotBlock() })
         if (BATTERY_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_battery, if (batteryOn) "Battery bachao band" else "Battery bachao", "ek tap me sab bachat", 0xFF65A30D.toInt(), "Suraksha aur Bachat") { batterySaverToggle() })
         if (INCOGNITO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_incognito, if (noHistoryOn) "Chhupa mode band" else "Chhupa mode", "history me kuch nahi likhe", 0xFF334155.toInt(), "Suraksha aur Bachat") { toggleNoHistory() })
         if (APP_LOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (prefs.getString("app_pin", null) == null) "App lock lagao" else "App lock kholo", "PIN se app ki suraksha", 0xFF0F172A.toInt(), "Suraksha aur Bachat") { if (prefs.getString("app_pin", null) == null) setupAppPinDialog() else showAppLockDialog() })
@@ -3535,6 +3544,55 @@ class MainActivity : AppCompatActivity() {
         val js = if (invertOn) "(function(){if(!document.getElementById('appbanaoInv')){var s=document.createElement('style');s.id='appbanaoInv';s.textContent='html{filter:invert(1) hue-rotate(180deg)}img,video,iframe,svg{filter:invert(1) hue-rotate(180deg)}';document.head.appendChild(s)}})()" else "(function(){var s=document.getElementById('appbanaoInv');if(s)s.remove()})()"
         webView.evaluateJavascript(js, null)
         Toast.makeText(this, if (invertOn) "Ulta rang on — aankhon ko aaram" else "Ulta rang off", Toast.LENGTH_SHORT).show()
+    }
+
+
+
+    // ——— V18 ke naye tools — home-screen shortcut, page print, screenshot lock ———
+
+    // — Home screen shortcut: website ka icon phone ke home par — Chrome kholne ki zaroorat nahi —
+    private fun addHomeScreenShortcut() {
+        try {
+            if (Build.VERSION.SDK_INT >= 26) {
+                val sm = getSystemService(android.content.Context.SHORTCUT_SERVICE) as android.content.pm.ShortcutManager
+                if (sm.isRequestPinShortcutSupported) {
+                    val shortcut = android.content.pm.ShortcutInfo.Builder(this, "site_shortcut")
+                        .setShortLabel(if (APP_NAME.isBlank()) SITE_LABEL else APP_NAME)
+                        .setLongLabel(if (APP_NAME.isBlank()) SITE_LABEL else APP_NAME)
+                        .setIcon(android.graphics.drawable.Icon.createWithResource(this, R.mipmap.ic_launcher))
+                        .setIntent(android.content.Intent(android.content.Intent.ACTION_VIEW, Uri.parse(HOME_URL)))
+                        .build()
+                    sm.requestPinShortcut(shortcut, null)
+                    Toast.makeText(this, "Home screen par icon lag jayega ✓", Toast.LENGTH_SHORT).show()
+                    return
+                }
+            }
+            // Purane phone — Chrome bookmark shortcut intent
+            val i = Intent("com.android.chrome.CREATE_SHORTCUT")
+            i.putExtra("title", if (APP_NAME.isBlank()) SITE_LABEL else APP_NAME)
+            i.putExtra("url", HOME_URL)
+            i.putExtra("duplicate", false)
+            i.setPackage("com.android.chrome")
+            startActivity(i)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Shortcut nahi ban paya — Chrome se 'Add to Home screen' karo", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // — Screenshot lock: privacy ke liye recents/screenshot me app ka content nahi dikhta —
+    private var ssBlockCache = false
+    private fun toggleScreenshotBlock() {
+        ssBlockCache = !ssBlockCache
+        prefs.edit().putBoolean("ss_block", ssBlockCache).apply()
+        applyScreenshotBlock()
+        Toast.makeText(this, if (ssBlockCache) "Screenshot lock ON — app ki photo nahi banegi" else "Screenshot lock OFF", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun applyScreenshotBlock() {
+        try {
+            if (ssBlockCache) window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+            else window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+        } catch (e: Exception) { }
     }
 
 

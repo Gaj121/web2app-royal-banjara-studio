@@ -40,7 +40,7 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 - ⋮ menu me **Mere Downloads** — app ke andar hi saari download files ki stylish list (tap = kholo, Share, dabaye rakho = delete)
 - App khulte hi **animated logo intro** — logo bada hoke aata hai, naam slide hota hai, phir app khul jaata hai
 - **Welcome slider** — app ke upar se slide hoke “Welcome to Royal Banjara Studio Music Distribution Company” ke saath stylish swagat screen (Skip / Get Started ke saath)
-- Stylish floating neeche menu bar: Home, Login, Contact, Support , Official Web — gradient pill design, scroll karo to apne aap chhup jaata hai
+- Stylish floating neeche menu bar: Home, Products, Contact — gradient pill design, scroll karo to apne aap chhup jaata hai
 - Website ka footer automatic hide
 - “Created with Kliv / Made with Wix” jaisi builder-branding automatic + permanent hide ( MutationObserver se late-load par bhi)
 - Tumhari “kya chhupana hai” list permanent hide: "Created with Kliv"

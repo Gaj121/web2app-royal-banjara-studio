@@ -20,10 +20,8 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     private var webView: WKWebView!
     private let navEntries: [NavEntry] = [
         NavEntry(label: "Home", url: "https://rbstudiosmusic.kliv.site/", symbol: "house"),
-        NavEntry(label: "Login", url: "https://rbstudiosmusic.kliv.site/login", symbol: "person"),
+        NavEntry(label: "Products", url: "https://rbstudiosmusic.kliv.site/products", symbol: "square.grid.2x2"),
         NavEntry(label: "Contact", url: "https://rbstudiosmusic.kliv.site/contact", symbol: "phone"),
-        NavEntry(label: "Support ", url: "https://rbstudiosmusic.raiseaticket.com/support/#/login", symbol: "message"),
-        NavEntry(label: "Official Web", url: "https://rbstudiosmusic.site", symbol: "globe"),
     ]
     private var navIcons: [UIImageView] = []
     private var navLabels: [UILabel] = []
