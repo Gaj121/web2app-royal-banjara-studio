@@ -82,7 +82,7 @@ class ToolItem(val icon: Int, val label: String, val sub: String, val accent: In
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        const val BUILD_TAG = "v155"
+        const val BUILD_TAG = "v156"
         const val CRASH_URL = "https://app-banao.kliv.site/api/v2/function/web2app_crash_log"
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
