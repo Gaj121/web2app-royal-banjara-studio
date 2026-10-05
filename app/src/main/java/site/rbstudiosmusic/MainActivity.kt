@@ -137,7 +137,6 @@ class MainActivity : AppCompatActivity() {
         const val PDF_VIEWER_ON = true
         const val LINK_HOOK_JS = "(function(){if(window.__rbLinkHook)return;window.__rbLinkHook=true;var t=null;document.addEventListener('touchstart',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;t=setTimeout(function(){try{AndroidLinks.linkLongPress(a.href||'',(a.innerText||'').trim().slice(0,60))}catch(x){}},550)},true);['touchend','touchmove','touchcancel'].forEach(function(ev){document.addEventListener(ev,function(){if(t){clearTimeout(t);t=null}},true)});document.addEventListener('contextmenu',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(a){e.preventDefault();try{AndroidLinks.linkLongPress(a.href||'',(a.innerText||'').trim().slice(0,60))}catch(x){}}},true)})();"
         const val PDF_HOOK_JS = "(function(){if(window.__rbPdfHook)return;window.__rbPdfHook=true;document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;var h=a.getAttribute('href')||'';if(/\\.pdf(\\?|#|$)/i.test(h)){e.preventDefault();e.stopPropagation();try{AndroidPdf.pdfOpen(a.href)}catch(x){}}},true)})();"
-        const val TORCH_TOOL_ON = true
         const val BATTERY_STAT_ON = true
         const val VOL_SCROLL_ON = true
         const val BT_SETTINGS_ON = true
@@ -189,7 +188,7 @@ class MainActivity : AppCompatActivity() {
         const val AD_BLOCK_ON = true
         const val THEME_PICKER_ON = true
         const val FULLSCREEN_TOOL_ON = true
-        const val THEME_FAB_ON = false
+        const val THEME_FAB_ON = true
         const val GO_TOP_ON = true
         const val ROTATE_TOOL_ON = true
         const val FIND_TOOL_ON = true
@@ -490,7 +489,7 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
-    }
+    },
 
     private fun shade(color: Int, factor: Float): Int {
         val r = Color.red(color)
@@ -500,6 +499,7 @@ class MainActivity : AppCompatActivity() {
         return Color.rgb(mix(r).coerceIn(0, 255), mix(g).coerceIn(0, 255), mix(b).coerceIn(0, 255))
     }
 
+    // ——— Intro v2: halka premium splash — koi infinite animation nahi, isliye app kabhi hang nahi karti ———
     private fun buildIntro(): FrameLayout {
         val overlay = FrameLayout(this)
         val bg = GradientDrawable(
@@ -594,9 +594,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     // ——— WELCOME_V6: premium static design — company logo ki animation hata di gayi.
-    //     Koi bhi infinite animation nahi — welcome bilkul smooth chalta hai, hang nahi hota ———
-
-// ——— WELCOME_V6: premium static design — company logo ki animation hata di gayi.
     //     Koi bhi infinite animation nahi — welcome bilkul smooth chalta hai, hang nahi hota ———
     private fun showWelcome() {
         val ov = welcomeOverlay ?: return
@@ -1771,221 +1768,6 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
-
-    // ——— V16 ke 7 naye tools — ghuma-lock, data kharch, net haal, clipboard, google search, taaaza load, stopwatch ———
-
-    // — Ghumao lock: portrait/landscape runtime par toggle — video dekhne ke liye —
-    private fun rotationLockToggle() {
-        try {
-            val portrait = requestedOrientation == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            requestedOrientation = if (portrait) android.content.pm.ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            toastTop(if (portrait) "Ghumao lock khula — ab phone ghumao to screen bhi ghumegi" else "Ghumao lock lagi — ab screen seedhi rahegi")
-        } catch (e: Exception) {
-            Toast.makeText(this, "Rotation lock nahi badal paya", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // — Data kitna kharch: is app ne kitna MB upar/neeche kiya —
-    private fun dataUsageDialog() {
-        try {
-            val mb = 1024.0 * 1024.0
-            val rx = android.net.TrafficStats.getUidRxBytes(applicationInfo.uid)
-            val tx = android.net.TrafficStats.getUidTxBytes(applicationInfo.uid)
-            if (rx < 0 && tx < 0) {
-                Toast.makeText(this, "Data ka hisaab phone ne nahi diya", Toast.LENGTH_SHORT).show()
-            } else {
-                val down = rx / mb
-                val up = tx / mb
-                val total = down + up
-                AlertDialog.Builder(this)
-                    .setTitle("📶 Data ka hisaab")
-                    .setMessage(String.format(java.util.Locale.US, "⬇ Down: %.1f MB\n⬆ Up: %.1f MB\n\nKul: %.1f MB", down, up, total))
-                    .setPositiveButton("Theek hai", null)
-                    .show()
-            }
-        } catch (e: Exception) {
-            Toast.makeText(this, "Data ki jaankari nahi mili", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // — Internet ka haal: WiFi / Mobile data / band —
-    private fun netStatusDialog() {
-        try {
-            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
-            val nw = cm.activeNetwork
-            val caps = if (nw != null) cm.getNetworkCapabilities(nw) else null
-            val msg = when {
-                caps == null -> "🔴 Internet band hai\n\nWiFi ya mobile data on karo, phir dobara kholo"
-                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) -> "🟢 WiFi se juda ho\n\nPoori speed ka mazaa lo"
-                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR) -> "🟢 Mobile data se juda ho\n\nVideo dekhna ho to WiFi behtar hai"
-                else -> "🟡 Network juda hai par type pata nahi"
-            }
-            AlertDialog.Builder(this)
-                .setTitle("🌐 Internet ka haal")
-                .setMessage(msg)
-                .setPositiveButton("Theek hai", null)
-                .show()
-        } catch (e: Exception) {
-            Toast.makeText(this, "Internet ki jaankari nahi mili", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // — Copy kiya hua dekho: clipboard ka text — kholo ya search karo —
-    private fun clipboardViewDialog() {
-        try {
-            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-            val txt = cm.primaryClip?.getItemAt(0)?.text?.toString()?.trim() ?: ""
-            if (txt.isEmpty()) {
-                AlertDialog.Builder(this)
-                    .setTitle("📋 Copy kiya hua")
-                    .setMessage("Abhi clipboard khali hai — pehle kisi text/link par dabaa kar Copy karo")
-                    .setPositiveButton("Theek hai", null)
-                    .show()
-            } else {
-                val show = if (txt.length > 300) txt.substring(0, 300) + "…" else txt
-                val looksUrl = txt.startsWith("http://") || txt.startsWith("https://") || (txt.contains(".") && !txt.contains(" "))
-                AlertDialog.Builder(this)
-                    .setTitle("📋 Copy kiya hua")
-                    .setMessage(show)
-                    .setPositiveButton(if (looksUrl) "Kholo" else "Dhoondo") { _, _ ->
-                        if (looksUrl) {
-                            val u = if (txt.startsWith("http")) txt else "https://" + txt
-                            webView.loadUrl(u)
-                        } else {
-                            webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(txt, "UTF-8"))
-                        }
-                    }
-                    .setNegativeButton("Band", null)
-                    .show()
-            }
-        } catch (e: Exception) {
-            Toast.makeText(this, "Clipboard nahi padh paye", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // — Google me dhoondo: seedha Google search app ke andar —
-    private fun quickSearchDialog() {
-        val input = android.widget.EditText(this)
-        input.hint = "kya dhoondna hai?"
-        input.inputType = InputType.TYPE_CLASS_TEXT
-        input.setSingleLine(true)
-        val wrap = FrameLayout(this)
-        wrap.setPadding(dp(16), dp(10), dp(16), 0)
-        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
-        AlertDialog.Builder(this)
-            .setTitle("🔎 Google me dhoondo")
-            .setView(wrap)
-            .setPositiveButton("Dhoondo") { _, _ ->
-                val q = input.text.toString().trim()
-                if (q.isNotEmpty()) webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q, "UTF-8"))
-            }
-            .setNegativeButton("Band", null)
-            .show()
-    }
-
-    // — Taaaza load karo: purana cache chhod kar bilkul naya page —
-    private fun hardReloadNow() {
-        toastTop("Taaaza page laa rahe hain…")
-        try {
-            webView.settings.cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
-            webView.reload()
-            webView.postDelayed({ webView.settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT }, 4000)
-        } catch (e: Exception) {
-            webView.reload()
-        }
-    }
-
-    // — Stopwatch: simple timer — padhai/kaam ka hisaab —
-    private fun stopwatchDialog() {
-        val time = TextView(this)
-        time.text = "00:00.0"
-        time.textSize = 40f
-        time.typeface = Typeface.create("monospace", Typeface.BOLD)
-        time.setTextColor(0xFF111827.toInt())
-        time.gravity = Gravity.CENTER
-        val wrap = LinearLayout(this)
-        wrap.orientation = LinearLayout.VERTICAL
-        wrap.gravity = Gravity.CENTER_HORIZONTAL
-        wrap.setPadding(dp(10), dp(18), dp(10), dp(6))
-        wrap.addView(time, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-        val startBtn = TextView(this)
-        startBtn.text = "▶ Chalu karo"
-        startBtn.textSize = 14f
-        startBtn.typeface = Typeface.DEFAULT_BOLD
-        startBtn.setTextColor(Color.WHITE)
-        startBtn.gravity = Gravity.CENTER
-        startBtn.setPadding(dp(18), dp(10), dp(18), dp(10))
-        val startBg = GradientDrawable()
-        startBg.shape = GradientDrawable.RECTANGLE
-        startBg.cornerRadius = dp(22).toFloat()
-        startBg.setColor(0xFF16A34A.toInt())
-        startBtn.background = startBg
-        val resetBtn = TextView(this)
-        resetBtn.text = "↺ 0 karo"
-        resetBtn.textSize = 14f
-        resetBtn.typeface = Typeface.DEFAULT_BOLD
-        resetBtn.setTextColor(0xFF374151.toInt())
-        resetBtn.gravity = Gravity.CENTER
-        resetBtn.setPadding(dp(18), dp(10), dp(18), dp(10))
-        val resetBg = GradientDrawable()
-        resetBg.shape = GradientDrawable.RECTANGLE
-        resetBg.cornerRadius = dp(22).toFloat()
-        resetBg.setColor(0xFFE5E7EB.toInt())
-        resetBtn.background = resetBg
-        val btnRow = LinearLayout(this)
-        btnRow.orientation = LinearLayout.HORIZONTAL
-        btnRow.gravity = Gravity.CENTER
-        val btnLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        btnLp.topMargin = dp(14)
-        btnLp.marginEnd = dp(10)
-        btnRow.addView(startBtn, btnLp)
-        btnRow.addView(resetBtn, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(14) })
-        wrap.addView(btnRow)
-        val dlg = AlertDialog.Builder(this)
-            .setTitle("⏱️ Stopwatch")
-            .setView(wrap)
-            .setNegativeButton("Band", null)
-            .create()
-        var running = false
-        var base = 0L
-        val handler = android.os.Handler(android.os.Looper.getMainLooper())
-        fun fmt(ms: Long): String {
-            val tenth = (ms / 100) % 10
-            val totalSec = ms / 1000
-            val m = totalSec / 60
-            val s = totalSec % 60
-            return String.format(java.util.Locale.US, "%02d:%02d.%d", m, s, tenth)
-        }
-        val tick = object : Runnable {
-            override fun run() {
-                if (running) {
-                    time.text = fmt(System.currentTimeMillis() - base)
-                    handler.postDelayed(this, 200)
-                }
-            }
-        }
-        startBtn.setOnClickListener {
-            if (running) {
-                running = false
-                startBtn.text = "▶ Chalu karo"
-            } else {
-                running = true
-                if (base == 0L) base = System.currentTimeMillis()
-                startBtn.text = "⏸ Roko"
-                handler.post(tick)
-            }
-        }
-        resetBtn.setOnClickListener {
-            running = false
-            base = 0L
-            startBtn.text = "▶ Chalu karo"
-            time.text = "00:00.0"
-            handler.removeCallbacks(tick)
-        }
-        dlg.setOnDismissListener { running = false; handler.removeCallbacks(tick) }
-        dlg.show()
-    }
-
     // Saare Quick Tools — 7 sections me grouped: Padhai, Screen, Page, Files, Suraksha aur Bachat, App, Madad
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
@@ -2053,6 +1835,13 @@ class MainActivity : AppCompatActivity() {
         if (CLEAR_HIST_ON) items.add(ToolItem(R.drawable.ic_tool_historyclear, "History mitao", "khole page ki list saaf", 0xFF64748B.toInt(), "Suraksha aur Bachat") { clearHistoryNow() })
         if (STORAGE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_storageinfo, "Storage kitna bacha", "phone ki memory", 0xFF0F766E.toInt(), "Suraksha aur Bachat") { storageInfoDialog() })
         if (DND_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_dnd, "Disturb mat karo", "DND ek tap me", 0xFFB91C1C.toInt(), "Screen ke Tools") { dndToggle() })
+        if (ROTLOCK_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotlock, if (requestedOrientation == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) "Ghumao lock kholo" else "Ghumao lock karo", "video ke liye screen ghumao", 0xFF475569.toInt(), "Screen ke Tools") { rotationLockToggle() })
+        if (DATA_USAGE_ON) items.add(ToolItem(R.drawable.ic_tool_datausage, "Data kitna kharch", "app ka MB hisaab", 0xFF0E7490.toInt(), "Suraksha aur Bachat") { dataUsageDialog() })
+        if (NET_STATUS_ON) items.add(ToolItem(R.drawable.ic_tool_netstatus, "Internet ka haal", "WiFi ya data — turant", 0xFF0369A1.toInt(), "App aur Madad") { netStatusDialog() })
+        if (CLIP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_clipboard, "Copy kiya hua dekho", "clipboard ka text", 0xFF7C2D12.toInt(), "Page ke Tools") { clipboardViewDialog() })
+        if (QUICK_SEARCH_ON) items.add(ToolItem(R.drawable.ic_tool_websearch, "Google me dhoondo", "seedha Google search", 0xFF1D4ED8.toInt(), "Padhai ke Tools") { quickSearchDialog() })
+        if (HARD_RELOAD_ON) items.add(ToolItem(R.drawable.ic_tool_reload, "Taaaza load karo", "cache chhod kar naya page", 0xFF15803D.toInt(), "Page ke Tools") { hardReloadNow() })
+        if (STOPWATCH_ON) items.add(ToolItem(R.drawable.ic_tool_stopwatch, "Stopwatch chalao", "time gino — padhai/kaam", 0xFFB45309.toInt(), "Padhai ke Tools") { stopwatchDialog() })
         if (BATTERY_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_battery, if (batteryOn) "Battery bachao band" else "Battery bachao", "ek tap me sab bachat", 0xFF65A30D.toInt(), "Suraksha aur Bachat") { batterySaverToggle() })
         if (INCOGNITO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_incognito, if (noHistoryOn) "Chhupa mode band" else "Chhupa mode", "history me kuch nahi likhe", 0xFF334155.toInt(), "Suraksha aur Bachat") { toggleNoHistory() })
         if (APP_LOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (prefs.getString("app_pin", null) == null) "App lock lagao" else "App lock kholo", "PIN se app ki suraksha", 0xFF0F172A.toInt(), "Suraksha aur Bachat") { if (prefs.getString("app_pin", null) == null) setupAppPinDialog() else showAppLockDialog() })
@@ -2078,13 +1867,6 @@ class MainActivity : AppCompatActivity() {
         if (WIFI_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_wifi, "WiFi settings", "internet jodne ke liye", 0xFF0284C7.toInt(), "Madad") { openWifiSettings() })
         if (BT_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_bluetooth, "Bluetooth settings", "headphone jodne ke liye", 0xFF2563EB.toInt(), "Madad") { openBluetoothSettings() })
         if (BACKUP_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_backup, "Backup banao", "bookmarks sambhal ke rakho", 0xFF7C3AED.toInt(), "Padhai ke Tools") { backupDialog() })
-        if (ROTLOCK_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotlock, if (requestedOrientation == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) "Ghumao lock kholo" else "Ghumao lock karo", "video ke liye screen ghumao", 0xFF475569.toInt(), "Screen ke Tools") { rotationLockToggle() })
-        if (DATA_USAGE_ON) items.add(ToolItem(R.drawable.ic_tool_datausage, "Data kitna kharch", "app ka MB hisaab", 0xFF0E7490.toInt(), "Suraksha aur Bachat") { dataUsageDialog() })
-        if (NET_STATUS_ON) items.add(ToolItem(R.drawable.ic_tool_netstatus, "Internet ka haal", "WiFi ya data — turant", 0xFF0369A1.toInt(), "App aur Madad") { netStatusDialog() })
-        if (CLIP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_clipboard, "Copy kiya hua dekho", "clipboard ka text", 0xFF7C2D12.toInt(), "Page ke Tools") { clipboardViewDialog() })
-        if (QUICK_SEARCH_ON) items.add(ToolItem(R.drawable.ic_tool_websearch, "Google me dhoondo", "seedha Google search", 0xFF1D4ED8.toInt(), "Padhai ke Tools") { quickSearchDialog() })
-        if (HARD_RELOAD_ON) items.add(ToolItem(R.drawable.ic_tool_reload, "Taaaza load karo", "cache chhod kar naya page", 0xFF15803D.toInt(), "Page ke Tools") { hardReloadNow() })
-        if (STOPWATCH_ON) items.add(ToolItem(R.drawable.ic_tool_stopwatch, "Stopwatch chalao", "time gino — padhai/kaam", 0xFFB45309.toInt(), "Padhai ke Tools") { stopwatchDialog() })
         return items
     }
 
@@ -3419,6 +3201,221 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(this, "DND nahi badal paya", Toast.LENGTH_SHORT).show()
         }
+    }
+
+
+    // ——— V16 ke 7 naye tools — ghuma-lock, data kharch, net haal, clipboard, google search, taaaza load, stopwatch ———
+
+    // — Ghumao lock: portrait/landscape runtime par toggle — video dekhne ke liye —
+    private fun rotationLockToggle() {
+        try {
+            val portrait = requestedOrientation == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            requestedOrientation = if (portrait) android.content.pm.ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            toastTop(if (portrait) "Ghumao lock khula — ab phone ghumao to screen bhi ghumegi" else "Ghumao lock lagi — ab screen seedhi rahegi")
+        } catch (e: Exception) {
+            Toast.makeText(this, "Rotation lock nahi badal paya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Data kitna kharch: is app ne kitna MB upar/neeche kiya —
+    private fun dataUsageDialog() {
+        try {
+            val mb = 1024.0 * 1024.0
+            val rx = android.net.TrafficStats.getUidRxBytes(applicationInfo.uid)
+            val tx = android.net.TrafficStats.getUidTxBytes(applicationInfo.uid)
+            if (rx < 0 && tx < 0) {
+                Toast.makeText(this, "Data ka hisaab phone ne nahi diya", Toast.LENGTH_SHORT).show()
+            } else {
+                val down = rx / mb
+                val up = tx / mb
+                val total = down + up
+                AlertDialog.Builder(this)
+                    .setTitle("📶 Data ka hisaab")
+                    .setMessage(String.format(java.util.Locale.US, "⬇ Down: %.1f MB\n⬆ Up: %.1f MB\n\nKul: %.1f MB", down, up, total))
+                    .setPositiveButton("Theek hai", null)
+                    .show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Data ki jaankari nahi mili", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Internet ka haal: WiFi / Mobile data / band —
+    private fun netStatusDialog() {
+        try {
+            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+            val nw = cm.activeNetwork
+            val caps = if (nw != null) cm.getNetworkCapabilities(nw) else null
+            val msg = when {
+                caps == null -> "🔴 Internet band hai\n\nWiFi ya mobile data on karo, phir dobara kholo"
+                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) -> "🟢 WiFi se juda ho\n\nPoori speed ka mazaa lo"
+                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR) -> "🟢 Mobile data se juda ho\n\nVideo dekhna ho to WiFi behtar hai"
+                else -> "🟡 Network juda hai par type pata nahi"
+            }
+            AlertDialog.Builder(this)
+                .setTitle("🌐 Internet ka haal")
+                .setMessage(msg)
+                .setPositiveButton("Theek hai", null)
+                .show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Internet ki jaankari nahi mili", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Copy kiya hua dekho: clipboard ka text — kholo ya search karo —
+    private fun clipboardViewDialog() {
+        try {
+            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val txt = cm.primaryClip?.getItemAt(0)?.text?.toString()?.trim() ?: ""
+            if (txt.isEmpty()) {
+                AlertDialog.Builder(this)
+                    .setTitle("📋 Copy kiya hua")
+                    .setMessage("Abhi clipboard khali hai — pehle kisi text/link par dabaa kar Copy karo")
+                    .setPositiveButton("Theek hai", null)
+                    .show()
+            } else {
+                val show = if (txt.length > 300) txt.substring(0, 300) + "…" else txt
+                val looksUrl = txt.startsWith("http://") || txt.startsWith("https://") || (txt.contains(".") && !txt.contains(" "))
+                AlertDialog.Builder(this)
+                    .setTitle("📋 Copy kiya hua")
+                    .setMessage(show)
+                    .setPositiveButton(if (looksUrl) "Kholo" else "Dhoondo") { _, _ ->
+                        if (looksUrl) {
+                            val u = if (txt.startsWith("http")) txt else "https://" + txt
+                            webView.loadUrl(u)
+                        } else {
+                            webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(txt, "UTF-8"))
+                        }
+                    }
+                    .setNegativeButton("Band", null)
+                    .show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Clipboard nahi padh paye", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Google me dhoondo: seedha Google search app ke andar —
+    private fun quickSearchDialog() {
+        val input = android.widget.EditText(this)
+        input.hint = "kya dhoondna hai?"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        input.setSingleLine(true)
+        val wrap = FrameLayout(this)
+        wrap.setPadding(dp(16), dp(10), dp(16), 0)
+        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("🔎 Google me dhoondo")
+            .setView(wrap)
+            .setPositiveButton("Dhoondo") { _, _ ->
+                val q = input.text.toString().trim()
+                if (q.isNotEmpty()) webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q, "UTF-8"))
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Taaaza load karo: purana cache chhod kar bilkul naya page —
+    private fun hardReloadNow() {
+        toastTop("Taaaza page laa rahe hain…")
+        try {
+            webView.settings.cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
+            webView.reload()
+            webView.postDelayed({ webView.settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT }, 4000)
+        } catch (e: Exception) {
+            webView.reload()
+        }
+    }
+
+    // — Stopwatch: simple timer — padhai/kaam ka hisaab —
+    private fun stopwatchDialog() {
+        val time = TextView(this)
+        time.text = "00:00.0"
+        time.textSize = 40f
+        time.typeface = Typeface.create("monospace", Typeface.BOLD)
+        time.setTextColor(0xFF111827.toInt())
+        time.gravity = Gravity.CENTER
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.gravity = Gravity.CENTER_HORIZONTAL
+        wrap.setPadding(dp(10), dp(18), dp(10), dp(6))
+        wrap.addView(time, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        val startBtn = TextView(this)
+        startBtn.text = "▶ Chalu karo"
+        startBtn.textSize = 14f
+        startBtn.typeface = Typeface.DEFAULT_BOLD
+        startBtn.setTextColor(Color.WHITE)
+        startBtn.gravity = Gravity.CENTER
+        startBtn.setPadding(dp(18), dp(10), dp(18), dp(10))
+        val startBg = GradientDrawable()
+        startBg.shape = GradientDrawable.RECTANGLE
+        startBg.cornerRadius = dp(22).toFloat()
+        startBg.setColor(0xFF16A34A.toInt())
+        startBtn.background = startBg
+        val resetBtn = TextView(this)
+        resetBtn.text = "↺ 0 karo"
+        resetBtn.textSize = 14f
+        resetBtn.typeface = Typeface.DEFAULT_BOLD
+        resetBtn.setTextColor(0xFF374151.toInt())
+        resetBtn.gravity = Gravity.CENTER
+        resetBtn.setPadding(dp(18), dp(10), dp(18), dp(10))
+        val resetBg = GradientDrawable()
+        resetBg.shape = GradientDrawable.RECTANGLE
+        resetBg.cornerRadius = dp(22).toFloat()
+        resetBg.setColor(0xFFE5E7EB.toInt())
+        resetBtn.background = resetBg
+        val btnRow = LinearLayout(this)
+        btnRow.orientation = LinearLayout.HORIZONTAL
+        btnRow.gravity = Gravity.CENTER
+        val btnLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        btnLp.topMargin = dp(14)
+        btnLp.marginEnd = dp(10)
+        btnRow.addView(startBtn, btnLp)
+        btnRow.addView(resetBtn, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(14) })
+        wrap.addView(btnRow)
+        val dlg = AlertDialog.Builder(this)
+            .setTitle("⏱️ Stopwatch")
+            .setView(wrap)
+            .setNegativeButton("Band", null)
+            .create()
+        var running = false
+        var base = 0L
+        val handler = android.os.Handler(android.os.Looper.getMainLooper())
+        fun fmt(ms: Long): String {
+            val tenth = (ms / 100) % 10
+            val totalSec = ms / 1000
+            val m = totalSec / 60
+            val s = totalSec % 60
+            return String.format(java.util.Locale.US, "%02d:%02d.%d", m, s, tenth)
+        }
+        val tick = object : Runnable {
+            override fun run() {
+                if (running) {
+                    time.text = fmt(System.currentTimeMillis() - base)
+                    handler.postDelayed(this, 200)
+                }
+            }
+        }
+        startBtn.setOnClickListener {
+            if (running) {
+                running = false
+                startBtn.text = "▶ Chalu karo"
+            } else {
+                running = true
+                if (base == 0L) base = System.currentTimeMillis()
+                startBtn.text = "⏸ Roko"
+                handler.post(tick)
+            }
+        }
+        resetBtn.setOnClickListener {
+            running = false
+            base = 0L
+            startBtn.text = "▶ Chalu karo"
+            time.text = "00:00.0"
+            handler.removeCallbacks(tick)
+        }
+        dlg.setOnDismissListener { running = false; handler.removeCallbacks(tick) }
+        dlg.show()
     }
 
 
