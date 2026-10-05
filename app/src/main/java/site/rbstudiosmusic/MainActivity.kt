@@ -2658,7 +2658,7 @@ class MainActivity : AppCompatActivity() {
             row.orientation = LinearLayout.HORIZONTAL
             row.gravity = Gravity.CENTER_VERTICAL
             val chip = GradientDrawable()
-            chip.setColor((accentColor and 0x00FFFFFF) or 0x22000000)
+            chip.setColor((accentColor and 0x00FFFFFF.toInt()) or 0x22000000)
             chip.cornerRadius = dp(14).toFloat()
             val iv = ImageView(this)
             iv.setImageResource(iconRes)
@@ -2705,7 +2705,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun linkLongPressDialog(url: String, title: String) {
         if (url.isBlank() || !url.startsWith("http")) return
-        val opts = arrayOf("Kholo", "Link copy karo", "Chrome me kholo")
+        val opts = arrayOf("Kholo", "Link copy kar lo", "Chrome me kholo")
         AlertDialog.Builder(this)
             .setTitle(if (title.isBlank()) "Link ka menu" else title)
             .setMessage(url)
@@ -2748,7 +2748,7 @@ class MainActivity : AppCompatActivity() {
         val btn = ImageView(this)
         btn.setImageResource(R.drawable.ic_tool_homefloat)
         val chip = GradientDrawable()
-        chip.setColor((accentColor and 0x00FFFFFF) or 0xDD000000)
+        chip.setColor((accentColor and 0x00FFFFFF.toInt()) or 0xDD000000.toInt())
         chip.cornerRadius = dp(26).toFloat()
         chip.setStroke(dp(2), 0xFFFFFFFF.toInt())
         btn.background = chip
