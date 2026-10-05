@@ -1798,7 +1798,7 @@ class MainActivity : AppCompatActivity() {
         if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "Suraksha aur Bachat") { clearAppCache() })
         if (COOKIES_CLEAR_ON) items.add(ToolItem(R.drawable.ic_tool_cookie, "Cookies clear", "login data saaf", 0xFFB45309.toInt(), "Suraksha aur Bachat") { clearCookiesNow() })
         if (BATTERY_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_battery, if (batteryOn) "Battery bachao band" else "Battery bachao", "ek tap me sab bachat", 0xFF65A30D.toInt(), "Suraksha aur Bachat") { batterySaverToggle() })
-        if (NO_HISTORY_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_incognito, if (noHistoryOn) "Chhupa mode band" else "Chhupa mode", "history me kuch nahi likhe", 0xFF334155.toInt(), "Suraksha aur Bachat") { toggleNoHistory() })
+        if (INCOGNITO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_incognito, if (noHistoryOn) "Chhupa mode band" else "Chhupa mode", "history me kuch nahi likhe", 0xFF334155.toInt(), "Suraksha aur Bachat") { toggleNoHistory() })
         if (APP_LOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (prefs.getString("app_pin", null) == null) "App lock lagao" else "App lock kholo/change", "PIN se app ki suraksha", 0xFF0F172A.toInt(), "Suraksha aur Bachat") { if (prefs.getString("app_pin", null) == null) setupAppPinDialog() else showAppLockDialog() })
         if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
         if (RATE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_ratestar, "5 star rating do", "app ko pasand batao", 0xFFF59E0B.toInt(), "App") { rateAppNow() })
@@ -1814,7 +1814,7 @@ class MainActivity : AppCompatActivity() {
         if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
         items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
-        if (WIFI_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_wifi, "WiFi settings", "internet jodne ke liye", 0xFF0284C7.toInt(), "Madad") { openWifiSettings() })
+        if (WIFI_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_wifi, "WiFi settings", "internet jodne ke liye", 0xFF0284C7.toInt(), "Madad") { openWifiSettings() })
         return items
     }
 
@@ -2759,7 +2759,9 @@ class MainActivity : AppCompatActivity() {
         lp.gravity = Gravity.BOTTOM or Gravity.END
         lp.bottomMargin = dp(132)
         lp.rightMargin = dp(14)
-        root.addView(btn, lp)
+        val container = findViewById<android.view.ViewGroup>(android.R.id.content)
+        if (container == null) return
+        container.addView(btn, lp)
         btn.setOnClickListener { webView.loadUrl(HOME_URL) }
         btn.setOnLongClickListener { btn.visibility = if (btn.visibility == View.VISIBLE) View.GONE else View.VISIBLE; true }
         Toast.makeText(this, "Home button lag gaya — dabao seedha homepage", Toast.LENGTH_SHORT).show()
