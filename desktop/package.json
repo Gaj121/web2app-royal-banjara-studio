@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Royal Banjara Studio — official desktop app (Windows + Mac)",
   "author": "Royal Banjara Studio",
+  "homepage": "https://rbstudiosmusic.site",
   "license": "MIT",
   "main": "main.js",
   "scripts": {
