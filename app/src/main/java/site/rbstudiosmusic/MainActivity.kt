@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val BUILD_TAG = "v155"
-        const val CRASH_URL = "https://app-banao.kliv.site/api/crash-log"
+        const val CRASH_URL = "https://app-banao.kliv.site/api/v2/function/web2app_crash_log"
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio "
