@@ -15,6 +15,7 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -82,7 +83,7 @@ class ToolItem(val icon: Int, val label: String, val sub: String, val accent: In
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        const val BUILD_TAG = "v156"
+        const val BUILD_TAG = "v158"
         const val CRASH_URL = "https://app-banao.kliv.site/api/v2/function/web2app_crash_log"
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
@@ -280,6 +281,54 @@ class MainActivity : AppCompatActivity() {
         NavEntry("Products", "https://example.com/products", R.drawable.ic_nav_grid),
         NavEntry("Contact", "https://example.com/contact", R.drawable.ic_nav_phone)
     )
+
+    // ——— V19.3 super-early crash-guard ———
+    // attachBaseContext sabse pehle chalta hai (super.onCreate se bhi pehle) —
+    // handler yahan bhi lagta hai to startup ka KOI bhi crash pakda jaata hai.
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        try {
+            val p = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+            safeMode = try { p.getBoolean("rb_safe_mode", false) } catch (e: Exception) { false }
+            val prev0 = Thread.getDefaultUncaughtExceptionHandler()
+            Thread.setDefaultUncaughtExceptionHandler { t, e ->
+                try {
+                    p.edit().putBoolean("rb_safe_mode", true).apply()
+                    val sw = java.io.StringWriter()
+                    e.printStackTrace(java.io.PrintWriter(sw))
+                    val crashText = sw.toString().take(3000)
+                    p.edit().putString("rb_last_crash", crashText).apply()
+                    try {
+                        Thread {
+                            try {
+                                val q = "app=" + java.net.URLEncoder.encode(APP_NAME, "UTF-8") + "&v=" + BUILD_TAG + "&d=" + java.net.URLEncoder.encode("" + Build.MANUFACTURER + " " + Build.MODEL + " SDK" + Build.VERSION.SDK_INT, "UTF-8")
+                                val cn = java.net.URL(CRASH_URL + "?" + q).openConnection() as java.net.HttpURLConnection
+                                cn.requestMethod = "POST"
+                                cn.doOutput = true
+                                cn.connectTimeout = 4000
+                                cn.readTimeout = 4000
+                                cn.setRequestProperty("Content-Type", "text/plain; charset=utf-8")
+                                cn.outputStream.use { os -> os.write(crashText.toByteArray()) }
+                                try { cn.responseCode } catch (e5: Exception) { }
+                                cn.disconnect()
+                            } catch (e4: Exception) { }
+                        }.start()
+                        Thread.sleep(700)
+                    } catch (e3: Exception) { }
+                } catch (e2: Exception) { }
+                prev0?.uncaughtException(t, e)
+            }
+        } catch (e: Exception) { }
+    }
+
+    // safe mode me bilkul stock theme — theme ki wajah se crash ho to bhi app khule
+    override fun getTheme(): Resources.Theme {
+        val t = super.getTheme()
+        if (safeMode) {
+            try { t.applyStyle(R.style.SafeTheme, true) } catch (e: Exception) { }
+        }
+        return t
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
