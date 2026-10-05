@@ -2718,17 +2718,7 @@ class MainActivity : AppCompatActivity() {
         dlg.show()
         dlg.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     }
-            }
-            card.addView(row, rowLp)
-        }
 
-        applyLabels()
-        updateDots()
-        dlg.setContentView(card)
-        dlg.window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
-        dlg.show()
-        dlg.window?.setLayout((resources.displayMetrics.widthPixels * 0.86).toInt(), LinearLayout.LayoutParams.WRAP_CONTENT)
-    }
 
     // — Swipe se peeche/aage — ungli ghumao, page badlo —
     private fun setupSwipeNav() {
