@@ -32,6 +32,7 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 - ⋮ menu me **Hindi me padho** — page Google Translate se Hindi me khul jaata hai
 - ⋮ menu me **Mera History** — jo pages khole, list se tap karke wapas jao
 - ⋮ menu me **Direction pao** — “Royal Banjara Studio Music Distribution” seedha Google Maps me khulta hai
+- ⋮ menu me **Call karo** — seedha phone dialer khulta hai
 - ⋮ menu me **Email karo** — seedha Gmail/message app me message likhne ka screen khulta hai
 - ⋮ Quick Tools me **Peeche jao / Aage jao** — page navigation ab menu ke andar stylish cards me (screen par koi alag button bar nahi)
 - ⋮ menu me **Page save karo** — jo page khula hai wahi file ban kar Downloads me save ho jaata hai, baad me bina internet padho
@@ -42,6 +43,7 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 - Stylish floating neeche menu bar: Home, Products, Contact — gradient pill design, scroll karo to apne aap chhup jaata hai
 - Website ka footer automatic hide
 - “Created with Kliv / Made with Wix” jaisi builder-branding automatic + permanent hide ( MutationObserver se late-load par bhi)
+- Tumhari “kya chhupana hai” list permanent hide: "Created with Kliv"
 - Neeche khinch kar refresh (pull-to-refresh)
 - Internet band hone par friendly “No Internet” page
 - Bahar ke links phone ke browser me khulte hain, user app me nahi fas-ta

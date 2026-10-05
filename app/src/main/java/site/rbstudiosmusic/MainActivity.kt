@@ -30,9 +30,11 @@ import android.os.Environment
 import android.print.PrintManager
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
+import android.speech.RecognizerIntent
 import android.text.InputType
 import android.util.Base64
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -55,6 +57,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -101,8 +104,31 @@ class MainActivity : AppCompatActivity() {
         const val VIDEO_BLOCK_ON = true
         const val ADBLOCK_TOOL_ON = true
         const val PAGE_SHARE_ON = true
+        const val VOICE_SEARCH_ON = true
+        const val VIDEO_FULL_ON = true
+        const val WARM_LIGHT_ON = true
+        const val ZOOM_ON = true
         const val DATA_SAVER_JS = "(function(){try{\nvar q=function(t,f){var l=document.querySelectorAll(t);for(var i=0;i<l.length;i++)f(l[i])};\nq('video',function(v){try{v.removeAttribute('autoplay');v.autoplay=false;v.preload='none';if(!v.paused)v.pause()}catch(e){}});\nq('iframe',function(f){var u=(f.src||'').toLowerCase();if(/(doubleclick|googlesyndication|facebook|hotjar|clarity|analytics)/.test(u)){try{f.style.display='none'}catch(e){}}});\nq('script',function(s){var u=(s.src||'').toLowerCase();if(/(googletagmanager|google-analytics|googlesyndication|doubleclick|facebook.net|fbq|hotjar|clarity.ms|mixpanel|amplitude|segment.io|adsystem)/.test(u)){try{s.remove()}catch(e){}}});\nq('img',function(im){try{if(!im.loading)im.loading='lazy'}catch(e){}});\n}catch(e){}})();"
         const val VIDEO_BLOCK_JS = "(function(){try{\nvar q=function(t,f){var l=document.querySelectorAll(t);for(var i=0;i<l.length;i++)f(l[i])};\nq('video',function(v){try{v.removeAttribute('autoplay');v.autoplay=false;v.preload='none';v.pause()}catch(e){}});\nif(!window.__rbVidObs){window.__rbVidObs=new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var ns=ms[i].addedNodes;for(var j=0;j<ns.length;j++){var n=ns[j];if(n&&n.tagName==='VIDEO'){try{n.autoplay=false;n.preload='none';n.pause()}catch(e){}}}}});window.__rbVidObs.observe(document.documentElement,{childList:true,subtree:true})}\n}catch(e){}})();"
+        const val TIMER_TOOL_ON = true
+        const val PROGRESS_TOOL_ON = true
+        const val PASTE_OPEN_ON = true
+        const val SHOT_SHARE_ON = true
+        const val VOLUME_TOOL_ON = true
+        const val RESTART_TOOL_ON = true
+        const val WORD_COUNT_ON = true
+        const val LANG_PICK_ON = true
+        const val CONTRAST_ON = true
+        const val BATTERY_SAVE_ON = true
+        const val INCOGNITO_TOOL_ON = true
+        const val RESET_TOOL_ON = true
+        const val WIFI_SETTINGS_ON = true
+        const val APP_LOCK_ON = true
+        const val SWIPE_NAV_ON = true
+        const val BROWSER_TOOL_ON = true
+        const val SHAKE_REFRESH_ON = true
+        const val SURPRISE_THEME_ON = true
+        const val RATE_APP_ON = true
         const val THEME_COLOR = "#3DDC84"
         const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
@@ -147,8 +173,8 @@ class MainActivity : AppCompatActivity() {
         const val MAP_QUERY = "Royal Banjara Studio Music Distribution"
         const val TRANSLATE_TOOL_ON = true
         const val HISTORY_TOOL_ON = true
-        const val CALL_TOOL_ON = false
-        const val CALL_NUMBER = ""
+        const val CALL_TOOL_ON = true
+        const val CALL_NUMBER = "+919370612297"
         const val SCREENSHOT_ON = true
         const val SHARE_APP_ON = true
         const val HISTORY_NAV_ON = true
@@ -159,7 +185,7 @@ class MainActivity : AppCompatActivity() {
         const val DATA_SAVE_ON = true
         const val URL_TOOL_ON = true
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
-        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF", "Ink Blue|#1A237E", "Terracotta Mitti|#C0563B", "Spearmint Green|#00C853", "Bubblegum Pink|#FF69B4", "Bright Sky|#00B0FF", "Deep Teal|#00695C", "Sunrise Peach|#FF8A65", "Velvet Night|#311B92", "Leaf Green|#43A047", "Desert Sand|#C2A878", "Sindoor Red|#E53935", "Nilkamal Blue|#3949AB", "Kesar Saffron|#FF9800", "Jamun Purple|#6A1B9A", "Amaltas Yellow|#FBC02D", "Moong Green|#7CB342", "Mehendi Green|#558B2F", "Rani Pink|#D81B60", "Badal Grey Blue|#546E7A", "Chandan Brown|#8D6E63")
+        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF", "Ink Blue|#1A237E", "Terracotta Mitti|#C0563B", "Spearmint Green|#00C853", "Bubblegum Pink|#FF69B4", "Bright Sky|#00B0FF", "Deep Teal|#00695C", "Sunrise Peach|#FF8A65", "Velvet Night|#311B92", "Leaf Green|#43A047", "Desert Sand|#C2A878", "Sindoor Red|#E53935", "Nilkamal Blue|#3949AB", "Kesar Saffron|#FF9800", "Jamun Purple|#6A1B9A", "Amaltas Yellow|#FBC02D", "Moong Green|#7CB342", "Mehendi Green|#558B2F", "Rani Pink|#D81B60", "Badal Grey Blue|#546E7A", "Chandan Brown|#8D6E63", "Aasmaan Blue|#29B6F6", "Angoori Purple|#AB47BC", "Genda Marigold|#FFA000", "Faagun Pink|#FF4081", "Samudra Aqua|#00BFA5", "Baingani Violet|#7E57C2", "Aam Mango|#FFB300", "Sitaphal Green|#689F38", "Morpankh Teal|#00838F", "Raat Purple|#4527A0", "Narangi Orange|#FF6D00", "Raakh Grey|#78909C", "Gulmohar Red|#FF1744", "Barish Blue|#4E7EA8", "Pankhudi Orange|#F4511E", "Khubani Apricot|#FB8C00", "Bargad Green|#33691E", "Kadam Pink|#AD1457", "Shankh Aqua|#26C6DA", "Manik Ruby|#C62828", "Neelam Sapphire|#0D47A1", "Anaar Red|#B71C1C", "Mausami Green|#9CCC65", "Tota Parrot|#00E676", "Mor Blue|#2979FF", "Surkhi Rust|#BF360C", "Phool Gulabi|#F06292", "Kohinoor Ice|#4FC3F7", "Basanti Yellow|#FFD600", "Sharbati Wheat|#D4B483", "Surmai Navy|#1F3A5F", "Kokum Purple|#7B2D8B", "Dhani Green|#2E7D4F", "Dhoop Gold|#C9A227", "Mogra Sandal|#C7A85C", "Imli Brown|#5D4037", "Kumkum Maroon|#AD1457", "Sharad Cyan|#0097A7", "Jharokha Indigo|#303F9F", "Pukhraj Amber|#F57F17", "Firozi Teal|#009688", "Lajwanti Magenta|#C2185B", "Megh Slate Blue|#4E6E81", "Amarbel Orange|#E64A19", "Neem Light Green|#8BC34A", "Angoor Wine|#7B1FA2", "Haldi Turmeric|#FFC107", "Dhuan Smoke Purple|#5E35B1", "Patakha Pink|#EC407A", "Ratan Walnut|#6D4C41", "Chandni Silver|#90A4AE", "Sheesham Wood|#855E42", "Zamurrad Emerald|#0C9B6E", "Laajawab Coral|#FF7A59", "Muskmelon Soft|#E8A87C", "Bhagalpur Indigo|#283593", "Patola Rani|#C2185B", "Banarasi Gold|#C6A136", "Chikankari Aqua|#4DD0C4", "Bandhani Pink|#E91E8C", "Kota Doria Teal|#0E8F8F", "Phulkari Orange|#F1652B", "Kalamkari Rust|#A64B35", "Pashmina Wine|#7A1F3D", "Kanjivaram Purple|#5E2B97", "Chikoo Brown|#9C6B4F", "Jamdani Sky|#6EC1E4", "Liji Litchi|#E4536B", "Shahi Maroon|#6E1423", "Surkhab Flame|#E63946")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         const val BLOB_HOOK_JS = "(function(){\nif (window.__appbanaoDl) return; window.__appbanaoDl = 1;\nvar CH = 262144;\nfunction sendBlob(blob, name, mime) {\n  try {\n    var total = blob.size;\n    var off = 0;\n    var fr = new FileReader();\n    window.AndroidDownloads && window.AndroidDownloads.blobSaveStart(name || 'download.bin', (mime || blob.type || 'application/octet-stream').split(',')[0]);\n    fr.onload = function() {\n      try {\n        var arr = new Uint8Array(fr.result);\n        var s = '';\n        for (var i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);\n        window.AndroidDownloads && window.AndroidDownloads.blobSaveChunk(btoa(s));\n      } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); return; }\n      off += CH;\n      if (off < total) fr.readAsArrayBuffer(blob.slice(off, off + CH));\n      else window.AndroidDownloads && window.AndroidDownloads.blobSaveDone();\n    };\n    fr.onerror = function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); };\n    fr.readAsArrayBuffer(blob.slice(0, CH));\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nfunction grab(url, name) {\n  try {\n    fetch(url).then(function(r) { return r.blob(); }).then(function(b) { sendBlob(b, name, b.type); }).catch(function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); });\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nwindow.__appbanaoGrab = grab;\ndocument.addEventListener('click', function(e) {\n  var t = e.target;\n  while (t && t.tagName !== 'A') t = t.parentElement;\n  if (!t) return;\n  var href = t.getAttribute('href') || '';\n  if (href.indexOf('blob:') === 0 || href.indexOf('data:') === 0) {\n    e.preventDefault(); e.stopPropagation();\n    var nm = t.getAttribute('download') || (document.title ? document.title.replace(/[\\\\/:*?\"<>|]/g, '').slice(0, 40) : 'download.bin');\n    grab(href, nm);\n  }\n}, true);\n})();"
     }
@@ -313,6 +339,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentView(root)
+
+        if (APP_LOCK_ON && !prefs.getString("app_pin", null).isNullOrEmpty()) showAppLockDialog()
+        else if (APP_LOCK_ON) setupAppPinDialog()
+        if (SWIPE_NAV_ON) setupSwipeNav()
+        if (SHAKE_REFRESH_ON) setupShakeRefresh()
 
         setupWebView()
         if (NIGHT_MODE_ON && prefs.getBoolean("night_on", false)) {
@@ -544,8 +575,8 @@ class MainActivity : AppCompatActivity() {
         val ov = welcomeOverlay ?: return
         ov.alpha = 1f
         ov.visibility = View.VISIBLE
-        ov.translationY = -dp(110).toFloat()
-        ov.animate().translationY(0f).setDuration(640).setInterpolator(DecelerateInterpolator(1.7f)).start()
+        ov.translationY = -dp(90).toFloat()
+        ov.animate().translationY(0f).setDuration(620).setInterpolator(DecelerateInterpolator(1.7f)).start()
         welcomeHeader?.let { h ->
             h.alpha = 0f
             h.translationY = -dp(30).toFloat()
@@ -553,269 +584,298 @@ class MainActivity : AppCompatActivity() {
         }
         welcomeCenter?.let { c ->
             c.alpha = 0f
-            c.scaleX = 0.90f
-            c.scaleY = 0.90f
-            c.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(560).setStartDelay(160).setInterpolator(OvershootInterpolator(1.06f)).start()
+            c.scaleX = 0.74f
+            c.scaleY = 0.74f
+            c.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(600).setStartDelay(160).setInterpolator(OvershootInterpolator(1.15f)).start()
         }
         welcomeBottom?.let { b ->
             b.alpha = 0f
-            b.translationY = dp(40).toFloat()
-            b.animate().alpha(1f).translationY(0f).setDuration(500).setStartDelay(300).setInterpolator(DecelerateInterpolator(1.4f)).start()
+            b.translationY = dp(26).toFloat()
+            b.animate().alpha(1f).translationY(0f).setDuration(460).setStartDelay(240).setInterpolator(DecelerateInterpolator(1.3f)).start()
         }
     }
 
     private fun dismissWelcome() {
         val ov = welcomeOverlay ?: return
-        ov.animate().translationY(-ov.height.toFloat() * 0.45f).alpha(0f).setDuration(400).setInterpolator(AccelerateInterpolator(1.25f))
-            .withEndAction { ov.visibility = View.GONE }.start()
+        ov.animate()
+            .alpha(0f)
+            .scaleX(0.93f)
+            .scaleY(0.93f)
+            .translationY(-dp(40).toFloat())
+            .setDuration(340)
+            .setInterpolator(AccelerateInterpolator())
+            .withEndAction { ov.visibility = View.GONE }
+            .start()
     }
 
+    // — Welcome v3: premium animated welcome — glow ring, floating bubbles, feature chips —
     private fun buildWelcomeSlider(): FrameLayout {
         val overlay = FrameLayout(this)
+        overlay.isClickable = true
+
         val bgGrad = GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
-            intArrayOf(shade(splashColorInt, -0.30f), shade(accentColor, -0.30f), shade(splashColorInt, -0.55f))
+            intArrayOf(shade(themeColorInt, -0.44f), shade(themeColorInt, -0.20f), shade(themeColorInt, 0.12f), shade(themeColorInt, -0.36f))
         )
-        bgGrad.setGradientCenter(0.5f, 0.3f)
         overlay.background = bgGrad
 
-        fun addFloat(sizeDp: Int, color: Int, alphaInt: Int, x: Int, y: Int, driftMs: Long) {
-            val dot = View(this)
-            val dotBg = GradientDrawable()
-            dotBg.shape = GradientDrawable.OVAL
-            dotBg.setColor(color)
-            dot.background = dotBg
-            dot.alpha = alphaInt.toFloat()
-            overlay.addView(dot, FrameLayout.LayoutParams(dp(sizeDp), dp(sizeDp)))
-            dot.translationX = x.toFloat()
-            dot.translationY = y.toFloat()
-            val rise = ObjectAnimator.ofFloat(dot, View.TRANSLATION_Y, y.toFloat(), y - dp(40).toFloat(), y.toFloat())
-            rise.duration = driftMs
-            rise.repeatCount = ObjectAnimator.INFINITE
-            rise.startDelay = (driftMs / 3)
-            rise.start()
+        val glowRing = View(this)
+        val ringDrawable = GradientDrawable()
+        ringDrawable.shape = GradientDrawable.OVAL
+        ringDrawable.setStroke(dp(30), Color.argb(24, 255, 255, 255))
+        glowRing.background = ringDrawable
+        val ringSize = dp(320)
+        overlay.addView(glowRing, FrameLayout.LayoutParams(ringSize, ringSize, Gravity.CENTER))
+        val ringSpin = ObjectAnimator.ofFloat(glowRing, View.ROTATION, 0f, 360f)
+        ringSpin.duration = 26000
+        ringSpin.repeatCount = ObjectAnimator.INFINITE
+        ringSpin.start()
+
+        val bubbleSpecs = arrayOf(
+            intArrayOf(dp(34), 0x26FFFFFF, 6200, 12, 8),
+            intArrayOf(dp(24), 0x33FFFFFF, 7800, 70, 14),
+            intArrayOf(dp(18), 0x2EFFFFFF, 5600, 28, 62),
+            intArrayOf(dp(46), 0x1FFFFFFF, 8400, 78, 72),
+            intArrayOf(dp(14), 0x3DFFFFFF, 5000, 50, 30),
+            intArrayOf(dp(58), 0x14FFFFFF, 9000, 8, 80)
+        )
+        bubbleSpecs.forEachIndexed { i, spec ->
+            val bubble = View(this)
+            val bubbleDrawable = GradientDrawable()
+            bubbleDrawable.shape = GradientDrawable.OVAL
+            bubbleDrawable.setColor(spec[1])
+            bubble.background = bubbleDrawable
+            val lp = FrameLayout.LayoutParams(spec[0], spec[0])
+            lp.leftMargin = (resources.displayMetrics.widthPixels * spec[3]) / 100
+            lp.topMargin = (resources.displayMetrics.heightPixels * spec[4]) / 100
+            overlay.addView(bubble, lp)
+            val drift = ObjectAnimator.ofFloat(bubble, View.TRANSLATION_Y, 0f, -(dp(24) + i * 4).toFloat())
+            drift.duration = spec[2].toLong()
+            drift.repeatCount = ObjectAnimator.INFINITE
+            drift.repeatMode = ObjectAnimator.REVERSE
+            drift.start()
         }
-        addFloat(150, shade(accentColor, 0.25f), 42, -dp(36), dp(60), 3600)
-        addFloat(95, Color.WHITE, 30, dp(235), dp(150), 4400)
-        addFloat(175, shade(accentColor, 0.45f), 34, dp(30), dp(430), 5200)
-        addFloat(66, Color.WHITE, 24, dp(30), dp(64), 3900)
 
-        // — upar: chhota logo + app ka naam + Skip button —
         val header = LinearLayout(this)
-        header.orientation = LinearLayout.HORIZONTAL
-        header.gravity = Gravity.CENTER_VERTICAL
-        header.setPadding(dp(18), dp(16), dp(14), dp(6))
+        header.orientation = LinearLayout.VERTICAL
+        header.gravity = Gravity.CENTER_HORIZONTAL
+        header.setPadding(0, dp(38), 0, 0)
 
-        val logoHolder = FrameLayout(this)
-        val logoBg = GradientDrawable()
-        logoBg.setColor(Color.WHITE)
-        logoBg.cornerRadius = dp(13).toFloat()
-        logoHolder.background = logoBg
-        logoHolder.clipToOutline = true
-        logoHolder.elevation = dp(6).toFloat()
-        val logo = ImageView(this)
-        logo.setImageResource(R.mipmap.ic_launcher)
-        logoHolder.addView(logo, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-        header.addView(logoHolder, LinearLayout.LayoutParams(dp(42), dp(42)))
+        val logoRing = FrameLayout(this)
+        val ringBg = GradientDrawable()
+        ringBg.shape = GradientDrawable.RECTANGLE
+        ringBg.cornerRadius = dp(19).toFloat()
+        ringBg.setColor(0x3DFFFFFF)
+        ringBg.setStroke(dp(1), 0x59FFFFFF)
+        logoRing.background = ringBg
+        logoRing.setPadding(dp(5), dp(5), dp(5), dp(5))
 
-        val headName = TextView(this)
-        headName.text = APP_NAME
-        headName.textSize = 15f
-        headName.setTextColor(Color.WHITE)
-        headName.typeface = Typeface.DEFAULT_BOLD
-        headName.maxLines = 1
-        headName.letterSpacing = 0.03f
-        val headNameLp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-        headNameLp.leftMargin = dp(10)
-        header.addView(headName, headNameLp)
+        val logoCard = FrameLayout(this)
+        val cardBg = GradientDrawable()
+        cardBg.shape = GradientDrawable.RECTANGLE
+        cardBg.cornerRadius = dp(14).toFloat()
+        cardBg.setColor(Color.WHITE)
+        logoCard.background = cardBg
+        val logoMark = TextView(this)
+        logoMark.text = APP_NAME.trim().take(1).uppercase(Locale.getDefault())
+        logoMark.textSize = 30f
+        logoMark.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
+        logoMark.setTextColor(themeColorInt)
+        logoMark.gravity = Gravity.CENTER
+        logoCard.addView(logoMark, FrameLayout.LayoutParams(dp(52), dp(52)))
+        logoRing.addView(logoCard, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        header.addView(logoRing)
+
+        val name = TextView(this)
+        name.text = APP_NAME
+        name.textSize = 19f
+        name.setTextColor(Color.WHITE)
+        name.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
+        name.letterSpacing = 0.04f
+        name.setShadowLayer(dp(6).toFloat(), 0f, dp(2).toFloat(), 0x66000000)
+        val nameLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        nameLp.topMargin = dp(12)
+        header.addView(name, nameLp)
 
         val skip = TextView(this)
-        skip.text = "Skip ›"
-        skip.setTextColor(Color.WHITE)
+        skip.text = "Skip ▸"
         skip.textSize = 13f
-        skip.typeface = Typeface.DEFAULT_BOLD
+        skip.setTextColor(Color.WHITE)
         skip.setPadding(dp(16), dp(7), dp(16), dp(7))
         val skipBg = GradientDrawable()
-        skipBg.setColor(0x38FFFFFF)
-        skipBg.cornerRadius = dp(18).toFloat()
-        skip.background = RippleDrawable(ColorStateList.valueOf(0x40FFFFFF), skipBg, null)
-        header.addView(skip)
+        skipBg.shape = GradientDrawable.RECTANGLE
+        skipBg.cornerRadius = dp(20).toFloat()
+        skipBg.setColor(0x33FFFFFF)
+        skipBg.setStroke(dp(1), 0x4DFFFFFF)
+        skip.background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), skipBg, null)
+        val skipLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        skipLp.topMargin = dp(10)
+        header.addView(skip, skipLp)
         overlay.addView(header, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP))
-        welcomeHeader = header
 
-        // — beech me: bade gradient bubbles wale slides —
         val center = LinearLayout(this)
         center.orientation = LinearLayout.VERTICAL
         center.gravity = Gravity.CENTER
-        welcomeCenter = center
 
         val flipper = ViewFlipper(this)
-        flipper.isAutoStart = true
+        flipper.setInAnimation(this, android.R.anim.fade_in)
+        flipper.setOutAnimation(this, android.R.anim.fade_out)
         flipper.flipInterval = 3800
-        val inAnim = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 1f, Animation.RELATIVE_TO_PARENT, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f)
-        inAnim.duration = 520
-        inAnim.interpolator = DecelerateInterpolator(1.2f)
-        val outAnim = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0f, Animation.RELATIVE_TO_PARENT, -1f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f)
-        outAnim.duration = 520
-        outAnim.interpolator = AccelerateInterpolator(1.1f)
-        flipper.inAnimation = inAnim
-        flipper.outAnimation = outAnim
+        flipper.isAutoStart = true
 
-        val slides = listOf(
-            Triple("👋", WELCOME_TEXT, "Aapka poora website — ab ek asli app me"),
-            Triple("⬇️", "Download & Save", "File, photo, PDF seedha phone ke Downloads folder me"),
-            Triple("🖨️", "Print & Share", "⋮ button se page print karo ya PDF bana kar bhejo"),
-            Triple("⚡", "Smart Tools", "Night mode, screenshot, WhatsApp — sab ek jagah")
+        val slides = arrayOf(
+            Triple("🎧", WELCOME_TEXT, "poora site, app jaisa mazaa"),
+            Triple("⚡", "Sab kuch turant", "tez kholo — bas ek touch"),
+            Triple("🔒", "Safe aur sasta", "aapka data, aapke control me")
         )
-        val palettes = listOf(
-            intArrayOf(shade(accentColor, 0.42f), shade(accentColor, -0.15f)),
-            intArrayOf(0xFF1B8A3A.toInt(), 0xFF57C863.toInt()),
-            intArrayOf(0xFF6D3FC4.toInt(), 0xFF9B7BE8.toInt()),
-            intArrayOf(0xFF0B7285.toInt(), 0xFF37B9CE.toInt())
-        )
-
-        slides.forEachIndexed { idx, slideData ->
-            val slide = LinearLayout(this)
-            slide.orientation = LinearLayout.VERTICAL
-            slide.gravity = Gravity.CENTER_HORIZONTAL
-            slide.setPadding(dp(8), 0, dp(8), 0)
+        slides.forEach { slide ->
+            val page = LinearLayout(this)
+            page.orientation = LinearLayout.VERTICAL
+            page.gravity = Gravity.CENTER
+            page.setPadding(dp(10), 0, dp(10), 0)
 
             val bubble = FrameLayout(this)
-            val bubbleBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, palettes[idx % palettes.size])
+            val bubbleSize = dp(132)
+            val bubbleBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(0xFFFFFFFF.toInt(), 0xCCFFFFFF.toInt(), 0x99FFFFFF.toInt()))
             bubbleBg.shape = GradientDrawable.OVAL
-            bubbleBg.setStroke(dp(3), 0x73FFFFFF)
+            bubbleBg.setStroke(dp(4), 0x80FFFFFF.toInt())
             bubble.background = bubbleBg
-            bubble.elevation = dp(16).toFloat()
-            val bigIcon = TextView(this)
-            bigIcon.text = slideData.first
-            bigIcon.textSize = 48f
-            bigIcon.gravity = Gravity.CENTER
-            bubble.addView(bigIcon, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER))
-            slide.addView(bubble, LinearLayout.LayoutParams(dp(124), dp(124)))
+            val emo = TextView(this)
+            emo.text = slide.first
+            emo.textSize = 52f
+            emo.gravity = Gravity.CENTER
+            bubble.addView(emo, FrameLayout.LayoutParams(bubbleSize, bubbleSize))
+            val shine = View(this)
+            val shineBg = GradientDrawable()
+            shineBg.shape = GradientDrawable.OVAL
+            shineBg.setColor(0x73FFFFFF)
+            shine.background = shineBg
+            bubble.addView(shine, FrameLayout.LayoutParams(dp(26), dp(26), Gravity.TOP or Gravity.START))
+            page.addView(bubble, LinearLayout.LayoutParams(bubbleSize, bubbleSize))
 
             val title = TextView(this)
-            title.text = slideData.second
+            title.text = slide.second
             title.textSize = 23f
-            title.typeface = Typeface.DEFAULT_BOLD
             title.setTextColor(Color.WHITE)
+            title.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
+            title.letterSpacing = 0.02f
             title.gravity = Gravity.CENTER
-            title.letterSpacing = 0.01f
-            title.setShadowLayer(dp(8).toFloat(), 0f, dp(2).toFloat(), 0x59000000)
+            title.maxLines = 2
+            title.setShadowLayer(dp(8).toFloat(), 0f, dp(2).toFloat(), 0x66000000)
             val titleLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            titleLp.topMargin = dp(22)
-            slide.addView(title, titleLp)
+            titleLp.topMargin = dp(18)
+            page.addView(title, titleLp)
 
             val sub = TextView(this)
-            sub.text = slideData.third
-            sub.textSize = 14.5f
-            sub.setTextColor(0xD9FFFFFF.toInt())
+            sub.text = slide.third
+            sub.textSize = 14f
+            sub.setTextColor(0xE6FFFFFF.toInt())
             sub.gravity = Gravity.CENTER
-            sub.setPadding(dp(12), 0, dp(12), 0)
+            sub.maxLines = 2
             val subLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            subLp.topMargin = dp(8)
-            slide.addView(sub, subLp)
+            subLp.topMargin = dp(6)
+            page.addView(sub, subLp)
 
-            flipper.addView(slide, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+            flipper.addView(page)
         }
+        center.addView(flipper)
 
-        val stage = FrameLayout(this)
-        val glow = View(this)
-        val glowBg = GradientDrawable()
-        glowBg.shape = GradientDrawable.OVAL
-        glowBg.setColor(shade(accentColor, 0.45f))
-        glow.background = glowBg
-        glow.alpha = 0.34f
-        stage.addView(glow, FrameLayout.LayoutParams(dp(310), dp(310), Gravity.CENTER))
-        val glowPulse = ObjectAnimator.ofFloat(glow, View.ALPHA, 0.26f, 0.48f, 0.26f)
-        glowPulse.duration = 2600
-        glowPulse.repeatCount = ObjectAnimator.INFINITE
-        glowPulse.start()
-        val glowScale = ObjectAnimator.ofPropertyValuesHolder(
-            glow,
-            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.12f, 1f),
-            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.12f, 1f)
-        )
-        glowScale.duration = 3200
-        glowScale.repeatCount = ObjectAnimator.INFINITE
-        glowScale.start()
-        stage.addView(flipper, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER))
-
-        center.addView(stage, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(330)))
+        val chips = LinearLayout(this)
+        chips.orientation = LinearLayout.HORIZONTAL
+        chips.gravity = Gravity.CENTER
+        val chipsLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        chipsLp.topMargin = dp(16)
+        val chipLabels = arrayOf("⚡ Tez", "🔒 Safe", "📶 Offline")
+        chipLabels.forEach { label ->
+            val chip = TextView(this)
+            chip.text = label
+            chip.textSize = 11.5f
+            chip.setTextColor(Color.WHITE)
+            chip.setPadding(dp(12), dp(6), dp(12), dp(6))
+            val chipBg = GradientDrawable()
+            chipBg.shape = GradientDrawable.RECTANGLE
+            chipBg.cornerRadius = dp(16).toFloat()
+            chipBg.setColor(0x2EFFFFFF)
+            chipBg.setStroke(dp(1), 0x40FFFFFF)
+            chip.background = chipBg
+            val chipLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            chipLp.marginEnd = dp(6)
+            chips.addView(chip, chipLp)
+        }
+        center.addView(chips, chipsLp)
         overlay.addView(center, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
-        // — neeche: pill dots + Shuru Karein button + version —
         val bottom = LinearLayout(this)
         bottom.orientation = LinearLayout.VERTICAL
         bottom.gravity = Gravity.CENTER_HORIZONTAL
-        bottom.setPadding(dp(26), 0, dp(26), dp(34))
-        welcomeBottom = bottom
+        bottom.setPadding(dp(20), 0, dp(20), dp(26))
 
-        val dots = mutableListOf<View>()
-        val dotsRow = LinearLayout(this)
-        dotsRow.orientation = LinearLayout.HORIZONTAL
-        dotsRow.gravity = Gravity.CENTER
-        repeat(slides.size) {
-            val dot = View(this)
-            val dotBg = GradientDrawable()
-            dotBg.shape = GradientDrawable.RECTANGLE
-            dotBg.cornerRadius = dp(5).toFloat()
-            dotBg.setColor(0x80FFFFFF.toInt())
-            dot.background = dotBg
-            dots.add(dot)
-            val dLp = LinearLayout.LayoutParams(dp(9), dp(9))
-            dLp.setMargins(dp(4), 0, dp(4), 0)
-            dotsRow.addView(dot, dLp)
+        val dots = LinearLayout(this)
+        dots.orientation = LinearLayout.HORIZONTAL
+        val dotCount = slides.size
+        val dotViews = mutableListOf<TextView>()
+        for (i in 0 until dotCount) {
+            val d = TextView(this)
+            d.text = "○"
+            d.setTextColor(0x99FFFFFF.toInt())
+            val dLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            dLp.marginEnd = dp(7)
+            dots.addView(d, dLp)
+            dotViews.add(d)
         }
-
-        fun updateDots(index: Int) {
-            dots.forEachIndexed { i, d ->
-                val active = i == index
-                val lp = d.layoutParams
-                lp.width = if (active) dp(28) else dp(9)
-                lp.height = dp(9)
-                d.layoutParams = lp
-                (d.background as GradientDrawable).setColor(if (active) Color.WHITE else 0x80FFFFFF.toInt())
+        fun updateDots(active: Int) {
+            for (i in 0 until dotCount) {
+                val d = dotViews[i]
+                d.text = if (i == active) "●" else "○"
+                d.textSize = if (i == active) 13f else 11f
+                d.setTextColor(if (i == active) Color.WHITE else 0x99FFFFFF.toInt())
             }
         }
+        bottom.addView(dots)
 
         val startBtn = TextView(this)
         startBtn.text = "Shuru Karein  →"
         startBtn.textSize = 16f
         startBtn.setTextColor(Color.WHITE)
-        startBtn.typeface = Typeface.DEFAULT_BOLD
+        startBtn.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
         startBtn.gravity = Gravity.CENTER
-        startBtn.letterSpacing = 0.04f
-        startBtn.setPadding(dp(38), dp(14), dp(38), dp(14))
-        val btnBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(accentColor, 0.38f), accentColor))
-        btnBg.cornerRadius = dp(30).toFloat()
-        btnBg.setStroke(dp(2), 0x66FFFFFF)
-        startBtn.background = RippleDrawable(ColorStateList.valueOf(0x40FFFFFF), btnBg, null)
+        startBtn.letterSpacing = 0.02f
+        startBtn.setPadding(dp(30), dp(14), dp(30), dp(14))
+        val btnBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, 0.28f), themeColorInt, shade(themeColorInt, -0.22f)))
+        btnBg.shape = GradientDrawable.RECTANGLE
+        btnBg.cornerRadius = dp(32).toFloat()
+        btnBg.setStroke(dp(1), 0x66FFFFFF)
+        startBtn.background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), btnBg, null)
         startBtn.elevation = dp(14).toFloat()
+        val btnLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        btnLp.topMargin = dp(18)
+        bottom.addView(startBtn, btnLp)
+        val glow = ObjectAnimator.ofFloat(startBtn, View.ALPHA, 1f, 0.86f)
+        glow.duration = 1300
+        glow.repeatCount = ObjectAnimator.INFINITE
+        glow.repeatMode = ObjectAnimator.REVERSE
+        glow.start()
 
-        val pulse = ObjectAnimator.ofPropertyValuesHolder(
-            startBtn,
-            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.04f, 1f),
-            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.04f, 1f)
-        )
-        pulse.duration = 1100
-        pulse.repeatCount = ObjectAnimator.INFINITE
-        pulse.start()
+        val tag = TextView(this)
+        tag.text = "Made in India 🇮🇳"
+        tag.textSize = 11.5f
+        tag.setTextColor(0xB3FFFFFF.toInt())
+        tag.gravity = Gravity.CENTER
+        tag.setPadding(dp(12), dp(6), dp(12), dp(6))
+        val tagBg = GradientDrawable()
+        tagBg.shape = GradientDrawable.RECTANGLE
+        tagBg.cornerRadius = dp(14).toFloat()
+        tagBg.setColor(0x26FFFFFF)
+        tag.background = tagBg
+        val tagLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        tagLp.topMargin = dp(12)
+        bottom.addView(tag, tagLp)
 
-        val ver = TextView(this)
-        ver.text = "v" + VERSION_NAME
-        ver.textSize = 11f
-        ver.setTextColor(0x8CFFFFFF.toInt())
-        ver.gravity = Gravity.CENTER
-        ver.letterSpacing = 0.06f
-
-        bottom.addView(dotsRow, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-        val startLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        startLp.topMargin = dp(24)
-        bottom.addView(startBtn, startLp)
-        val verLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        verLp.topMargin = dp(14)
-        bottom.addView(ver, verLp)
         overlay.addView(bottom, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM))
+
+        welcomeHeader = header
+        welcomeCenter = center
+        welcomeBottom = bottom
 
         val dismiss: () -> Unit = { dismissWelcome() }
         startBtn.setOnClickListener {
@@ -1615,6 +1675,28 @@ class MainActivity : AppCompatActivity() {
             }
         }
         renderTools("")
+        // — 7 section chips: ek tap me sirf wahi section ke tools dikhen —
+        val secScroll = HorizontalScrollView(this)
+        secScroll.isHorizontalScrollBarEnabled = false
+        val chipsRow = LinearLayout(this)
+        chipsRow.orientation = LinearLayout.HORIZONTAL
+        secScroll.addView(chipsRow, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        val chipNames = listOf("Sab", "Padhai", "Screen", "Page", "Files", "Suraksha", "App", "Madad")
+        chipNames.forEach { name ->
+            val chip = TextView(this)
+            chip.text = name
+            chip.textSize = 12f
+            chip.typeface = Typeface.DEFAULT_BOLD
+            chip.setTextColor(0xFF334155.toInt())
+            val chipBg = GradientDrawable()
+            chipBg.setColor(0xFFEDF1F7.toInt())
+            chipBg.cornerRadius = dp(14).toFloat()
+            chip.background = RippleDrawable(ColorStateList.valueOf(0x22808080), chipBg, null)
+            chip.setPadding(dp(13), dp(7), dp(13), dp(7))
+            chipsRow.addView(chip, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { rightMargin = dp(7) })
+            chip.setOnClickListener { search.setText(if (name == "Sab") "" else name.lowercase()) }
+        }
+        sheet.addView(secScroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(8) })
         search.addTextChangedListener(object : android.text.TextWatcher {
             override fun afterTextChanged(s: android.text.Editable?) { renderTools(s?.toString() ?: "") }
             override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
@@ -1640,7 +1722,7 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
-    // Saare Quick Tools — sections me grouped: Padhai sabse upar, phir Screen, Page, Files, App, Madad
+    // Saare Quick Tools — 7 sections me grouped: Padhai, Screen, Page, Files, Suraksha aur Bachat, App, Madad
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
         if (FIND_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_find, "Page me dhoondo", "shabd turant milenge", 0xFF0891B2.toInt(), "Padhai ke Tools") { findInPage() })
@@ -1649,6 +1731,7 @@ class MainActivity : AppCompatActivity() {
         if (TRANSLATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_translate, "Hindi me padho", "page translate", 0xFF0F766E.toInt(), "Padhai ke Tools") { translatePage() })
         if (DICT_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_dict, "Shabd ka matlab", "meaning turant", 0xFF7C2D12.toInt(), "Padhai ke Tools") { dictDialog() })
         if (SITE_SEARCH_ON) items.add(ToolItem(R.drawable.ic_tool_sitesearch, "Site me dhoondo", "Google se isi site me", 0xFF0E7490.toInt(), "Padhai ke Tools") { siteSearchDialog() })
+        if (VOICE_SEARCH_ON) items.add(ToolItem(R.drawable.ic_tool_voice, "Bolke dhoondo", "bolkar search karo", 0xFF7C3AED.toInt(), "Padhai ke Tools") { voiceSearchTool() })
         if (COPY_TEXT_ON) items.add(ToolItem(R.drawable.ic_tool_copy, "Text copy karo", "poora page ka likha", 0xFF4338CA.toInt(), "Padhai ke Tools") { copyPageText() })
         if (FONT_STYLE_ON) items.add(ToolItem(R.drawable.ic_tool_fontstyle, "Font style badlo", "lekhe ka style", 0xFF9F1239.toInt(), "Padhai ke Tools") { fontStyleDialog() })
         items.add(ToolItem(R.drawable.ic_tool_textgrow, "Text bada karo", "padhna aasan", 0xFF0EA5E9.toInt(), "Padhai ke Tools") { changeTextSize(15) })
@@ -1658,19 +1741,30 @@ class MainActivity : AppCompatActivity() {
         if (BOOKMARKS_ON) items.add(ToolItem(R.drawable.ic_tool_book, "Mere Bookmarks", "save kiye page", 0xFFD97706.toInt(), "Padhai ke Tools") { showBookmarksSheet() })
         if (OFFLINE_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_save, "Page save karo", "offline padho baad me", 0xFF0369A1.toInt(), "Padhai ke Tools") { savePageOffline() })
         if (AUTOSCROLL_ON) items.add(ToolItem(R.drawable.ic_tool_autoscroll, "Auto scroll karo", "page khud chalega", 0xFF92400E.toInt(), "Padhai ke Tools") { autoScrollDialog() })
+        if (TIMER_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_timer, "Padhai ka timer", "15/25/45 min focus", 0xFF7E22CE.toInt(), "Padhai ke Tools") { padhaiTimerDialog() })
+        if (PROGRESS_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_progress, "Kitna padha", "page ka % padha", 0xFF334155.toInt(), "Padhai ke Tools") { readingProgressDialog() })
+        if (WORD_COUNT_ON) items.add(ToolItem(R.drawable.ic_tool_wordcount, "Shabd gino", "kitne shabd + kitna time", 0xFF0F766E.toInt(), "Padhai ke Tools") { wordCountDialog() })
+        if (LANG_PICK_ON) items.add(ToolItem(R.drawable.ic_tool_language, "Bhasha badlo", "10 bhasha me padho", 0xFF7C3AED.toInt(), "Padhai ke Tools") { languageDialog() })
         if (KEEPCR_ON) items.add(ToolItem(R.drawable.ic_tool_screenon, if ((window.attributes.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0) "Screen band hone do" else "Screen band na ho", "padhai/video me jalta rahe", 0xFF0D9488.toInt(), "Screen ke Tools") { toggleKeepScreenOn() })
         if (BRIGHTNESS_ON) items.add(ToolItem(R.drawable.ic_tool_brightness, "Roshni set karo", "screen ki brightness", 0xFFCA8A04.toInt(), "Screen ke Tools") { showBrightnessDialog() })
         items.add(ToolItem(if (nightOn) R.drawable.ic_tool_sun else R.drawable.ic_tool_moon, if (nightOn) "Day mode karo" else "Night mode karo", "aankhon ko aaram", 0xFF1E293B.toInt(), "Screen ke Tools") { toggleNightMode() })
+        if (WARM_LIGHT_ON) items.add(ToolItem(R.drawable.ic_tool_warm, if (warmOn) "Warm light band" else "Warm light on", "raat me aankhon ko aaram", 0xFFF59E0B.toInt(), "Screen ke Tools") { toggleWarmLight() })
         if (MUTE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_mute, if (muted) "Aawaz chalu karo" else "Aawaz band karo", "site ki awaaz", 0xFFDB2777.toInt(), "Screen ke Tools") { toggleMute() })
+        if (VIDEO_FULL_ON) items.add(ToolItem(R.drawable.ic_tool_videofull, "Video poora karo", "video full screen me", 0xFF9333EA.toInt(), "Screen ke Tools") { fullscreenVideo() })
         if (DATA_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_datasave, if (dataSaveOn) "Photo chalu karo" else "Data save karo", "photo band, data bacho", 0xFF059669.toInt(), "Screen ke Tools") { toggleDataSave() })
-        if (VIDEO_BLOCK_ON) items.add(ToolItem(R.drawable.ic_tool_videoblock, if (videoBlockOn) "Video autoplay chalu" else "Video autoplay band", "video khud na chale, data bacho", 0xFF0F766E.toInt(), "Screen ke Tools") { toggleVideoBlock() })
-        if (ADBLOCK_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_adblock, if (adBlockOn) "Ads chalu karo" else "Ads band karo", "banner ads chhupao", 0xFFB91C1C.toInt(), "Screen ke Tools") { toggleAdBlock() })
         if (SCREENSHOT_ON) items.add(ToolItem(R.drawable.ic_tool_camera, "Screenshot lo", "page ki photo", 0xFFDC2626.toInt(), "Screen ke Tools") { takeScreenshot() })
         if (FULLSCREEN_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_fullscreen, if (fullScreenOn) "Full screen band" else "Full screen karo", "poora screen app ka", 0xFF7C3AED.toInt(), "Screen ke Tools") { toggleFullScreen() })
         if (DESKTOP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_monitor, if (desktopView) "Mobile view karo" else "Desktop view karo", "poori site desktop mode", 0xFF6366F1.toInt(), "Screen ke Tools") { toggleDesktopView() })
+        if (ZOOM_ON) items.add(ToolItem(R.drawable.ic_tool_zoom, if (zoomOn) "Zoom band karo" else "Zoom on karo", "pinch se bada karo", 0xFF0284C7.toInt(), "Screen ke Tools") { toggleZoom() })
         if (THEME_PICKER_ON) items.add(ToolItem(R.drawable.ic_tool_palette, "Theme badlo", "rang turant badlo", 0xFFEC4899.toInt(), "Screen ke Tools") { showThemeSheet() })
+        if (SURPRISE_THEME_ON) items.add(ToolItem(R.drawable.ic_tool_surprise, "Surprise theme", "ek tap me naya rang", 0xFF9333EA.toInt(), "Screen ke Tools") { surpriseThemeNow() })
+        if (SHAKE_REFRESH_ON) items.add(ToolItem(R.drawable.ic_tool_shake, "Hila ke refresh", "phone hilo, page naya", 0xFF06B6D4.toInt(), "Screen ke Tools") { Toast.makeText(this, "Phone hilo — page khud refresh hoga", Toast.LENGTH_SHORT).show() })
         if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
         if (ROTATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen ke Tools") { toggleRotation() })
+        if (VOLUME_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_volumeup, "Aawaz ki matra", "volume slider", 0xFFDB2777.toInt(), "Screen ke Tools") { volumeDialog() })
+        if (CONTRAST_ON) items.add(ToolItem(R.drawable.ic_tool_contrast, if (contrastOn) "Saaf likhai band" else "Saaf likhai on", "rang ujle, saaf dikhe", 0xFF1D4ED8.toInt(), "Screen ke Tools") { toggleHighContrast() })
+        if (SWIPE_NAV_ON) items.add(ToolItem(R.drawable.ic_tool_swipe, "Swipe karo", "ungli ghumao, page badlo", 0xFF6366F1.toInt(), "Page ke Tools") { Toast.makeText(this, "Ungli ghumao — peeche/aage", Toast.LENGTH_SHORT).show() })
+        if (BROWSER_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_browser, "Chrome me kholo", "page bahar browser me", 0xFF4285F4.toInt(), "Page ke Tools") { openInBrowserTool() })
         items.add(ToolItem(R.drawable.ic_tool_back, "Peeche jao", "pichla page", 0xFF334155.toInt(), "Page ke Tools") { goBackPage() })
         items.add(ToolItem(R.drawable.ic_tool_forward, "Aage jao", "agla page", 0xFF475569.toInt(), "Page ke Tools") { goForwardPage() })
         items.add(ToolItem(R.drawable.ic_tool_refresh, "Refresh page", "dobara load", 0xFF2563EB.toInt(), "Page ke Tools") { webView.reload() })
@@ -1680,18 +1774,30 @@ class MainActivity : AppCompatActivity() {
         if (QR_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_qr, "QR banao", "page ka QR code", 0xFF374151.toInt(), "Page ke Tools") { showQrDialog() })
         if (PAGE_SHARE_ON) items.add(ToolItem(R.drawable.ic_tool_share, "Page share karo", "page ka link bhejo", 0xFF2563EB.toInt(), "Page ke Tools") { shareCurrentPage() })
         if (HISTORY_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_history, "Mera History", "khole hue pages", 0xFF64748B.toInt(), "Page ke Tools") { showHistorySheet() })
+        if (PASTE_OPEN_ON) items.add(ToolItem(R.drawable.ic_tool_pasteopen, "Paste karke kholo", "copy kiya link kholo", 0xFF0369A1.toInt(), "Page ke Tools") { openClipboardUrl() })
         items.add(ToolItem(R.drawable.ic_tool_print, "Print / PDF", "page ya PDF banao", 0xFF111827.toInt(), "Files aur Print") { printPage() })
         if (DL_LIST_ON) items.add(ToolItem(R.drawable.ic_tool_download, "Mere Downloads", "app ki hi list", 0xFF10B981.toInt(), "Files aur Print") { showDownloadsSheet() })
         items.add(ToolItem(R.drawable.ic_tool_folder, "Downloads folder", "phone ka folder", 0xFF059669.toInt(), "Files aur Print") { openDownloads() })
         if (IMAGE_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_images, "Photo save karo", "page ki photo chuno", 0xFF86198F.toInt(), "Files aur Print") { showImagesSheet() })
+        if (SHOT_SHARE_ON) items.add(ToolItem(R.drawable.ic_tool_shotshare, "Screenshot bhejo", "photo seedha share", 0xFFE11D48.toInt(), "Files aur Print") { shareScreenshotNow() })
+        if (ADBLOCK_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_adblock, if (adBlockOn) "Ads chalu karo" else "Ads band karo", "banner ads chhupao", 0xFFB91C1C.toInt(), "Suraksha aur Bachat") { toggleAdBlock() })
+        if (DATA_SAVER_ON) items.add(ToolItem(R.drawable.ic_tool_internetbachao, if (dataSaverCacheOn) "Internet bachao band" else "Internet bachao", "cache se kholo, data kam", 0xFF15803D.toInt(), "Suraksha aur Bachat") { toggleDataSaver() })
+        if (VIDEO_BLOCK_ON) items.add(ToolItem(R.drawable.ic_tool_videoblock, if (videoBlockOn) "Video autoplay chalu" else "Video autoplay band", "video khud na chale, data bacho", 0xFF0F766E.toInt(), "Suraksha aur Bachat") { toggleVideoBlock() })
+        if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "Suraksha aur Bachat") { clearAppCache() })
+        if (COOKIES_CLEAR_ON) items.add(ToolItem(R.drawable.ic_tool_cookie, "Cookies clear", "login data saaf", 0xFFB45309.toInt(), "Suraksha aur Bachat") { clearCookiesNow() })
+        if (BATTERY_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_battery, if (batteryOn) "Battery bachao band" else "Battery bachao", "ek tap me sab bachat", 0xFF65A30D.toInt(), "Suraksha aur Bachat") { batterySaverToggle() })
+        if (NO_HISTORY_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_incognito, if (noHistoryOn) "Chhupa mode band" else "Chhupa mode", "history me kuch nahi likhe", 0xFF334155.toInt(), "Suraksha aur Bachat") { toggleNoHistory() })
+        if (APP_LOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (prefs.getString("app_pin", null) == null) "App lock lagao" else "App lock kholo/change", "PIN se app ki suraksha", 0xFF0F172A.toInt(), "Suraksha aur Bachat") { if (prefs.getString("app_pin", null) == null) setupAppPinDialog() else showAppLockDialog() })
         if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
-        if (DATA_SAVER_ON) items.add(ToolItem(R.drawable.ic_tool_internetbachao, if (dataSaverCacheOn) "Internet bachao band" else "Internet bachao", "cache se kholo, data kam", 0xFF15803D.toInt(), "App") { toggleDataSaver() })
-        if (CLEAR_CACHE_ON) items.add(ToolItem(R.drawable.ic_tool_broom, "Cache clear", "speed badhao", 0xFFF97316.toInt(), "App") { clearAppCache() })
-        if (COOKIES_CLEAR_ON) items.add(ToolItem(R.drawable.ic_tool_cookie, "Cookies clear", "login data saaf", 0xFFB45309.toInt(), "App") { clearCookiesNow() })
+        if (RATE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_ratestar, "5 star rating do", "app ko pasand batao", 0xFFF59E0B.toInt(), "App") { rateAppNow() })
+        if (RESTART_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_restart, "App restart karo", "ek tap me wapas khule", 0xFF475569.toInt(), "App") { restartApp() })
+        if (RESET_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_reset, "Sab reset karo", "saare settings normal", 0xFF64748B.toInt(), "App") { resetAllSettings() })
         if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
         if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
         items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
+        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
+        if (WIFI_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_wifi, "WiFi settings", "internet jodne ke liye", 0xFF0284C7.toInt(), "Madad") { openWifiSettings() })
         return items
     }
 
@@ -1953,6 +2059,8 @@ class MainActivity : AppCompatActivity() {
 
     // — Auto refresh: page har 30 second me khud update —
     private var autoRefreshOn = false
+    private var warmOn = false
+    private var zoomOn = false
     private var autoRefreshTimer: android.os.Handler? = null
 
     private fun toggleAutoRefresh() {
@@ -2064,7 +2172,7 @@ class MainActivity : AppCompatActivity() {
         val url = webView.url ?: HOME_URL
         val send = Intent(Intent.ACTION_SEND)
         send.type = "text/plain"
-        send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " — " + SITE_LABEL + "\n" + url)
+        send.putExtra(Intent.EXTRA_TEXT, APP_NAME + " — " + SITE_LABEL + "\n" + friendlyPath(url))
         try {
             startActivity(Intent.createChooser(send, "Page share karo"))
         } catch (e: Exception) {
@@ -2072,6 +2180,454 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // — Bolke dhoondo: bol kar isi site me search (voice search) —
+    private fun voiceSearchTool() {
+        try {
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Bolo — kya dhoondna hai?")
+            startActivityForResult(intent, 7711)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Voice search nahi mila — Google app check karo", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != 7711 || resultCode != RESULT_OK || data == null) return
+        val spoken = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.firstOrNull() ?: return
+        if (spoken.isBlank()) return
+        Toast.makeText(this, "Dhoondh raha hoon: " + spoken, Toast.LENGTH_SHORT).show()
+        val host = Uri.parse(HOME_URL).host ?: ""
+        webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(spoken, "UTF-8") + "&as_sitesearch=" + host)
+    }
+
+    // — Video poora karo: khula video poore screen me —
+    private fun fullscreenVideo() {
+        webView.evaluateJavascript("(function(){try{var vs=document.querySelectorAll('video');var v=null;for(var i=0;i<vs.length;i++){var r=vs[i].getBoundingClientRect();if(r.width>60){v=vs[i];break}}if(!v&&vs.length)v=vs[0];if(!v)return;if(window.__rbVidFull){try{var st=v.getAttribute('data-rb-style')||'';v.setAttribute('style',st)}catch(e){}window.__rbVidFull=false}else{try{v.setAttribute('data-rb-style',v.getAttribute('style')||'');v.setAttribute('style',(v.getAttribute('style')||'')+';position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:contain;background:#000;z-index:2147483647;margin:0;padding:0;');if(v.play)v.play();window.__rbVidFull=true}catch(e){}}}catch(e){}})()", null)
+        Toast.makeText(this, "Video poore screen me — dobara dabao to wapas", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Warm light: raat me peeli roshni, aankhon ko aaram —
+    private fun toggleWarmLight() {
+        warmOn = !warmOn
+        webView.evaluateJavascript("(function(){try{var d=document.getElementById('__rbWarm');if(window.__rbWarm){if(d)d.remove();window.__rbWarm=false}else{if(!d){d=document.createElement('div');d.id='__rbWarm';d.style.cssText='position:fixed;inset:0;z-index:2147483600;pointer-events:none;background:rgba(255,176,32,0.16)';document.body.appendChild(d)}window.__rbWarm=true}}catch(e){}})()", null)
+        Toast.makeText(this, if (warmOn) "Warm light on — aankhon ko aaram milega" else "Warm light band", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Zoom karo: pinch se page bada/chhota —
+    private fun toggleZoom() {
+        zoomOn = !zoomOn
+        webView.settings.setSupportZoom(zoomOn)
+        webView.settings.builtInZoomControls = zoomOn
+        webView.settings.setDisplayZoomControls(false)
+        Toast.makeText(this, if (zoomOn) "Zoom on — pinch karke page bada karo" else "Zoom band", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Padhai ka timer: 15/25/45 min ka focus timer —
+    private fun padhaiTimerDialog() {
+        val mins = arrayOf("15 minute", "25 minute (focus)", "45 minute")
+        AlertDialog.Builder(this)
+            .setTitle("Padhai ka timer")
+            .setMessage("Time chuno — timer khatam hote hi batayenge")
+            .setItems(mins) { _, which ->
+                val total = intArrayOf(15, 25, 45)[which] * 60
+                val left = TextView(this)
+                left.textSize = 32f
+                left.typeface = Typeface.DEFAULT_BOLD
+                left.gravity = Gravity.CENTER
+                val bar = android.widget.ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal)
+                bar.max = total
+                bar.progress = total
+                val wrap = LinearLayout(this)
+                wrap.orientation = LinearLayout.VERTICAL
+                wrap.setPadding(dp(20), dp(10), dp(20), dp(4))
+                wrap.addView(left, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+                wrap.addView(bar, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+                val handler = android.os.Handler(android.os.Looper.getMainLooper())
+                val started = System.currentTimeMillis()
+                val dialogRef = arrayOfNulls<AlertDialog>(1)
+                val tick = object : Runnable {
+                    override fun run() {
+                        val elapsed = ((System.currentTimeMillis() - started) / 1000L).toInt()
+                        val remain = (total - elapsed).coerceAtLeast(0)
+                        left.text = String.format(java.util.Locale.US, "%02d:%02d", remain / 60, remain % 60)
+                        bar.progress = remain
+                        if (remain <= 0) {
+                            dialogRef[0]?.dismiss()
+                            Toast.makeText(this@MainActivity, "Timer poora ho gaya — shabash!", Toast.LENGTH_LONG).show()
+                        } else handler.postDelayed(this, 1000)
+                    }
+                }
+                dialogRef[0] = AlertDialog.Builder(this)
+                    .setTitle("Padhai chalu hai")
+                    .setView(wrap)
+                    .setPositiveButton("Rok do", null)
+                    .setOnDismissListener { handler.removeCallbacks(tick) }
+                    .show()
+                handler.post(tick)
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Kitna padha: page ka scroll percentage —
+    private fun readingProgressDialog() {
+        webView.evaluateJavascript("(function(){var d=document.documentElement;var m=(window.innerHeight+d.scrollHeight-d.clientHeight);var p=m>0?Math.round(window.scrollY/m*100):0;return String(Math.min(100,Math.max(0,p)))})()") { v ->
+            val pct = (v ?: "\"0\"").replace("\"", "").toIntOrNull() ?: 0
+            val bar = android.widget.ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal)
+            bar.max = 100
+            bar.progress = pct
+            val wrap = LinearLayout(this)
+            wrap.orientation = LinearLayout.VERTICAL
+            wrap.setPadding(dp(20), dp(8), dp(20), 0)
+            wrap.addView(bar, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+            AlertDialog.Builder(this)
+                .setTitle("Kitna padha")
+                .setMessage("Is page ka " + pct + "% padh liya" + (if (pct >= 95) " — kamaal!" else ""))
+                .setView(wrap)
+                .setPositiveButton("Ho gaya", null)
+                .show()
+        }
+    }
+
+    // — Paste karke kholo: clipboard me copy kiya link ek tap me —
+    private fun openClipboardUrl() {
+        try {
+            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val text = cm.primaryClip?.getItemAt(0)?.text?.toString()?.trim() ?: ""
+            if (text.startsWith("http://") || text.startsWith("https://")) {
+                webView.loadUrl(text)
+                Toast.makeText(this, "Copy kiya hua link khul raha hai", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Clipboard me koi link nahi — pehle koi link copy karo", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Clipboard nahi padh paye", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Screenshot bhejo: page ki photo seedha share —
+    private fun shareScreenshotNow() {
+        try {
+            webView.invalidate()
+            val w = webView.width.coerceAtLeast(1)
+            val h = webView.height.coerceAtLeast(1)
+            val bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            webView.draw(canvas)
+            val safe = APP_NAME.replace(Regex("[^A-Za-z0-9_-]"), "_").ifBlank { "shot" }
+            val dest = File(cacheDir, safe + "_shot.png")
+            java.io.FileOutputStream(dest).use { out -> bitmap.compress(Bitmap.CompressFormat.PNG, 100, out) }
+            val uri = FileProvider.getUriForFile(this, packageName + ".fileprovider", dest)
+            val send = Intent(Intent.ACTION_SEND)
+            send.type = "image/png"
+            send.putExtra(Intent.EXTRA_STREAM, uri)
+            send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(Intent.createChooser(send, "Screenshot bhejo"))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Screenshot share nahi ho paya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Aawaz ki matra: volume slider —
+    private fun volumeDialog() {
+        val am = getSystemService(Context.AUDIO_SERVICE) as android.media.AudioManager
+        val max = am.getStreamMaxVolume(android.media.AudioManager.STREAM_MUSIC)
+        val cur = am.getStreamVolume(android.media.AudioManager.STREAM_MUSIC)
+        val seek = android.widget.SeekBar(this)
+        seek.max = max
+        seek.progress = cur
+        seek.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(s: android.widget.SeekBar?, p: Int, fromUser: Boolean) {
+                try { am.setStreamVolume(android.media.AudioManager.STREAM_MUSIC, p, 0) } catch (e: Exception) {}
+            }
+            override fun onStartTrackingTouch(s: android.widget.SeekBar?) {}
+            override fun onStopTrackingTouch(s: android.widget.SeekBar?) {}
+        })
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.setPadding(dp(20), dp(6), dp(20), 0)
+        wrap.addView(seek, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("Aawaz ki matra")
+            .setMessage("Slider ghumao — site ki awaaz turant badlegi")
+            .setView(wrap)
+            .setPositiveButton("Ho gaya", null)
+            .show()
+    }
+
+    // — App restart karo: ek tap me app wapas khule —
+    private fun restartApp() {
+        Toast.makeText(this, "App dobara khul raha hai...", Toast.LENGTH_SHORT).show()
+        try {
+            val launch = packageManager.getLaunchIntentForPackage(packageName)
+            if (launch != null) {
+                launch.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(launch)
+            }
+            finish()
+        } catch (e: Exception) {
+            recreate()
+        }
+    }
+
+
+    // ——— V11 ke 7 naye tools — har section ka ek important naya tool ———
+    private var contrastOn = false
+    private var batteryOn = false
+    private var noHistoryOn = false
+
+    // — Shabd gino: page me kitne shabd hain + padhne me kitna time lagega —
+    private fun wordCountDialog() {
+        webView.evaluateJavascript("(function(){var t=(document.body?document.body.innerText:'')||'';var w=t.split(' ').filter(function(x){return x.trim().length>0});return String(w.length)})()") { v ->
+            val words = (v ?: "\"0\"").replace("\"", "").toIntOrNull() ?: 0
+            val secs = (words * 60) / 200
+            val timeTxt = if (secs >= 60) ((secs / 60).toString() + " minute") else (secs.toString() + " second")
+            AlertDialog.Builder(this)
+                .setTitle("Shabd gin liye")
+                .setMessage("Is page par " + words + " shabd hain.\nAaram se padhne me lagbhag " + timeTxt + " lagega.")
+                .setPositiveButton("Theek hai", null)
+                .show()
+        }
+    }
+
+    // — Bhasha badlo: page kisi bhi bhasha me padho —
+    private fun languageDialog() {
+        val names = arrayOf("Hindi", "English", "Marathi", "Bengali", "Tamil", "Telugu", "Gujarati", "Kannada", "Punjabi", "Urdu")
+        val codes = arrayOf("hi", "en", "mr", "bn", "ta", "te", "gu", "kn", "pa", "ur")
+        AlertDialog.Builder(this)
+            .setTitle("Kis bhasha me padhna hai?")
+            .setItems(names) { _, which -> translateToLang(codes[which]) }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    private fun translateToLang(code: String) {
+        try {
+            val cur = webView.url ?: HOME_URL
+            val u = Uri.parse(cur)
+            val host = u.host ?: throw IllegalStateException("no host")
+            val path = u.encodedPath ?: "/"
+            val query = u.query ?: ""
+            val qs = if (query.isBlank()) "" else "?" + query
+            val sep = if (qs.isBlank()) "?" else "&"
+            val target = "https://" + host.replace(".", "-") + ".translate.goog" + path + qs + sep + "_x_tr_sl=auto&_x_tr_tl=" + code + "&_x_tr_hl=" + code
+            webView.loadUrl(target)
+            Toast.makeText(this, "Page " + code.uppercase() + " me translate ho raha hai...", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Translate nahi ho paya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Saaf likhai: dhundhle rang ujle karke saaf dikhe —
+    private fun toggleHighContrast() {
+        contrastOn = !contrastOn
+        if (contrastOn) {
+            webView.evaluateJavascript("(function(){var s=document.getElementById('rb-contrast');if(!s){s=document.createElement('style');s.id='rb-contrast';s.textContent='html{-webkit-filter:contrast(1.35) saturate(1.15)!important}body,body *{text-shadow:none!important}';document.head.appendChild(s)}})()", null)
+            Toast.makeText(this, "Saaf likhai on — rang ujle dikhen", Toast.LENGTH_SHORT).show()
+        } else {
+            webView.evaluateJavascript("(function(){var s=document.getElementById('rb-contrast');if(s){s.remove()}})()", null)
+            Toast.makeText(this, "Saaf likhai band", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Battery bachao: ek tap me night + photo band + data save —
+    private fun batterySaverToggle() {
+        batteryOn = !batteryOn
+        if (batteryOn) {
+            if (!nightOn && NIGHT_MODE_ON) { nightOn = true; prefs.edit().putBoolean("night_on", true).apply(); applyNight(true) }
+            webView.settings.blockNetworkImage = true
+            dataSaveOn = true
+            Toast.makeText(this, "Battery bachao on — night + photo band", Toast.LENGTH_LONG).show()
+        } else {
+            webView.settings.blockNetworkImage = false
+            dataSaveOn = false
+            Toast.makeText(this, "Battery bachao band — sab wapas", Toast.LENGTH_SHORT).show()
+        }
+        webView.reload()
+    }
+
+    // — Chhupa mode: history me kuch nahi likha jayega (privacy) —
+    private fun toggleNoHistory() {
+        noHistoryOn = !noHistoryOn
+        if (noHistoryOn) webView.clearHistory()
+        Toast.makeText(this, if (noHistoryOn) "Chhupa mode on — history me kuch nahi likhe" else "Chhupa mode band — history wapas likhi jayegi", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Sab reset karo: saare settings wapas normal —
+    private fun resetAllSettings() {
+        nightOn = false; applyNight(false); prefs.edit().putBoolean("night_on", false).apply()
+        warmOn = false
+        readingModeOn = false
+        muted = false
+        dataSaveOn = false
+        desktopView = false
+        zoomOn = false
+        contrastOn = false
+        batteryOn = false
+        noHistoryOn = false
+        webView.settings.blockNetworkImage = false
+        webView.settings.textZoom = 100
+        webView.evaluateJavascript("(function(){['rb-read','rb-contrast','rb-warm'].forEach(function(i){var s=document.getElementById(i);if(s)s.remove()})})()", null)
+        webView.reload()
+        Toast.makeText(this, "Sab settings normal ho gaye", Toast.LENGTH_LONG).show()
+    }
+
+    // — WiFi settings: seedha phone ki WiFi settings —
+    private fun openWifiSettings() {
+        try {
+            startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+        } catch (e: Exception) {
+            try { startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)) }
+            catch (e2: Exception) { Toast.makeText(this, "WiFi settings nahi khul saki", Toast.LENGTH_SHORT).show() }
+        }
+    }
+
+    // ——— V12 ke 6 naye tools — app lock, swipe, browser, shake, surprise theme, rating ———
+    private var lastShakeMs = 0L
+
+    // — App lock: 4 digit ka PIN — pehli baar set hota hai, uske baad wahi mangta hai —
+    private fun showAppLockDialog() {
+        val savedPin = prefs.getString("app_pin", null)
+        if (savedPin == null) { setupAppPinDialog(); return }
+        val box = android.widget.EditText(this)
+        box.hint = "4 digit ka PIN"
+        box.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+        box.filters = arrayOf(android.text.InputFilter.LengthFilter(4))
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.setPadding(dp(22), dp(8), dp(22), 0)
+        wrap.addView(box, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        val dlg = AlertDialog.Builder(this)
+            .setTitle("🔒 App lock")
+            .setMessage("App kholne ke liye PIN daalo")
+            .setView(wrap)
+            .setPositiveButton("Kholo", null)
+            .setCancelable(false)
+            .create()
+        dlg.setOnShowListener {
+            dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val typed = box.text.toString().trim()
+                if (typed == savedPin) dlg.dismiss()
+                else { Toast.makeText(this, "Galat PIN — dobara try karo", Toast.LENGTH_SHORT).show(); box.setText("") }
+            }
+        }
+        dlg.show()
+    }
+
+    private fun setupAppPinDialog() {
+        val box = android.widget.EditText(this)
+        box.hint = "Naya 4 digit PIN chuno"
+        box.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+        box.filters = arrayOf(android.text.InputFilter.LengthFilter(4))
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.setPadding(dp(22), dp(8), dp(22), 0)
+        wrap.addView(box, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("🔒 App lock lagao")
+            .setMessage("4 digit ka PIN chuno — agli baar app isi se khulegi")
+            .setView(wrap)
+            .setPositiveButton("Set karo", null)
+            .setNegativeButton("Abhi nahi", null)
+            .setOnDismissListener { }
+            .show()
+            .let { d ->
+                d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                    val typed = box.text.toString().trim()
+                    if (typed.length == 4) {
+                        prefs.edit().putString("app_pin", typed).apply()
+                        d.dismiss()
+                        Toast.makeText(this, "App lock lag gaya 🔒", Toast.LENGTH_SHORT).show()
+                    } else Toast.makeText(this, "Poore 4 digit daalo", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    // — Swipe se peeche/aage — ungli ghumao, page badlo —
+    private fun setupSwipeNav() {
+        val gd = android.view.GestureDetector(this, object : android.view.GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, vx: Float, vy: Float): Boolean {
+                val dx = (e2.x - (e1?.x ?: e2.x))
+                val dy = Math.abs(e2.y - (e1?.y ?: e2.y))
+                if (Math.abs(dx) > dp(90) && Math.abs(vx) > 800 && dy < dp(80)) {
+                    if (dx < 0) { if (webView.canGoForward()) { webView.goForward(); return true } }
+                    else { if (webView.canGoBack()) { webView.goBack(); return true } }
+                }
+                return false
+            }
+        })
+        webView.setOnTouchListener { _, ev -> gd.onTouchEvent(ev); false }
+        Toast.makeText(this, "Swipe karo — peeche/aage badalne ke liye", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Chrome me kholo — khula page bahar browser me —
+    private fun openInBrowserTool() {
+        val url = webView.url ?: HOME_URL
+        try {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).setPackage("com.android.chrome"))
+            } catch (e: ActivityNotFoundException) {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            }
+            Toast.makeText(this, "Browser me khul gaya", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Bahar ka browser nahi mila", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Phone hilao to page refresh —
+    private fun setupShakeRefresh() {
+        val sm = getSystemService(Context.SENSOR_SERVICE) as? android.hardware.SensorManager ?: return
+        val accel = sm.getDefaultSensor(android.hardware.Sensor.TYPE_ACCELEROMETER) ?: return
+        sm.registerListener(object : android.hardware.SensorEventListener {
+            override fun onSensorChanged(ev: android.hardware.SensorEvent) {
+                val x = ev.values[0]; val y = ev.values[1]; val z = ev.values[2]
+                val gForce = Math.sqrt((x * x + y * y + z * z).toDouble()) / 9.81
+                val now = System.currentTimeMillis()
+                if (gForce > 2.7 && now - lastShakeMs > 1600) {
+                    lastShakeMs = now
+                    webView.reload()
+                    Toast.makeText(this@MainActivity, "Hila diya — page refresh ho raha hai", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onAccuracyChanged(s: android.hardware.Sensor?, a: Int) { }
+        }, accel, android.hardware.SensorManager.SENSOR_DELAY_NORMAL)
+        Toast.makeText(this, "Phone hila ke page refresh karo", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Surprise theme — ek tap me koi bhi random theme —
+    private fun surpriseThemeNow() {
+        if (THEME_PRESETS.isEmpty()) { Toast.makeText(this, "Themes available nahi hain", Toast.LENGTH_SHORT).show(); return }
+        val curHex = String.format("#%06X", 0xFFFFFF and accentColor)
+        var idx = (0 until THEME_PRESETS.size).random()
+        var guard = 0
+        while (THEME_PRESETS[idx].split("|").getOrNull(1).equals(curHex, true) && THEME_PRESETS.size > 1 && guard < 8) {
+            idx = (0 until THEME_PRESETS.size).random(); guard++
+        }
+        val entry = THEME_PRESETS[idx]
+        val name = entry.split("|").getOrNull(0) ?: "Theme"
+        val hex = entry.split("|").getOrNull(1) ?: "#2563EB"
+        try { applyAccent(Color.parseColor(hex), idx) } catch (e: Exception) { }
+        Toast.makeText(this, " Surprise! " + name + " theme lag gayi", Toast.LENGTH_SHORT).show()
+    }
+
+    // — 5 star rating — app ki listing par le jata hai —
+    private fun rateAppNow() {
+        try {
+            val storeUrl = "https://play.google.com/store/apps/details?id=" + packageName
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)))
+            } catch (e: ActivityNotFoundException) {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(storeUrl)))
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "App pasand aayi to doston ko bhejo!", Toast.LENGTH_SHORT).show()
+            shareApkNow()
+        }
+    }
 
     // — Padhai mode: sirf text — image, video, ad sab chhup jaate hain — aaram se padho —
     private fun toggleReadingMode() {
@@ -2893,8 +3449,8 @@ class MainActivity : AppCompatActivity() {
         webView.settings.databaseEnabled = true
         webView.settings.loadWithOverviewMode = true
         webView.settings.useWideViewPort = true
-        webView.settings.setSupportZoom(PINCH_ZOOM)
-        webView.settings.builtInZoomControls = PINCH_ZOOM
+        webView.settings.setSupportZoom(PINCH_ZOOM || ZOOM_ON)
+        webView.settings.builtInZoomControls = PINCH_ZOOM || ZOOM_ON
         webView.settings.displayZoomControls = false
         webView.settings.mediaPlaybackRequiresUserGesture = VIDEO_BLOCK_ON
         webView.settings.cacheMode = if (DATA_SAVER_ON) WebSettings.LOAD_CACHE_ELSE_NETWORK else WebSettings.LOAD_DEFAULT
@@ -2959,6 +3515,7 @@ class MainActivity : AppCompatActivity() {
                 if (DATA_SAVER_JS.isNotEmpty() && dataSaverCacheOn) view.evaluateJavascript(DATA_SAVER_JS, null)
                 if (VIDEO_BLOCK_JS.isNotEmpty() && videoBlockOn) view.evaluateJavascript(VIDEO_BLOCK_JS, null)
                 if (adBlockOn) injectAdBlock(view)
+                if (noHistoryOn) view.clearHistory()
                 if (DOWNLOADS_ON || LONGPRESS_DL_ON) {
                     view.evaluateJavascript(BLOB_HOOK_JS, null)
                     view.postDelayed({ view.evaluateJavascript(BLOB_HOOK_JS, null) }, 600)
