@@ -137,6 +137,7 @@ class MainActivity : AppCompatActivity() {
         const val PDF_VIEWER_ON = true
         const val LINK_HOOK_JS = "(function(){if(window.__rbLinkHook)return;window.__rbLinkHook=true;var t=null;document.addEventListener('touchstart',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;t=setTimeout(function(){try{AndroidLinks.linkLongPress(a.href||'',(a.innerText||'').trim().slice(0,60))}catch(x){}},550)},true);['touchend','touchmove','touchcancel'].forEach(function(ev){document.addEventListener(ev,function(){if(t){clearTimeout(t);t=null}},true)});document.addEventListener('contextmenu',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(a){e.preventDefault();try{AndroidLinks.linkLongPress(a.href||'',(a.innerText||'').trim().slice(0,60))}catch(x){}}},true)})();"
         const val PDF_HOOK_JS = "(function(){if(window.__rbPdfHook)return;window.__rbPdfHook=true;document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;var h=a.getAttribute('href')||'';if(/\\.pdf(\\?|#|$)/i.test(h)){e.preventDefault();e.stopPropagation();try{AndroidPdf.pdfOpen(a.href)}catch(x){}}},true)})();"
+        const val TORCH_TOOL_ON = true
         const val BATTERY_STAT_ON = true
         const val VOL_SCROLL_ON = true
         const val BT_SETTINGS_ON = true
@@ -489,7 +490,7 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
-    },
+    }
 
     private fun shade(color: Int, factor: Float): Int {
         val r = Color.red(color)
