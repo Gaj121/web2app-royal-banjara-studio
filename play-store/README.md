@@ -10,7 +10,7 @@
 
 1. [play.google.com/console](https://play.google.com/console) kholo
 2. One-time **$25** (~₹200) developer fee bharo
-3. **Create app** → naam: **Royal Banjara Studio ** → language Hindi/English → App/Game: App
+3. **Create app** → naam: **Royal Banjara Studio** → language Hindi/English → App/Game: App
 
 ## 3) Listing bharo
 

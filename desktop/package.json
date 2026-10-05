@@ -1,11 +1,11 @@
 {
   "name": "royalbanjarastudio",
-  "productName": "Royal Banjara Studio ",
+  "productName": "Royal Banjara Studio",
   "version": "1.0.0",
-  "description": "Royal Banjara Studio  — official desktop app (Windows + Mac)",
+  "description": "Royal Banjara Studio — official desktop app (Windows + Mac)",
   "author": {
-    "name": "Royal Banjara Studio ",
-    "email": "mrkrishnaade38@gmail.com"
+    "name": "Royal Banjara Studio",
+    "email": "adegajanancsc8@gmail.com"
   },
   "homepage": "https://rbstudiosmusic.kliv.site/",
   "license": "MIT",
@@ -20,7 +20,7 @@
   },
   "build": {
     "appId": "site.rbstudiosmusic.desktop",
-    "productName": "Royal Banjara Studio ",
+    "productName": "Royal Banjara Studio",
     "asar": true,
     "files": [
       "main.js",

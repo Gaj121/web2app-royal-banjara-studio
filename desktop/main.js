@@ -1,13 +1,13 @@
 /**
- * Royal Banjara Studio  — Windows + Mac desktop app (Electron).
+ * Royal Banjara Studio — Windows + Mac desktop app (Electron).
  * Website ko asli desktop app window me chalata hai.
  */
 const { app, BrowserWindow, Menu, shell } = require("electron");
 const path = require("path");
 
 const SITE_URL = "https://rbstudiosmusic.kliv.site/";
-const APP_NAME = "Royal Banjara Studio ";
-const BG_COLOR = "#062433";
+const APP_NAME = "Royal Banjara Studio";
+const BG_COLOR = "#0C0F14";
 
 function createWindow() {
   const win = new BrowserWindow({

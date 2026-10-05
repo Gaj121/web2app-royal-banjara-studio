@@ -1,19 +1,19 @@
 # 🎮 Play Store listing — copy-paste karne ke liye
 
-App name: **Royal Banjara Studio **
+App name: **Royal Banjara Studio**
 Package: `site.rbstudiosmusic`
 
 ## Title (30 characters tak)
 
-Royal Banjara Studio 
+Royal Banjara Studio
 
 ## Short description (80 characters tak)
 
-Royal Banjara Studio ka official app — fast, stylish aur poora website ek app me
+Royal Banjara Studio Music Distribution Company is free music distribution compa
 
 ## Full description (4000 tak)
 
-Royal Banjara Studio  ab apne phone par ek asli app ki tarah chalti hai!
+Royal Banjara Studio ab apne phone par ek asli app ki tarah chalti hai!
 
 Website ka poora experience — ab app ke andar, tez aur aasan:
 
@@ -29,12 +29,12 @@ Website ka poora experience — ab app ke andar, tez aur aasan:
 
 Official app of rbstudiosmusic.kliv.site
 
-Download karo aur Royal Banjara Studio  ko ab app ki tarah use karo!
+Download karo aur Royal Banjara Studio ko ab app ki tarah use karo!
 
 ## Category
 
 Suggestion: **Music & Audio** (ya apne hisaab se Shopping/Business)
-Tags: music, distribution, royal banjara studio 
+Tags: music, distribution, royal banjara studio
 
 ## Contact
 
