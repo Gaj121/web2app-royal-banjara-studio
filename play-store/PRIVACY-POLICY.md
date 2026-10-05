@@ -1,8 +1,8 @@
-# Privacy Policy — Royal Banjara Studio
+# Privacy Policy — Royal Banjara Studio 
 
 Last updated: (date daalo)
 
-Royal Banjara Studio (“we”, “our”) is app me aapki privacy ka dhyan rakhta hai. Ye policy batati hai ki app kya data ikattha karta hai.
+Royal Banjara Studio  (“we”, “our”) is app me aapki privacy ka dhyan rakhta hai. Ye policy batati hai ki app kya data ikattha karta hai.
 
 ## App kya karta hai
 

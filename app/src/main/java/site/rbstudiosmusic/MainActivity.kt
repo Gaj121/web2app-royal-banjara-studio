@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
-        const val APP_NAME = "Royal Banjara Studio"
+        const val APP_NAME = "Royal Banjara Studio "
         // App me dikhne wala site ka naam (jaise www.mysite.com) — Quick Tools header aur share text me
         const val SITE_LABEL = "www.rbstudiosmusic.site"
         const val REPLACE_JS = "(function(){\nvar FROM=\"rbstudiosmusic.kliv.site\",TO=\"www.rbstudiosmusic.site\";\nfunction rp(s){return s.split(FROM).join(TO);}\nfunction fix(root){try{\n if(!root){return;}\n var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);\n var n,b=[];\n while((n=w.nextNode())){if(n.nodeValue&&n.nodeValue.indexOf(FROM)!==-1){b.push(n);}}\n for(var i=0;i<b.length;i++){b[i].nodeValue=rp(b[i].nodeValue);}\n if(root.querySelectorAll){var els=root.querySelectorAll('[placeholder],[title],[alt],[aria-label]');\n  for(var j=0;j<els.length;j++){var el=els[j];var ats=['placeholder','title','alt','aria-label'];\n   for(var k=0;k<ats.length;k++){var v=el.getAttribute(ats[k]);if(v&&v.indexOf(FROM)!==-1){el.setAttribute(ats[k],rp(v));}}}}\n}catch(err){}}\nfix(document.body);\ntry{if(document.title&&document.title.indexOf(FROM)!==-1){document.title=rp(document.title);}}catch(err){}\ntry{\n if(window.__rbTxtObs){window.__rbTxtObs.disconnect();}\n window.__rbTxtObs=new MutationObserver(function(ms){\n  for(var i=0;i<ms.length;i++){var ad=ms[i].addedNodes;\n   for(var j=0;j<ad.length;j++){var nd=ad[j];\n    if(nd.nodeType===3){if(nd.nodeValue&&nd.nodeValue.indexOf(FROM)!==-1){nd.nodeValue=rp(nd.nodeValue);}}\n    else{fix(nd);}}}});\n window.__rbTxtObs.observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\n})();"
@@ -173,8 +173,8 @@ class MainActivity : AppCompatActivity() {
         const val PULL_REFRESH = true
         const val INTRO_ON = true
         const val WELCOME_ON = true
-        const val WELCOME_TEXT = "Welcome to Royal Banjara Studio Music Distribution Company"
-        const val VERSION_NAME = "1.1"
+        const val WELCOME_TEXT = "Welcome to example.com"
+        const val VERSION_NAME = "1.0"
         const val TOOLS_ON = true
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
@@ -202,13 +202,13 @@ class MainActivity : AppCompatActivity() {
         const val APPINFO_TOOL_ON = true
         const val READ_ALOUD_ON = true
         const val BOOKMARKS_ON = true
-        const val SUPPORT_EMAIL = "adegajanancsc8@gmail.com"
+        const val SUPPORT_EMAIL = "mrkrishnaade38@gmail.com"
         const val DIRECTION_TOOL_ON = true
-        const val MAP_QUERY = "Royal Banjara Studio Music Distribution"
+        const val MAP_QUERY = "At Post pedgaon"
         const val TRANSLATE_TOOL_ON = true
         const val HISTORY_TOOL_ON = true
         const val CALL_TOOL_ON = true
-        const val CALL_NUMBER = "+919370612297"
+        const val CALL_NUMBER = "919370612297"
         const val SCREENSHOT_ON = true
         const val SHARE_APP_ON = true
         const val HISTORY_NAV_ON = true
@@ -269,30 +269,15 @@ class MainActivity : AppCompatActivity() {
     private var dataSaverCacheOn = prefs.getBoolean("dsaver_manual", DATA_SAVER_ON)
     private var videoBlockOn = prefs.getBoolean("vblock_manual", VIDEO_BLOCK_ON)
     private var adBlockOn = prefs.getBoolean("adblock_manual", AD_BLOCK_ON)
-    // V19 crash-guard: pichhli launch par start hote hi crash hua tha to ye baar
-    // app SAFE MODE me khulegi — sirf website, saare overlays/fabs skip
-    private var safeMode = false
 
     private val navEntries: Array<NavEntry> = arrayOf(
-        NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
-        NavEntry("Products", "https://rbstudiosmusic.kliv.site/products", R.drawable.ic_nav_grid),
-        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone)
+        NavEntry("Home", "https://example.com/", R.drawable.ic_nav_home),
+        NavEntry("Products", "https://example.com/products", R.drawable.ic_nav_grid),
+        NavEntry("Contact", "https://example.com/contact", R.drawable.ic_nav_phone)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // ——— V19 crash-guard ———
-        // Koi bhi uncaught crash aaye to flag set ho jaye, aur agli launch
-        // safe mode me khule. "failed to start several times" kaam khatam.
-        try {
-            val prevHandler = Thread.getDefaultUncaughtExceptionHandler()
-            Thread.setDefaultUncaughtExceptionHandler { t, e ->
-                try { prefs.edit().putBoolean("rb_safe_mode", true).apply() } catch (e2: Exception) { }
-                prevHandler?.uncaughtException(t, e)
-            }
-        } catch (e: Exception) { }
-        safeMode = try { prefs.getBoolean("rb_safe_mode", false) } catch (e: Exception) { false }
 
         accentColor = run {
             val idx = prefs.getInt("theme_idx", -1)
@@ -302,10 +287,10 @@ class MainActivity : AppCompatActivity() {
         }
         fullScreenOn = FULLSCREEN_ON
 
-        if (KEEP_SCREEN_ON && !safeMode) {
+        if (KEEP_SCREEN_ON) {
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-        if (FULLSCREEN_ON && !safeMode) {
+        if (FULLSCREEN_ON) {
             supportActionBar?.hide()
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         }
@@ -337,7 +322,7 @@ class MainActivity : AppCompatActivity() {
         }
         content.addView(swipeRefresh, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
 
-        if (SHOW_NAV && !safeMode) {
+        if (SHOW_NAV) {
             val bar = buildNavBar()
             navBar = bar
             val barLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM)
@@ -347,14 +332,14 @@ class MainActivity : AppCompatActivity() {
             root.addView(bar, barLp)
         }
 
-        if (SHOW_NAV && !safeMode) {
+        if (SHOW_NAV) {
             webView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
                 val dy = scrollY - oldScrollY
                 if (dy > 8) hideNavBar() else if (dy < -8) showNavBar()
             }
         }
 
-        if (TOOLS_ON && !safeMode) {
+        if (TOOLS_ON) {
             val fab = buildMoreButton()
             val fabLp = FrameLayout.LayoutParams(dp(46), dp(46), Gravity.BOTTOM or Gravity.END)
             fabLp.rightMargin = dp(14)
@@ -362,7 +347,7 @@ class MainActivity : AppCompatActivity() {
             root.addView(fab, fabLp)
         }
 
-        if (WHATSAPP_ON && !safeMode) {
+        if (WHATSAPP_ON) {
             val wa = buildWhatsappButton()
             whatsappFab = wa
             val waLp = FrameLayout.LayoutParams(dp(52), dp(52), Gravity.BOTTOM or Gravity.END)
@@ -371,7 +356,7 @@ class MainActivity : AppCompatActivity() {
             root.addView(wa, waLp)
         }
 
-        if (THEME_FAB_ON && !safeMode) {
+        if (THEME_FAB_ON) {
             val tb = buildThemeButton()
             themeFab = tb
             val tbLp = FrameLayout.LayoutParams(dp(48), dp(48), Gravity.BOTTOM or Gravity.END)
@@ -386,13 +371,13 @@ class MainActivity : AppCompatActivity() {
 
         root.addView(content, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
-        if (INTRO_ON && !safeMode) {
+        if (INTRO_ON) {
             val intro = buildIntro()
             introOverlay = intro
             root.addView(intro, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
         }
 
-        if (WELCOME_ON && !safeMode) {
+        if (WELCOME_ON) {
             val welcome = buildWelcomeSlider()
             welcomeOverlay = welcome
             welcome.translationY = -resources.displayMetrics.heightPixels.toFloat()
@@ -403,21 +388,21 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(root)
 
-        if (!safeMode && APP_LOCK_ON && !prefs.getString("app_pin", null).isNullOrEmpty()) showAppLockDialog()
-        else if (!safeMode && APP_LOCK_ON) setupAppPinDialog()
-        if (SWIPE_NAV_ON && !safeMode) setupSwipeNav()
+        if (APP_LOCK_ON && !prefs.getString("app_pin", null).isNullOrEmpty()) showAppLockDialog()
+        else if (APP_LOCK_ON) setupAppPinDialog()
+        if (SWIPE_NAV_ON) setupSwipeNav()
         ssBlockCache = prefs.getBoolean("ss_block", SS_BLOCK_ON)
         applyScreenshotBlock()
-        if (SHAKE_REFRESH_ON && !safeMode) setupShakeRefresh()
-        if (FAST_START_ON && !safeMode) fastStartWarmUp()
-        if (USAGE_TIMER_ON && !safeMode) startUsageTimer()
+        if (SHAKE_REFRESH_ON) setupShakeRefresh()
+        if (FAST_START_ON) fastStartWarmUp()
+        if (USAGE_TIMER_ON) startUsageTimer()
 
         setupWebView()
-        if (!safeMode && NIGHT_MODE_ON && prefs.getBoolean("night_on", false)) {
+        if (NIGHT_MODE_ON && prefs.getBoolean("night_on", false)) {
             nightOn = true
             applyNight(true)
         }
-        if (!safeMode && NIGHT_MODE_ON && AUTO_NIGHT_ON && !nightOn) {
+        if (NIGHT_MODE_ON && AUTO_NIGHT_ON && !nightOn) {
             val hr = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
             if (hr >= 19 || hr < 6) {
                 nightOn = true
@@ -1018,6 +1003,8 @@ class MainActivity : AppCompatActivity() {
             PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.06f, 1f)
         )
         pulse.duration = 800
+        pulse.repeatCount = ObjectAnimator.INFINITE
+        pulse.repeatMode = ObjectAnimator.REVERSE
         pulse.start()
 
         holder.setOnClickListener { bounce(holder); showThemeSheet() }
@@ -4490,8 +4477,6 @@ class MainActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 swipeRefresh.isRefreshing = false
-                // website khul gayi — safe mode ka flag hata do, agli launch normal
-                try { prefs.edit().putBoolean("rb_safe_mode", false).apply() } catch (e: Exception) { }
                 if (HIDE_ON) injectHideEngine(view)
                 if (REPLACE_JS.isNotEmpty()) view.evaluateJavascript(REPLACE_JS, null)
                 if (DATA_SAVER_JS.isNotEmpty() && dataSaverCacheOn) view.evaluateJavascript(DATA_SAVER_JS, null)

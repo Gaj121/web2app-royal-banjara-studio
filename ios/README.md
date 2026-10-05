@@ -1,4 +1,4 @@
-# Royal Banjara Studio — iPhone / Mac App
+# Royal Banjara Studio  — iPhone / Mac App
 
 Ye **https://rbstudiosmusic.kliv.site/** ka asli iOS app project hai (WKWebView).
 Apple ka rule hai ki iPhone par koi bhi app Apple-signed .ipa se hi install hota hai —
