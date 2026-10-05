@@ -9,7 +9,7 @@ Royal Banjara Studio
 
 ## Short description (80 characters tak)
 
-Royal Banjara Studio is free music distribution company 
+Royal Banjara Studio ka official app — fast, stylish aur poora website ek app me
 
 ## Full description (4000 tak)
 

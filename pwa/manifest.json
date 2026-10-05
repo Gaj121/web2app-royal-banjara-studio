@@ -1,12 +1,12 @@
 {
   "name": "Royal Banjara Studio ",
   "short_name": "Royal Banjar",
-  "description": "Royal Banjara Studio is free music distribution company ",
+  "description": "Royal Banjara Studio ",
   "start_url": "https://rbstudiosmusic.kliv.site/",
   "scope": "https://rbstudiosmusic.kliv.site/",
   "display": "standalone",
-  "background_color": "#2B0A1D",
-  "theme_color": "#EC4899",
+  "background_color": "#062433",
+  "theme_color": "#38BDF8",
   "icons": [
     {
       "src": "icons/icon-192.png",

@@ -31,7 +31,6 @@ Is ZIP ko extract karo aur **asli APK** neeche diye tarike se bana lo (2-4 minut
 - ⋮ floating button: **Print / Save as PDF**, Share, Downloads — sab kuch ek stylish menu me
 - ⋮ menu me **Hindi me padho** — page Google Translate se Hindi me khul jaata hai
 - ⋮ menu me **Mera History** — jo pages khole, list se tap karke wapas jao
-- ⋮ menu me **Direction pao** — “At Post pedgaon” seedha Google Maps me khulta hai
 - ⋮ menu me **Call karo** — seedha phone dialer khulta hai
 - ⋮ menu me **Email karo** — seedha Gmail/message app me message likhne ka screen khulta hai
 - ⋮ Quick Tools me **Peeche jao / Aage jao** — page navigation ab menu ke andar stylish cards me (screen par koi alag button bar nahi)

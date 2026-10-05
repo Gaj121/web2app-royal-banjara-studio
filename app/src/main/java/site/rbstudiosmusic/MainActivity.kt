@@ -15,7 +15,6 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -83,14 +82,14 @@ class ToolItem(val icon: Int, val label: String, val sub: String, val accent: In
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        const val BUILD_TAG = "v158"
-        const val CRASH_URL = "https://app-banao.kliv.site/api/v2/function/web2app_crash_log"
+        const val BUILD_TAG = "v155"
+        const val CRASH_URL = "https://app-banao.kliv.site/api/crash-log"
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio "
         // App me dikhne wala site ka naam (jaise www.mysite.com) — Quick Tools header aur share text me
-        const val SITE_LABEL = "www.rbstudiosmusic.site"
-        const val REPLACE_JS = "(function(){\nvar FROM=\"rbstudiosmusic.kliv.site\",TO=\"www.rbstudiosmusic.site\";\nfunction rp(s){return s.split(FROM).join(TO);}\nfunction fix(root){try{\n if(!root){return;}\n var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);\n var n,b=[];\n while((n=w.nextNode())){if(n.nodeValue&&n.nodeValue.indexOf(FROM)!==-1){b.push(n);}}\n for(var i=0;i<b.length;i++){b[i].nodeValue=rp(b[i].nodeValue);}\n if(root.querySelectorAll){var els=root.querySelectorAll('[placeholder],[title],[alt],[aria-label]');\n  for(var j=0;j<els.length;j++){var el=els[j];var ats=['placeholder','title','alt','aria-label'];\n   for(var k=0;k<ats.length;k++){var v=el.getAttribute(ats[k]);if(v&&v.indexOf(FROM)!==-1){el.setAttribute(ats[k],rp(v));}}}}\n}catch(err){}}\nfix(document.body);\ntry{if(document.title&&document.title.indexOf(FROM)!==-1){document.title=rp(document.title);}}catch(err){}\ntry{\n if(window.__rbTxtObs){window.__rbTxtObs.disconnect();}\n window.__rbTxtObs=new MutationObserver(function(ms){\n  for(var i=0;i<ms.length;i++){var ad=ms[i].addedNodes;\n   for(var j=0;j<ad.length;j++){var nd=ad[j];\n    if(nd.nodeType===3){if(nd.nodeValue&&nd.nodeValue.indexOf(FROM)!==-1){nd.nodeValue=rp(nd.nodeValue);}}\n    else{fix(nd);}}}});\n window.__rbTxtObs.observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\n})();"
+        const val SITE_LABEL = "www.rbstudiosnusic.site"
+        const val REPLACE_JS = "(function(){\nvar FROM=\"rbstudiosmusic.kliv.site\",TO=\"www.rbstudiosnusic.site\";\nfunction rp(s){return s.split(FROM).join(TO);}\nfunction fix(root){try{\n if(!root){return;}\n var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);\n var n,b=[];\n while((n=w.nextNode())){if(n.nodeValue&&n.nodeValue.indexOf(FROM)!==-1){b.push(n);}}\n for(var i=0;i<b.length;i++){b[i].nodeValue=rp(b[i].nodeValue);}\n if(root.querySelectorAll){var els=root.querySelectorAll('[placeholder],[title],[alt],[aria-label]');\n  for(var j=0;j<els.length;j++){var el=els[j];var ats=['placeholder','title','alt','aria-label'];\n   for(var k=0;k<ats.length;k++){var v=el.getAttribute(ats[k]);if(v&&v.indexOf(FROM)!==-1){el.setAttribute(ats[k],rp(v));}}}}\n}catch(err){}}\nfix(document.body);\ntry{if(document.title&&document.title.indexOf(FROM)!==-1){document.title=rp(document.title);}}catch(err){}\ntry{\n if(window.__rbTxtObs){window.__rbTxtObs.disconnect();}\n window.__rbTxtObs=new MutationObserver(function(ms){\n  for(var i=0;i<ms.length;i++){var ad=ms[i].addedNodes;\n   for(var j=0;j<ad.length;j++){var nd=ad[j];\n    if(nd.nodeType===3){if(nd.nodeValue&&nd.nodeValue.indexOf(FROM)!==-1){nd.nodeValue=rp(nd.nodeValue);}}\n    else{fix(nd);}}}});\n window.__rbTxtObs.observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\n})();"
         const val KEEPCR_ON = true
         const val BRIGHTNESS_ON = true
         const val AUTOSCROLL_ON = true
@@ -165,8 +164,8 @@ class MainActivity : AppCompatActivity() {
         const val INVERT_TOOL_ON = true
         const val SHORTCUT_TOOL_ON = true
         const val SS_BLOCK_ON = true
-        const val THEME_COLOR = "#EC4899"
-        const val SPLASH_COLOR = "#2B0A1D"
+        const val THEME_COLOR = "#38BDF8"
+        const val SPLASH_COLOR = "#062433"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -200,18 +199,18 @@ class MainActivity : AppCompatActivity() {
         const val FULLSCREEN_TOOL_ON = true
         const val THEME_FAB_ON = true
         const val GO_TOP_ON = true
-        const val ROTATE_TOOL_ON = true
+        const val ROTATE_TOOL_ON = false
         const val FIND_TOOL_ON = true
         const val APPINFO_TOOL_ON = true
         const val READ_ALOUD_ON = true
         const val BOOKMARKS_ON = true
         const val SUPPORT_EMAIL = "mrkrishnaade38@gmail.com"
         const val DIRECTION_TOOL_ON = true
-        const val MAP_QUERY = "At Post pedgaon"
+        const val MAP_QUERY = ""
         const val TRANSLATE_TOOL_ON = true
         const val HISTORY_TOOL_ON = true
         const val CALL_TOOL_ON = true
-        const val CALL_NUMBER = "919370612297"
+        const val CALL_NUMBER = "919370612697"
         const val SCREENSHOT_ON = true
         const val SHARE_APP_ON = true
         const val HISTORY_NAV_ON = true
@@ -282,60 +281,12 @@ class MainActivity : AppCompatActivity() {
         NavEntry("Contact", "https://example.com/contact", R.drawable.ic_nav_phone)
     )
 
-    // ——— V19.3 super-early crash-guard ———
-    // attachBaseContext sabse pehle chalta hai (super.onCreate se bhi pehle) —
-    // handler yahan bhi lagta hai to startup ka KOI bhi crash pakda jaata hai.
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        try {
-            val p = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-            safeMode = try { p.getBoolean("rb_safe_mode", false) } catch (e: Exception) { false }
-            val prev0 = Thread.getDefaultUncaughtExceptionHandler()
-            Thread.setDefaultUncaughtExceptionHandler { t, e ->
-                try {
-                    p.edit().putBoolean("rb_safe_mode", true).apply()
-                    val sw = java.io.StringWriter()
-                    e.printStackTrace(java.io.PrintWriter(sw))
-                    val crashText = sw.toString().take(3000)
-                    p.edit().putString("rb_last_crash", crashText).apply()
-                    try {
-                        Thread {
-                            try {
-                                val q = "app=" + java.net.URLEncoder.encode(APP_NAME, "UTF-8") + "&v=" + BUILD_TAG + "&d=" + java.net.URLEncoder.encode("" + Build.MANUFACTURER + " " + Build.MODEL + " SDK" + Build.VERSION.SDK_INT, "UTF-8")
-                                val cn = java.net.URL(CRASH_URL + "?" + q).openConnection() as java.net.HttpURLConnection
-                                cn.requestMethod = "POST"
-                                cn.doOutput = true
-                                cn.connectTimeout = 4000
-                                cn.readTimeout = 4000
-                                cn.setRequestProperty("Content-Type", "text/plain; charset=utf-8")
-                                cn.outputStream.use { os -> os.write(crashText.toByteArray()) }
-                                try { cn.responseCode } catch (e5: Exception) { }
-                                cn.disconnect()
-                            } catch (e4: Exception) { }
-                        }.start()
-                        Thread.sleep(700)
-                    } catch (e3: Exception) { }
-                } catch (e2: Exception) { }
-                prev0?.uncaughtException(t, e)
-            }
-        } catch (e: Exception) { }
-    }
-
-    // safe mode me bilkul stock theme — theme ki wajah se crash ho to bhi app khule
-    override fun getTheme(): Resources.Theme {
-        val t = super.getTheme()
-        if (safeMode) {
-            try { t.applyStyle(R.style.SafeTheme, true) } catch (e: Exception) { }
-        }
-        return t
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ——— V19.1 crash-guard + crash report ———
-        // Koi bhi uncaught crash aaye to: (1) crash ki poori detail server par report,
-        // (2) safe-mode flag — agli launch seedha website khulegi. Crash-loop khatam.
+        // ——— V19 crash-guard ———
+        // Koi bhi uncaught crash aaye to flag set ho jaye, agli launch safe mode me
+        // khule — "failed to start several times" wala crash-loop kabhi nahi
         try {
             val prevHandler = Thread.getDefaultUncaughtExceptionHandler()
             Thread.setDefaultUncaughtExceptionHandler { t, e ->
@@ -1931,7 +1882,6 @@ class MainActivity : AppCompatActivity() {
         if (SURPRISE_THEME_ON) items.add(ToolItem(R.drawable.ic_tool_surprise, "Surprise theme", "ek tap me naya rang", 0xFF9333EA.toInt(), "Screen ke Tools") { surpriseThemeNow() })
         if (SHAKE_REFRESH_ON) items.add(ToolItem(R.drawable.ic_tool_shake, "Hila ke refresh", "phone hilo, page naya", 0xFF06B6D4.toInt(), "Screen ke Tools") { Toast.makeText(this, "Phone hilo — page khud refresh hoga", Toast.LENGTH_SHORT).show() })
         if (GO_TOP_ON) items.add(ToolItem(R.drawable.ic_tool_arrowup, "Top par jao", "seedha page ke upar", 0xFFF59E0B.toInt(), "Screen ke Tools") { goToTop() })
-        if (ROTATE_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotate, "Ghumao", "portrait ↔ landscape", 0xFF14B8A6.toInt(), "Screen ke Tools") { toggleRotation() })
         if (VOLUME_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_volumeup, "Aawaz ki matra", "volume slider", 0xFFDB2777.toInt(), "Screen ke Tools") { volumeDialog() })
         if (TORCH_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_torch, if (torchOn) "Torch band karo" else "Torch jalao", "phone ki batti", 0xFFF59E0B.toInt(), "Screen ke Tools") { toggleTorch() })
         if (BATTERY_STAT_ON) items.add(ToolItem(R.drawable.ic_tool_batterystat, "Battery kitni bachi", "charge ka status", 0xFF16A34A.toInt(), "Screen ke Tools") { batteryStatusDialog() })
@@ -1993,7 +1943,6 @@ class MainActivity : AppCompatActivity() {
         if (RESET_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_reset, "Sab reset karo", "saare settings normal", 0xFF64748B.toInt(), "App") { resetAllSettings() })
         if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
         if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
-        items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
         items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         if (WIFI_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_wifi, "WiFi settings", "internet jodne ke liye", 0xFF0284C7.toInt(), "Madad") { openWifiSettings() })

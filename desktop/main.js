@@ -7,7 +7,7 @@ const path = require("path");
 
 const SITE_URL = "https://rbstudiosmusic.kliv.site/";
 const APP_NAME = "Royal Banjara Studio ";
-const BG_COLOR = "#2B0A1D";
+const BG_COLOR = "#062433";
 
 function createWindow() {
   const win = new BrowserWindow({
