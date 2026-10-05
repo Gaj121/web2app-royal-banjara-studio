@@ -66,10 +66,6 @@
       ],
       "icon": "icon.png",
       "category": "Utility"
-    },
-    "msix": {
-      "publisher": "CN=Royal Banjara Studio",
-      "artifactName": "${productName}.${ext}"
     }
   }
 }
