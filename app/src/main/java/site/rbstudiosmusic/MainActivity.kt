@@ -86,8 +86,8 @@ class MainActivity : AppCompatActivity() {
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio"
         // App me dikhne wala site ka naam (jaise www.mysite.com) — Quick Tools header aur share text me
-        const val SITE_LABEL = "Royal Banjara Studio"
-        const val REPLACE_JS = "(function(){\nvar FROM=\"rbstudiosmusic.kliv.site\",TO=\"Royal Banjara Studio\";\nfunction rp(s){return s.split(FROM).join(TO);}\nfunction fix(root){try{\n if(!root){return;}\n var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);\n var n,b=[];\n while((n=w.nextNode())){if(n.nodeValue&&n.nodeValue.indexOf(FROM)!==-1){b.push(n);}}\n for(var i=0;i<b.length;i++){b[i].nodeValue=rp(b[i].nodeValue);}\n if(root.querySelectorAll){var els=root.querySelectorAll('[placeholder],[title],[alt],[aria-label]');\n  for(var j=0;j<els.length;j++){var el=els[j];var ats=['placeholder','title','alt','aria-label'];\n   for(var k=0;k<ats.length;k++){var v=el.getAttribute(ats[k]);if(v&&v.indexOf(FROM)!==-1){el.setAttribute(ats[k],rp(v));}}}}\n}catch(err){}}\nfix(document.body);\ntry{if(document.title&&document.title.indexOf(FROM)!==-1){document.title=rp(document.title);}}catch(err){}\ntry{\n if(window.__rbTxtObs){window.__rbTxtObs.disconnect();}\n window.__rbTxtObs=new MutationObserver(function(ms){\n  for(var i=0;i<ms.length;i++){var ad=ms[i].addedNodes;\n   for(var j=0;j<ad.length;j++){var nd=ad[j];\n    if(nd.nodeType===3){if(nd.nodeValue&&nd.nodeValue.indexOf(FROM)!==-1){nd.nodeValue=rp(nd.nodeValue);}}\n    else{fix(nd);}}}});\n window.__rbTxtObs.observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\n})();"
+        const val SITE_LABEL = "www.rbstudiosmusic.site"
+        const val REPLACE_JS = "(function(){\nvar FROM=\"rbstudiosmusic.kliv.site\",TO=\"www.rbstudiosmusic.site\";\nfunction rp(s){return s.split(FROM).join(TO);}\nfunction fix(root){try{\n if(!root){return;}\n var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);\n var n,b=[];\n while((n=w.nextNode())){if(n.nodeValue&&n.nodeValue.indexOf(FROM)!==-1){b.push(n);}}\n for(var i=0;i<b.length;i++){b[i].nodeValue=rp(b[i].nodeValue);}\n if(root.querySelectorAll){var els=root.querySelectorAll('[placeholder],[title],[alt],[aria-label]');\n  for(var j=0;j<els.length;j++){var el=els[j];var ats=['placeholder','title','alt','aria-label'];\n   for(var k=0;k<ats.length;k++){var v=el.getAttribute(ats[k]);if(v&&v.indexOf(FROM)!==-1){el.setAttribute(ats[k],rp(v));}}}}\n}catch(err){}}\nfix(document.body);\ntry{if(document.title&&document.title.indexOf(FROM)!==-1){document.title=rp(document.title);}}catch(err){}\ntry{\n if(window.__rbTxtObs){window.__rbTxtObs.disconnect();}\n window.__rbTxtObs=new MutationObserver(function(ms){\n  for(var i=0;i<ms.length;i++){var ad=ms[i].addedNodes;\n   for(var j=0;j<ad.length;j++){var nd=ad[j];\n    if(nd.nodeType===3){if(nd.nodeValue&&nd.nodeValue.indexOf(FROM)!==-1){nd.nodeValue=rp(nd.nodeValue);}}\n    else{fix(nd);}}}});\n window.__rbTxtObs.observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\n})();"
         const val KEEPCR_ON = true
         const val BRIGHTNESS_ON = true
         const val AUTOSCROLL_ON = true
@@ -155,17 +155,17 @@ class MainActivity : AppCompatActivity() {
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
         const val DL_LIST_ON = true
-        const val PINCH_ZOOM = false
-        const val KEEP_SCREEN_ON = false
-        const val FULLSCREEN_ON = false
-        const val WHATSAPP_ON = false
-        const val WHATSAPP_NUMBER = ""
+        const val PINCH_ZOOM = true
+        const val KEEP_SCREEN_ON = true
+        const val FULLSCREEN_ON = true
+        const val WHATSAPP_ON = true
+        const val WHATSAPP_NUMBER = "919370612297"
         const val WHATSAPP_MESSAGE = "Hello! Mujhe jaankari chahiye"
         const val NIGHT_MODE_ON = true
         const val TEXT_SIZE_ON = true
         const val BACK_TWICE_ON = true
         const val CLEAR_CACHE_ON = true
-        const val EXIT_ITEM_ON = false
+        const val EXIT_ITEM_ON = true
         const val LONGPRESS_DL_ON = true
         const val DESKTOP_VIEW_ON = true
         const val AD_BLOCK_ON = true
@@ -182,13 +182,13 @@ class MainActivity : AppCompatActivity() {
         const val MAP_QUERY = "Royal Banjara Studio Music Distribution"
         const val TRANSLATE_TOOL_ON = true
         const val HISTORY_TOOL_ON = true
-        const val CALL_TOOL_ON = false
-        const val CALL_NUMBER = ""
+        const val CALL_TOOL_ON = true
+        const val CALL_NUMBER = "+919370612297"
         const val SCREENSHOT_ON = true
         const val SHARE_APP_ON = true
         const val HISTORY_NAV_ON = true
         const val OFFLINE_SAVE_ON = true
-        const val AUTO_NIGHT_ON = false
+        const val AUTO_NIGHT_ON = true
         const val READING_MODE_ON = true
         const val MUTE_TOOL_ON = true
         const val DATA_SAVE_ON = true
@@ -1811,8 +1811,10 @@ class MainActivity : AppCompatActivity() {
         if (PDF_VIEWER_ON) items.add(ToolItem(R.drawable.ic_tool_pdf, "PDF kholo (app me)", "PDF bahar nahi jaana", 0xFFDC2626.toInt(), "Files aur Print") { Toast.makeText(this, "Kisi PDF link par click karo — app ke andar hi khulega", Toast.LENGTH_LONG).show() })
         if (RESTART_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_restart, "App restart karo", "ek tap me wapas khule", 0xFF475569.toInt(), "App") { restartApp() })
         if (RESET_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_reset, "Sab reset karo", "saare settings normal", 0xFF64748B.toInt(), "App") { resetAllSettings() })
+        if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
         if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
         items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
+        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         if (WIFI_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_wifi, "WiFi settings", "internet jodne ke liye", 0xFF0284C7.toInt(), "Madad") { openWifiSettings() })
         return items
