@@ -86,8 +86,8 @@ class MainActivity : AppCompatActivity() {
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio"
         // App me dikhne wala site ka naam (jaise www.mysite.com) — Quick Tools header aur share text me
-        const val SITE_LABEL = "www.rbstudiosmusic.site"
-        const val REPLACE_JS = "(function(){\nvar FROM=\"rbstudiosmusic.kliv.site\",TO=\"www.rbstudiosmusic.site\";\nfunction rp(s){return s.split(FROM).join(TO);}\nfunction fix(root){try{\n if(!root){return;}\n var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);\n var n,b=[];\n while((n=w.nextNode())){if(n.nodeValue&&n.nodeValue.indexOf(FROM)!==-1){b.push(n);}}\n for(var i=0;i<b.length;i++){b[i].nodeValue=rp(b[i].nodeValue);}\n if(root.querySelectorAll){var els=root.querySelectorAll('[placeholder],[title],[alt],[aria-label]');\n  for(var j=0;j<els.length;j++){var el=els[j];var ats=['placeholder','title','alt','aria-label'];\n   for(var k=0;k<ats.length;k++){var v=el.getAttribute(ats[k]);if(v&&v.indexOf(FROM)!==-1){el.setAttribute(ats[k],rp(v));}}}}\n}catch(err){}}\nfix(document.body);\ntry{if(document.title&&document.title.indexOf(FROM)!==-1){document.title=rp(document.title);}}catch(err){}\ntry{\n if(window.__rbTxtObs){window.__rbTxtObs.disconnect();}\n window.__rbTxtObs=new MutationObserver(function(ms){\n  for(var i=0;i<ms.length;i++){var ad=ms[i].addedNodes;\n   for(var j=0;j<ad.length;j++){var nd=ad[j];\n    if(nd.nodeType===3){if(nd.nodeValue&&nd.nodeValue.indexOf(FROM)!==-1){nd.nodeValue=rp(nd.nodeValue);}}\n    else{fix(nd);}}}});\n window.__rbTxtObs.observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\n})();"
+        const val SITE_LABEL = "Royal Banjara Studio"
+        const val REPLACE_JS = "(function(){\nvar FROM=\"rbstudiosmusic.kliv.site\",TO=\"Royal Banjara Studio\";\nfunction rp(s){return s.split(FROM).join(TO);}\nfunction fix(root){try{\n if(!root){return;}\n var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);\n var n,b=[];\n while((n=w.nextNode())){if(n.nodeValue&&n.nodeValue.indexOf(FROM)!==-1){b.push(n);}}\n for(var i=0;i<b.length;i++){b[i].nodeValue=rp(b[i].nodeValue);}\n if(root.querySelectorAll){var els=root.querySelectorAll('[placeholder],[title],[alt],[aria-label]');\n  for(var j=0;j<els.length;j++){var el=els[j];var ats=['placeholder','title','alt','aria-label'];\n   for(var k=0;k<ats.length;k++){var v=el.getAttribute(ats[k]);if(v&&v.indexOf(FROM)!==-1){el.setAttribute(ats[k],rp(v));}}}}\n}catch(err){}}\nfix(document.body);\ntry{if(document.title&&document.title.indexOf(FROM)!==-1){document.title=rp(document.title);}}catch(err){}\ntry{\n if(window.__rbTxtObs){window.__rbTxtObs.disconnect();}\n window.__rbTxtObs=new MutationObserver(function(ms){\n  for(var i=0;i<ms.length;i++){var ad=ms[i].addedNodes;\n   for(var j=0;j<ad.length;j++){var nd=ad[j];\n    if(nd.nodeType===3){if(nd.nodeValue&&nd.nodeValue.indexOf(FROM)!==-1){nd.nodeValue=rp(nd.nodeValue);}}\n    else{fix(nd);}}}});\n window.__rbTxtObs.observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\n})();"
         const val KEEPCR_ON = true
         const val BRIGHTNESS_ON = true
         const val AUTOSCROLL_ON = true
@@ -129,6 +129,15 @@ class MainActivity : AppCompatActivity() {
         const val SHAKE_REFRESH_ON = true
         const val SURPRISE_THEME_ON = true
         const val RATE_APP_ON = true
+        const val CONTACT_CARD_ON = true
+        const val LINK_PREVIEW_ON = true
+        const val FAST_START_ON = true
+        const val FLOAT_HOME_ON = true
+        const val BACKUP_TOOL_ON = true
+        const val USAGE_TIMER_ON = true
+        const val PDF_VIEWER_ON = true
+        const val LINK_HOOK_JS = "(function(){if(window.__rbLinkHook)return;window.__rbLinkHook=true;var t=null;document.addEventListener('touchstart',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;t=setTimeout(function(){try{AndroidLinks.linkLongPress(a.href||'',(a.innerText||'').trim().slice(0,60))}catch(x){}},550)},true);['touchend','touchmove','touchcancel'].forEach(function(ev){document.addEventListener(ev,function(){if(t){clearTimeout(t);t=null}},true)});document.addEventListener('contextmenu',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(a){e.preventDefault();try{AndroidLinks.linkLongPress(a.href||'',(a.innerText||'').trim().slice(0,60))}catch(x){}}},true)})();"
+        const val PDF_HOOK_JS = "(function(){if(window.__rbPdfHook)return;window.__rbPdfHook=true;document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;var h=a.getAttribute('href')||'';if(/\\.pdf(\\?|#|$)/i.test(h)){e.preventDefault();e.stopPropagation();try{AndroidPdf.pdfOpen(a.href)}catch(x){}}},true)})();"
         const val THEME_COLOR = "#3DDC84"
         const val SPLASH_COLOR = "#0C0F14"
         const val HIDE_ON = true
@@ -146,17 +155,17 @@ class MainActivity : AppCompatActivity() {
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
         const val DL_LIST_ON = true
-        const val PINCH_ZOOM = true
-        const val KEEP_SCREEN_ON = true
-        const val FULLSCREEN_ON = true
-        const val WHATSAPP_ON = true
-        const val WHATSAPP_NUMBER = "919370612297"
+        const val PINCH_ZOOM = false
+        const val KEEP_SCREEN_ON = false
+        const val FULLSCREEN_ON = false
+        const val WHATSAPP_ON = false
+        const val WHATSAPP_NUMBER = ""
         const val WHATSAPP_MESSAGE = "Hello! Mujhe jaankari chahiye"
         const val NIGHT_MODE_ON = true
         const val TEXT_SIZE_ON = true
         const val BACK_TWICE_ON = true
         const val CLEAR_CACHE_ON = true
-        const val EXIT_ITEM_ON = true
+        const val EXIT_ITEM_ON = false
         const val LONGPRESS_DL_ON = true
         const val DESKTOP_VIEW_ON = true
         const val AD_BLOCK_ON = true
@@ -173,19 +182,19 @@ class MainActivity : AppCompatActivity() {
         const val MAP_QUERY = "Royal Banjara Studio Music Distribution"
         const val TRANSLATE_TOOL_ON = true
         const val HISTORY_TOOL_ON = true
-        const val CALL_TOOL_ON = true
-        const val CALL_NUMBER = "+919370612297"
+        const val CALL_TOOL_ON = false
+        const val CALL_NUMBER = ""
         const val SCREENSHOT_ON = true
         const val SHARE_APP_ON = true
         const val HISTORY_NAV_ON = true
         const val OFFLINE_SAVE_ON = true
-        const val AUTO_NIGHT_ON = true
+        const val AUTO_NIGHT_ON = false
         const val READING_MODE_ON = true
         const val MUTE_TOOL_ON = true
         const val DATA_SAVE_ON = true
         const val URL_TOOL_ON = true
         const val AD_BLOCK_JS = "(function(){try{var s=document.createElement('style');s.id='appbanao-adblock';s.textContent=\"ins.adsbygoogle,.adsbygoogle,[id^='google_ads'],[id^='div-gpt-ad'],[id^='taboola'],[class^='popunder'],iframe[src*='doubleclick.net'],iframe[src*='googlesyndication'],iframe[src*='adserver'],.ad-banner,.ad-banner-top,.ad-container,.ad-wrapper,.ad-slot,.advert,.advertisement,.google-ad,.sidebar-ad,.sticky-ad{display:none !important;visibility:hidden !important;}\";(document.head||document.documentElement).appendChild(s);}catch(e){}})()"
-        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF", "Ink Blue|#1A237E", "Terracotta Mitti|#C0563B", "Spearmint Green|#00C853", "Bubblegum Pink|#FF69B4", "Bright Sky|#00B0FF", "Deep Teal|#00695C", "Sunrise Peach|#FF8A65", "Velvet Night|#311B92", "Leaf Green|#43A047", "Desert Sand|#C2A878", "Sindoor Red|#E53935", "Nilkamal Blue|#3949AB", "Kesar Saffron|#FF9800", "Jamun Purple|#6A1B9A", "Amaltas Yellow|#FBC02D", "Moong Green|#7CB342", "Mehendi Green|#558B2F", "Rani Pink|#D81B60", "Badal Grey Blue|#546E7A", "Chandan Brown|#8D6E63", "Aasmaan Blue|#29B6F6", "Angoori Purple|#AB47BC", "Genda Marigold|#FFA000", "Faagun Pink|#FF4081", "Samudra Aqua|#00BFA5", "Baingani Violet|#7E57C2", "Aam Mango|#FFB300", "Sitaphal Green|#689F38", "Morpankh Teal|#00838F", "Raat Purple|#4527A0", "Narangi Orange|#FF6D00", "Raakh Grey|#78909C", "Gulmohar Red|#FF1744", "Barish Blue|#4E7EA8", "Pankhudi Orange|#F4511E", "Khubani Apricot|#FB8C00", "Bargad Green|#33691E", "Kadam Pink|#AD1457", "Shankh Aqua|#26C6DA", "Manik Ruby|#C62828", "Neelam Sapphire|#0D47A1", "Anaar Red|#B71C1C", "Mausami Green|#9CCC65", "Tota Parrot|#00E676", "Mor Blue|#2979FF", "Surkhi Rust|#BF360C", "Phool Gulabi|#F06292", "Kohinoor Ice|#4FC3F7", "Basanti Yellow|#FFD600", "Sharbati Wheat|#D4B483", "Surmai Navy|#1F3A5F", "Kokum Purple|#7B2D8B", "Dhani Green|#2E7D4F", "Dhoop Gold|#C9A227", "Mogra Sandal|#C7A85C", "Imli Brown|#5D4037", "Kumkum Maroon|#AD1457", "Sharad Cyan|#0097A7", "Jharokha Indigo|#303F9F", "Pukhraj Amber|#F57F17", "Firozi Teal|#009688", "Lajwanti Magenta|#C2185B", "Megh Slate Blue|#4E6E81", "Amarbel Orange|#E64A19", "Neem Light Green|#8BC34A", "Angoor Wine|#7B1FA2", "Haldi Turmeric|#FFC107", "Dhuan Smoke Purple|#5E35B1", "Patakha Pink|#EC407A", "Ratan Walnut|#6D4C41", "Chandni Silver|#90A4AE", "Sheesham Wood|#855E42", "Zamurrad Emerald|#0C9B6E", "Laajawab Coral|#FF7A59", "Muskmelon Soft|#E8A87C", "Bhagalpur Indigo|#283593", "Patola Rani|#C2185B", "Banarasi Gold|#C6A136", "Chikankari Aqua|#4DD0C4", "Bandhani Pink|#E91E8C", "Kota Doria Teal|#0E8F8F", "Phulkari Orange|#F1652B", "Kalamkari Rust|#A64B35", "Pashmina Wine|#7A1F3D", "Kanjivaram Purple|#5E2B97", "Chikoo Brown|#9C6B4F", "Jamdani Sky|#6EC1E4", "Liji Litchi|#E4536B", "Shahi Maroon|#6E1423", "Surkhab Flame|#E63946")
+        val THEME_PRESETS = arrayOf("Royal Blue|#2563EB", "Midnight Black|#111827", "Emerald Green|#10B981", "Ocean Cyan|#0EA5E9", "Sunset Orange|#F97316", "Grape Purple|#8B5CF6", "Rose Pink|#EC4899", "Royal Gold|#D4AF37", "Teal Fresh|#14B8A6", "Deep Indigo|#6366F1", "Crimson Red|#DC2626", "Amber Glow|#F59E0B", "Lime Punch|#84CC16", "Sky Light|#38BDF8", "Chocolate Brown|#92400E", "Slate Grey|#475569", "Neon Violet|#7C3AED", "Magenta Rush|#E11D48", "Forest Green|#15803D", "Deep Navy|#1E40AF", "Coral Peach|#FF7F50", "Mint Aqua|#06D6A0", "Jade Stone|#00A896", "Bronze Copper|#B87333", "Orchid Pink|#DA70D6", "Plum Velvet|#7E22CE", "Steel Blue|#4682B4", "Ruby Red|#E0115F", "Arctic Ice|#22D3EE", "Coffee Dark|#6F4E37", "Saffron Desi|#FF9933", "Peacock Blue|#0288D1", "Henna Maroon|#800000", "Banana Yellow|#FBC02D", "Grapefruit|#FF6347", "Lavender Soft|#9575CD", "Olive Green|#6B8E23", "Turquoise Sea|#40E0D0", "Fuchsia Flash|#D500F9", "Graphite Steel|#37474F", "Lagoon Deep|#0891B2", "Blush Rose|#F472B6", "Kiwi Fresh|#65A30D", "Storm Slate|#64748B", "Wine Berry|#9D174D", "Citrus Lemon|#EAB308", "Iceberg Blue|#93C5FD", "Mahogany Wood|#A0522D", "Pine Forest|#2D6A4F", "Berry Purple|#A21CAF", "Ink Blue|#1A237E", "Terracotta Mitti|#C0563B", "Spearmint Green|#00C853", "Bubblegum Pink|#FF69B4", "Bright Sky|#00B0FF", "Deep Teal|#00695C", "Sunrise Peach|#FF8A65", "Velvet Night|#311B92", "Leaf Green|#43A047", "Desert Sand|#C2A878", "Sindoor Red|#E53935", "Nilkamal Blue|#3949AB", "Kesar Saffron|#FF9800", "Jamun Purple|#6A1B9A", "Amaltas Yellow|#FBC02D", "Moong Green|#7CB342", "Mehendi Green|#558B2F", "Rani Pink|#D81B60", "Badal Grey Blue|#546E7A", "Chandan Brown|#8D6E63", "Aasmaan Blue|#29B6F6", "Angoori Purple|#AB47BC", "Genda Marigold|#FFA000", "Faagun Pink|#FF4081", "Samudra Aqua|#00BFA5", "Baingani Violet|#7E57C2", "Aam Mango|#FFB300", "Sitaphal Green|#689F38", "Morpankh Teal|#00838F", "Raat Purple|#4527A0", "Narangi Orange|#FF6D00", "Raakh Grey|#78909C", "Gulmohar Red|#FF1744", "Barish Blue|#4E7EA8", "Pankhudi Orange|#F4511E", "Khubani Apricot|#FB8C00", "Bargad Green|#33691E", "Kadam Pink|#AD1457", "Shankh Aqua|#26C6DA", "Manik Ruby|#C62828", "Neelam Sapphire|#0D47A1", "Anaar Red|#B71C1C", "Mausami Green|#9CCC65", "Tota Parrot|#00E676", "Mor Blue|#2979FF", "Surkhi Rust|#BF360C", "Phool Gulabi|#F06292", "Kohinoor Ice|#4FC3F7", "Basanti Yellow|#FFD600", "Sharbati Wheat|#D4B483", "Surmai Navy|#1F3A5F", "Kokum Purple|#7B2D8B", "Dhani Green|#2E7D4F", "Dhoop Gold|#C9A227", "Mogra Sandal|#C7A85C", "Imli Brown|#5D4037", "Kumkum Maroon|#AD1457", "Sharad Cyan|#0097A7", "Jharokha Indigo|#303F9F", "Pukhraj Amber|#F57F17", "Firozi Teal|#009688", "Lajwanti Magenta|#C2185B", "Megh Slate Blue|#4E6E81", "Amarbel Orange|#E64A19", "Neem Light Green|#8BC34A", "Angoor Wine|#7B1FA2", "Haldi Turmeric|#FFC107", "Dhuan Smoke Purple|#5E35B1", "Patakha Pink|#EC407A", "Ratan Walnut|#6D4C41", "Chandni Silver|#90A4AE", "Sheesham Wood|#855E42", "Zamurrad Emerald|#0C9B6E", "Laajawab Coral|#FF7A59", "Muskmelon Soft|#E8A87C", "Bhagalpur Indigo|#283593", "Patola Rani|#C2185B", "Banarasi Gold|#C6A136", "Chikankari Aqua|#4DD0C4", "Bandhani Pink|#E91E8C", "Kota Doria Teal|#0E8F8F", "Phulkari Orange|#F1652B", "Kalamkari Rust|#A64B35", "Pashmina Wine|#7A1F3D", "Kanjivaram Purple|#5E2B97", "Chikoo Brown|#9C6B4F", "Jamdani Sky|#6EC1E4", "Liji Litchi|#E4536B", "Shahi Maroon|#6E1423", "Surkhab Flame|#E63946", "Sitara Blue|#1E88E5", "Motia Cream|#DECBA4", "Koyal Slate|#37474F", "Neon Green|#39FF14", "Cyber Cyan|#00B4D8", "Lava Red|#FF3B30", "Jungle Green|#1B4332", "Toofani Teal|#147D8C", "Neelkanth Blue|#0277BD", "Kamal Lotus|#EF7BA0", "Denim Blue|#4A6FA5", "Salmon Pink|#FA8072", "Periwinkle|#7B8CDE", "Sage Green|#9CAF88", "Mocha Brown|#6F5849", "Army Olive|#5A6B2F", "Charcoal Grey|#36454F", "Cherry Red|#D2042F", "Lilac Soft|#C8A2C8", "Sher Orange|#D2691E")
         const val DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         const val BLOB_HOOK_JS = "(function(){\nif (window.__appbanaoDl) return; window.__appbanaoDl = 1;\nvar CH = 262144;\nfunction sendBlob(blob, name, mime) {\n  try {\n    var total = blob.size;\n    var off = 0;\n    var fr = new FileReader();\n    window.AndroidDownloads && window.AndroidDownloads.blobSaveStart(name || 'download.bin', (mime || blob.type || 'application/octet-stream').split(',')[0]);\n    fr.onload = function() {\n      try {\n        var arr = new Uint8Array(fr.result);\n        var s = '';\n        for (var i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);\n        window.AndroidDownloads && window.AndroidDownloads.blobSaveChunk(btoa(s));\n      } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); return; }\n      off += CH;\n      if (off < total) fr.readAsArrayBuffer(blob.slice(off, off + CH));\n      else window.AndroidDownloads && window.AndroidDownloads.blobSaveDone();\n    };\n    fr.onerror = function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); };\n    fr.readAsArrayBuffer(blob.slice(0, CH));\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nfunction grab(url, name) {\n  try {\n    fetch(url).then(function(r) { return r.blob(); }).then(function(b) { sendBlob(b, name, b.type); }).catch(function() { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); });\n  } catch (e) { window.AndroidDownloads && window.AndroidDownloads.blobSaveFail(); }\n}\nwindow.__appbanaoGrab = grab;\ndocument.addEventListener('click', function(e) {\n  var t = e.target;\n  while (t && t.tagName !== 'A') t = t.parentElement;\n  if (!t) return;\n  var href = t.getAttribute('href') || '';\n  if (href.indexOf('blob:') === 0 || href.indexOf('data:') === 0) {\n    e.preventDefault(); e.stopPropagation();\n    var nm = t.getAttribute('download') || (document.title ? document.title.replace(/[\\\\/:*?\"<>|]/g, '').slice(0, 40) : 'download.bin');\n    grab(href, nm);\n  }\n}, true);\n})();"
     }
@@ -344,6 +353,9 @@ class MainActivity : AppCompatActivity() {
         else if (APP_LOCK_ON) setupAppPinDialog()
         if (SWIPE_NAV_ON) setupSwipeNav()
         if (SHAKE_REFRESH_ON) setupShakeRefresh()
+        if (FAST_START_ON) fastStartWarmUp()
+        if (USAGE_TIMER_ON) startUsageTimer()
+        if (FLOAT_HOME_ON) setupFloatingHome()
 
         setupWebView()
         if (NIGHT_MODE_ON && prefs.getBoolean("night_on", false)) {
@@ -1790,12 +1802,17 @@ class MainActivity : AppCompatActivity() {
         if (APP_LOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (prefs.getString("app_pin", null) == null) "App lock lagao" else "App lock kholo/change", "PIN se app ki suraksha", 0xFF0F172A.toInt(), "Suraksha aur Bachat") { if (prefs.getString("app_pin", null) == null) setupAppPinDialog() else showAppLockDialog() })
         if (SHARE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_share, "App share karo", "asli APK file bhejo", 0xFF8B5CF6.toInt(), "App") { shareApkNow() })
         if (RATE_APP_ON) items.add(ToolItem(R.drawable.ic_tool_ratestar, "5 star rating do", "app ko pasand batao", 0xFFF59E0B.toInt(), "App") { rateAppNow() })
+        if (CONTACT_CARD_ON) items.add(ToolItem(R.drawable.ic_tool_contact, "Sampark karo", "WhatsApp / call / email sab ek saath", 0xFF0D9488.toInt(), "Madad") { showContactSheet() })
+        if (LINK_PREVIEW_ON) items.add(ToolItem(R.drawable.ic_tool_linkinfo, "Link ka menu", "link par dabaye rakho", 0xFF475569.toInt(), "Page ke Tools") { Toast.makeText(this, "Kisi bhi link par ungli dabaye rakho — chhota menu khulega", Toast.LENGTH_LONG).show() })
+        if (FAST_START_ON) items.add(ToolItem(R.drawable.ic_tool_faststart, "Tez start", "app jaldi khulta hai", 0xFF059669.toInt(), "App") { fastStartWarmUp(); Toast.makeText(this, "Tez start chalu — app ab jaldi khulega", Toast.LENGTH_SHORT).show() })
+        if (FLOAT_HOME_ON) items.add(ToolItem(R.drawable.ic_tool_homefloat, "Home button", "ghar button screen par", 0xFF2563EB.toInt(), "Screen ke Tools") { setupFloatingHome() })
+        if (BACKUP_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_backup, "Backup banao", "bookmarks sambhal ke rakho", 0xFF7C3AED.toInt(), "Padhai ke Tools") { backupDialog() })
+        if (USAGE_TIMER_ON) items.add(ToolItem(R.drawable.ic_tool_usage, "Kitna time laga", "aaj ka use dekho", 0xFFB45309.toInt(), "App") { showUsageDialog() })
+        if (PDF_VIEWER_ON) items.add(ToolItem(R.drawable.ic_tool_pdf, "PDF kholo (app me)", "PDF bahar nahi jaana", 0xFFDC2626.toInt(), "Files aur Print") { Toast.makeText(this, "Kisi PDF link par click karo — app ke andar hi khulega", Toast.LENGTH_LONG).show() })
         if (RESTART_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_restart, "App restart karo", "ek tap me wapas khule", 0xFF475569.toInt(), "App") { restartApp() })
         if (RESET_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_reset, "Sab reset karo", "saare settings normal", 0xFF64748B.toInt(), "App") { resetAllSettings() })
-        if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
         if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
         items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
-        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         if (WIFI_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_wifi, "WiFi settings", "internet jodne ke liye", 0xFF0284C7.toInt(), "Madad") { openWifiSettings() })
         return items
@@ -2626,6 +2643,232 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(this, "App pasand aayi to doston ko bhejo!", Toast.LENGTH_SHORT).show()
             shareApkNow()
+        }
+    }
+
+    // ——— V13 ke 7 naye tools — sampark, link menu, tez start, home button, backup, time, PDF ———
+
+    // — Sampark karo — WhatsApp + Call + Email + Map sab ek jagah —
+    private fun showContactSheet() {
+        val box = LinearLayout(this)
+        box.orientation = LinearLayout.VERTICAL
+        box.setPadding(dp(14), dp(6), dp(14), dp(2))
+        fun addRow(iconRes: Int, label: String, sub: String, run: () -> Unit) {
+            val row = LinearLayout(this)
+            row.orientation = LinearLayout.HORIZONTAL
+            row.gravity = Gravity.CENTER_VERTICAL
+            val chip = GradientDrawable()
+            chip.setColor((accentColor and 0x00FFFFFF) or 0x22000000)
+            chip.cornerRadius = dp(14).toFloat()
+            val iv = ImageView(this)
+            iv.setImageResource(iconRes)
+            iv.background = chip
+            iv.setPadding(dp(8), dp(8), dp(8), dp(8))
+            val lp = LinearLayout.LayoutParams(dp(44), dp(44))
+            lp.marginEnd = dp(14)
+            row.addView(iv, lp)
+            val mid = LinearLayout(this)
+            mid.orientation = LinearLayout.VERTICAL
+            val t = TextView(this)
+            t.text = label
+            t.textSize = 15f
+            t.typeface = android.graphics.Typeface.DEFAULT_BOLD
+            t.setTextColor(0xFF111827.toInt())
+            val s = TextView(this)
+            s.text = sub
+            s.textSize = 12f
+            s.setTextColor(0xFF6B7280.toInt())
+            mid.addView(t)
+            mid.addView(s)
+            row.addView(mid, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            row.setOnClickListener { run() }
+            box.addView(row, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        }
+        if (WHATSAPP_ON) addRow(R.drawable.ic_whatsapp, "WhatsApp karo", "turant chat shuru") { try { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone=" + WHATSAPP_NUMBER))) } catch (e: Exception) { } }
+        if (CALL_NUMBER.length >= 6) addRow(R.drawable.ic_tool_contact, "Call karo", CALL_NUMBER) { try { startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + CALL_NUMBER))) } catch (e: Exception) { } }
+        if (SUPPORT_EMAIL.isNotBlank()) addRow(R.drawable.ic_tool_linkinfo, "Email karo", SUPPORT_EMAIL) { emailSupport() }
+        if (MAP_QUERY.isNotBlank()) addRow(R.drawable.ic_tool_pin, "Map par dekho", MAP_QUERY) { openDirectionsTool() }
+        AlertDialog.Builder(this)
+            .setTitle("📞 Sampark karo")
+            .setView(box)
+            .setPositiveButton("Ho gaya", null)
+            .show()
+    }
+
+    // — Link ka menu — kisi link par ungli dabaye rakho —
+    inner class LinkBridge {
+        @android.webkit.JavascriptInterface
+        fun linkLongPress(url: String, title: String) {
+            runOnUiThread { linkLongPressDialog(url, title) }
+        }
+    }
+
+    private fun linkLongPressDialog(url: String, title: String) {
+        if (url.isBlank() || !url.startsWith("http")) return
+        val opts = arrayOf("Kholo", "Link copy karo", "Chrome me kholo")
+        AlertDialog.Builder(this)
+            .setTitle(if (title.isBlank()) "Link ka menu" else title)
+            .setMessage(url)
+            .setItems(opts) { _, which ->
+                when (which) {
+                    0 -> webView.loadUrl(url)
+                    1 -> {
+                        try {
+                            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                            cm.setPrimaryClip(android.content.ClipData.newPlainText("link", url))
+                            Toast.makeText(this, "Link copy ho gaya", Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) { }
+                    }
+                    else -> { try { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) } catch (e: Exception) { } }
+                }
+            }
+            .setNegativeButton("Band karo", null)
+            .show()
+    }
+
+    // — Tez start — background me site warm, agli baar jaldi khulti hai —
+    private fun fastStartWarmUp() {
+        Thread {
+            try {
+                val cn = java.net.URL(HOME_URL).openConnection() as java.net.HttpURLConnection
+                cn.connectTimeout = 4000
+                cn.readTimeout = 4000
+                cn.requestMethod = "HEAD"
+                cn.connect()
+                cn.disconnect()
+            } catch (e: Exception) { }
+        }.start()
+    }
+
+    // — Floating Home button — screen par gol ghar button, tap = homepage —
+    private var floatHomeView: ImageView? = null
+
+    private fun setupFloatingHome() {
+        if (floatHomeView != null) return
+        val btn = ImageView(this)
+        btn.setImageResource(R.drawable.ic_tool_homefloat)
+        val chip = GradientDrawable()
+        chip.setColor((accentColor and 0x00FFFFFF) or 0xDD000000)
+        chip.cornerRadius = dp(26).toFloat()
+        chip.setStroke(dp(2), 0xFFFFFFFF.toInt())
+        btn.background = chip
+        btn.setPadding(dp(9), dp(9), dp(9), dp(9))
+        btn.alpha = 0.9f
+        floatHomeView = btn
+        val lp = FrameLayout.LayoutParams(dp(52), dp(52))
+        lp.gravity = Gravity.BOTTOM or Gravity.END
+        lp.bottomMargin = dp(132)
+        lp.rightMargin = dp(14)
+        root.addView(btn, lp)
+        btn.setOnClickListener { webView.loadUrl(HOME_URL) }
+        btn.setOnLongClickListener { btn.visibility = if (btn.visibility == View.VISIBLE) View.GONE else View.VISIBLE; true }
+        Toast.makeText(this, "Home button lag gaya — dabao seedha homepage", Toast.LENGTH_SHORT).show()
+    }
+
+    // — Backup — bookmarks ka backup bhejo aur wapas laao —
+    private fun backupDialog() {
+        val opts = arrayOf("Backup banao (share karo)", "Wapas laao (paste karo)")
+        AlertDialog.Builder(this)
+            .setTitle("📚 Bookmarks ka backup")
+            .setItems(opts) { _, which ->
+                if (which == 0) backupBookmarksNow() else restoreBookmarksNow()
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    private fun backupBookmarksNow() {
+        val raw = prefs.getString("bookmarks", "") ?: ""
+        if (raw.isBlank()) {
+            Toast.makeText(this, "Pehle koi bookmark banao — phir backup hoga", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val send = Intent(Intent.ACTION_SEND)
+        send.type = "text/plain"
+        send.putExtra(Intent.EXTRA_SUBJECT, APP_NAME + " — Bookmarks Backup")
+        send.putExtra(Intent.EXTRA_TEXT, "RB-BOOKMARKS-BACKUP-V1\n" + raw)
+        try { startActivity(Intent.createChooser(send, "Backup bhejo")) } catch (e: Exception) { }
+    }
+
+    private fun restoreBookmarksNow() {
+        val box = android.widget.EditText(this)
+        box.hint = "Yahan backup text paste karo"
+        box.minLines = 4
+        box.gravity = Gravity.TOP or Gravity.START
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.setPadding(dp(22), dp(8), dp(22), 0)
+        wrap.addView(box, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("Wapas laao")
+            .setMessage("Backup me jo text tha, paste karo")
+            .setView(wrap)
+            .setPositiveButton("Wapas laao", null)
+            .setNegativeButton("Band", null)
+            .show()
+            .let { d ->
+                d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                    val pasted = box.text.toString().trim()
+                    val cleaned = pasted.removePrefix("RB-BOOKMARKS-BACKUP-V1").trim()
+                    if (cleaned.contains("|") && cleaned.contains("http")) {
+                        prefs.edit().putString("bookmarks", cleaned).apply()
+                        d.dismiss()
+                        Toast.makeText(this, "Bookmarks wapas aa gaye ✓", Toast.LENGTH_SHORT).show()
+                    } else Toast.makeText(this, "Ye backup text nahi lag raha", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    // — Kitna time laga — aaj app me kitna time bitaya —
+    private var usageStartMs = 0L
+
+    private fun startUsageTimer() {
+        usageStartMs = System.currentTimeMillis()
+        val h = android.os.Handler(android.os.Looper.getMainLooper())
+        val tick = object : Runnable {
+            override fun run() {
+                val now = System.currentTimeMillis()
+                val today = java.text.SimpleDateFormat("yyyyMMdd", java.util.Locale.US).format(java.util.Date())
+                val day = prefs.getString("usage_day", "") ?: ""
+                if (day != today) prefs.edit().putString("usage_day", today).putLong("usage_ms", 0L).apply()
+                val add = now - usageStartMs
+                usageStartMs = now
+                prefs.edit().putLong("usage_ms", prefs.getLong("usage_ms", 0L) + add).apply()
+                h.postDelayed(this, 60000L)
+            }
+        }
+        h.postDelayed(tick, 60000L)
+    }
+
+    private fun showUsageDialog() {
+        val today = java.text.SimpleDateFormat("yyyyMMdd", java.util.Locale.US).format(java.util.Date())
+        val day = prefs.getString("usage_day", "") ?: ""
+        val ms = if (day == today) prefs.getLong("usage_ms", 0L) else 0L
+        val mins = (ms / 60000L).toInt()
+        val msg = if (mins >= 60) (mins / 60).toString() + " ghante " + (mins % 60).toString() + " minute" else mins.toString() + " minute"
+        AlertDialog.Builder(this)
+            .setTitle("⏱ Kitna time laga")
+            .setMessage("Aaj is app me " + msg + " bitaye hain")
+            .setPositiveButton("Theek hai", null)
+            .show()
+    }
+
+    // — PDF kholo (app me) — PDF link app ke andar hi viewer me khulta hai —
+    inner class PdfBridge {
+        @android.webkit.JavascriptInterface
+        fun pdfOpen(url: String) {
+            runOnUiThread { openPdfInApp(url) }
+        }
+    }
+
+    private fun openPdfInApp(url: String) {
+        if (!url.startsWith("http")) return
+        try {
+            val viewer = "https://docs.google.com/viewer?embedded=true&url=" + java.net.URLEncoder.encode(url, "UTF-8")
+            webView.loadUrl(viewer)
+            Toast.makeText(this, "PDF app me khul raha hai…", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            try { openExternal(Uri.parse(url)) } catch (e2: Exception) { }
         }
     }
 
@@ -3516,6 +3759,15 @@ class MainActivity : AppCompatActivity() {
                 if (VIDEO_BLOCK_JS.isNotEmpty() && videoBlockOn) view.evaluateJavascript(VIDEO_BLOCK_JS, null)
                 if (adBlockOn) injectAdBlock(view)
                 if (noHistoryOn) view.clearHistory()
+                if (PDF_VIEWER_ON) {
+                    try { webView.addJavascriptInterface(PdfBridge(), "AndroidPdf") } catch (e: Exception) { }
+                    view.evaluateJavascript(PDF_HOOK_JS, null)
+                }
+                if (LINK_PREVIEW_ON) {
+                    try { webView.addJavascriptInterface(LinkBridge(), "AndroidLinks") } catch (e: Exception) { }
+                    view.evaluateJavascript(LINK_HOOK_JS, null)
+                    view.postDelayed({ view.evaluateJavascript(LINK_HOOK_JS, null) }, 700)
+                }
                 if (DOWNLOADS_ON || LONGPRESS_DL_ON) {
                     view.evaluateJavascript(BLOB_HOOK_JS, null)
                     view.postDelayed({ view.evaluateJavascript(BLOB_HOOK_JS, null) }, 600)
