@@ -11,7 +11,7 @@ struct NavEntry {
 class WebViewController: UIViewController, WKNavigationDelegate {
     static let HOME_URL = "https://rbstudiosmusic.kliv.site/"
     static let HOME_HOST = "rbstudiosmusic.kliv.site"
-    static let THEME_COLOR = "#FF69B4"
+    static let THEME_COLOR = "#EC4899"
     static let SPLASH_COLOR = "#2B0A1D"
     static let SHOW_NAV = true
     static let HIDE_ON = true
@@ -20,8 +20,10 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     private var webView: WKWebView!
     private let navEntries: [NavEntry] = [
         NavEntry(label: "Home", url: "https://rbstudiosmusic.kliv.site/", symbol: "house"),
-        NavEntry(label: "Products", url: "https://rbstudiosmusic.kliv.site/products", symbol: "square.grid.2x2"),
+        NavEntry(label: "Login", url: "https://rbstudiosmusic.kliv.site/login", symbol: "person"),
         NavEntry(label: "Contact", url: "https://rbstudiosmusic.kliv.site/contact", symbol: "phone"),
+        NavEntry(label: "Support ", url: "https://rbstudiosmusic.raiseaticket.com/support/#/login", symbol: "message"),
+        NavEntry(label: "Official Web", url: "https://rbstudiosmusic.site", symbol: "globe"),
     ]
     private var navIcons: [UIImageView] = []
     private var navLabels: [UILabel] = []

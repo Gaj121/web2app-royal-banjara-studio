@@ -156,7 +156,11 @@ class MainActivity : AppCompatActivity() {
         const val QUICK_SEARCH_ON = true
         const val HARD_RELOAD_ON = true
         const val STOPWATCH_ON = true
-        const val THEME_COLOR = "#FF69B4"
+        const val ALARM_TOOL_ON = true
+        const val CALENDAR_TOOL_ON = true
+        const val CONTACT_SAVE_ON = true
+        const val INVERT_TOOL_ON = true
+        const val THEME_COLOR = "#EC4899"
         const val SPLASH_COLOR = "#2B0A1D"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
@@ -168,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         const val INTRO_ON = true
         const val WELCOME_ON = true
         const val WELCOME_TEXT = "Welcome to Royal Banjara Studio Music Distribution Company"
-        const val VERSION_NAME = "1.1"
+        const val VERSION_NAME = "1.2"
         const val TOOLS_ON = true
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
@@ -189,14 +193,14 @@ class MainActivity : AppCompatActivity() {
         const val AD_BLOCK_ON = true
         const val THEME_PICKER_ON = true
         const val FULLSCREEN_TOOL_ON = true
-        const val THEME_FAB_ON = true
+        const val THEME_FAB_ON = false
         const val GO_TOP_ON = true
         const val ROTATE_TOOL_ON = true
         const val FIND_TOOL_ON = true
         const val APPINFO_TOOL_ON = true
         const val READ_ALOUD_ON = true
         const val BOOKMARKS_ON = true
-        const val SUPPORT_EMAIL = "adegajanancsc8@gmail.com"
+        const val SUPPORT_EMAIL = "support@rbstudiosmusic.site"
         const val DIRECTION_TOOL_ON = true
         const val MAP_QUERY = "Royal Banjara Studio Music Distribution"
         const val TRANSLATE_TOOL_ON = true
@@ -260,14 +264,16 @@ class MainActivity : AppCompatActivity() {
     private var readingModeOn = false
     private var muted = false
     private var dataSaveOn = false
-    private var dataSaverCacheOn = DATA_SAVER_ON
-    private var videoBlockOn = VIDEO_BLOCK_ON
-    private var adBlockOn = AD_BLOCK_ON
+    private var dataSaverCacheOn = prefs.getBoolean("dsaver_manual", DATA_SAVER_ON)
+    private var videoBlockOn = prefs.getBoolean("vblock_manual", VIDEO_BLOCK_ON)
+    private var adBlockOn = prefs.getBoolean("adblock_manual", AD_BLOCK_ON)
 
     private val navEntries: Array<NavEntry> = arrayOf(
         NavEntry("Home", "https://rbstudiosmusic.kliv.site/", R.drawable.ic_nav_home),
-        NavEntry("Products", "https://rbstudiosmusic.kliv.site/products", R.drawable.ic_nav_grid),
-        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone)
+        NavEntry("Login", "https://rbstudiosmusic.kliv.site/login", R.drawable.ic_nav_user),
+        NavEntry("Contact", "https://rbstudiosmusic.kliv.site/contact", R.drawable.ic_nav_phone),
+        NavEntry("Support ", "https://rbstudiosmusic.raiseaticket.com/support/#/login", R.drawable.ic_nav_chat),
+        NavEntry("Official Web", "https://rbstudiosmusic.site", R.drawable.ic_nav_globe)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -682,6 +688,9 @@ class MainActivity : AppCompatActivity() {
         val center = LinearLayout(this)
         center.orientation = LinearLayout.VERTICAL
         center.gravity = Gravity.CENTER
+        // V7: chhote phones par bhi poora content dikhe — center scroll ho sakta hai —
+        val centerScroll = android.widget.ScrollView(this)
+        centerScroll.isVerticalScrollBarEnabled = false
 
         // ——— company logo ab bilkul STATIC — koi halo-spin, sparkle ya pulse nahi — smooth premium ———
         val heroWrap = FrameLayout(this)
@@ -721,7 +730,7 @@ class MainActivity : AppCompatActivity() {
 
         val name = TextView(this)
         name.text = APP_NAME
-        name.textSize = 25f
+        name.textSize = 26f
         name.setTextColor(Color.WHITE)
         name.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
         name.letterSpacing = 0.05f
@@ -838,12 +847,19 @@ class MainActivity : AppCompatActivity() {
             chips.addView(chip, chipLp)
         }
         center.addView(chips, chipsLp)
-        overlay.addView(center, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        centerScroll.addView(center, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        centerScroll.setPadding(0, dp(8), 0, dp(8))
+        overlay.addView(centerScroll, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
         val bottom = LinearLayout(this)
         bottom.orientation = LinearLayout.VERTICAL
         bottom.gravity = Gravity.CENTER_HORIZONTAL
         bottom.setPadding(dp(20), 0, dp(20), dp(30))
+        // V7: gesture-bar wale phones par bhi button poora dikhe —
+        try {
+            val navInset = windowManager.currentWindowMetrics.windowInsets.getInsets(android.view.WindowInsets.Type.navigationBars()).bottom
+            bottom.setPadding(dp(20), 0, dp(20), dp(30) + navInset)
+        } catch (e: Exception) { }
 
         val dots = LinearLayout(this)
         dots.orientation = LinearLayout.HORIZONTAL
@@ -1843,6 +1859,10 @@ class MainActivity : AppCompatActivity() {
         if (QUICK_SEARCH_ON) items.add(ToolItem(R.drawable.ic_tool_websearch, "Google me dhoondo", "seedha Google search", 0xFF1D4ED8.toInt(), "Padhai ke Tools") { quickSearchDialog() })
         if (HARD_RELOAD_ON) items.add(ToolItem(R.drawable.ic_tool_reload, "Taaaza load karo", "cache chhod kar naya page", 0xFF15803D.toInt(), "Page ke Tools") { hardReloadNow() })
         if (STOPWATCH_ON) items.add(ToolItem(R.drawable.ic_tool_stopwatch, "Stopwatch chalao", "time gino — padhai/kaam", 0xFFB45309.toInt(), "Padhai ke Tools") { stopwatchDialog() })
+        if (ALARM_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_alarm, "Alarm lagao", "yaad dilaane ki ghadi", 0xFF7C3AED.toInt(), "Padhai ke Tools") { alarmToolDialog() })
+        if (CALENDAR_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_calendaradd, "Calendar me jodo", "reminder phone me", 0xFF2563EB.toInt(), "Padhai ke Tools") { calendarToolDialog() })
+        if (CONTACT_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_contactadd, "Contact save karo", "number phone me jodo", 0xFF059669.toInt(), "Madad") { contactSaveDialog() })
+        if (INVERT_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_invert, if (invertOn) "Ulta rang off" else "Ulta rang", "dark jaisa aaram", 0xFF475569.toInt(), "Screen ke Tools") { toggleInvertColors() })
         if (BATTERY_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_battery, if (batteryOn) "Battery bachao band" else "Battery bachao", "ek tap me sab bachat", 0xFF65A30D.toInt(), "Suraksha aur Bachat") { batterySaverToggle() })
         if (INCOGNITO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_incognito, if (noHistoryOn) "Chhupa mode band" else "Chhupa mode", "history me kuch nahi likhe", 0xFF334155.toInt(), "Suraksha aur Bachat") { toggleNoHistory() })
         if (APP_LOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (prefs.getString("app_pin", null) == null) "App lock lagao" else "App lock kholo", "PIN se app ki suraksha", 0xFF0F172A.toInt(), "Suraksha aur Bachat") { if (prefs.getString("app_pin", null) == null) setupAppPinDialog() else showAppLockDialog() })
@@ -2195,6 +2215,7 @@ class MainActivity : AppCompatActivity() {
     // — Internet bachao: cache se kholo + trackers band — data ka kharch bahut kam —
     private fun toggleDataSaver() {
         dataSaverCacheOn = !dataSaverCacheOn
+        prefs.edit().putBoolean("dsaver_manual", dataSaverCacheOn).apply()
         webView.settings.cacheMode = if (dataSaverCacheOn) WebSettings.LOAD_CACHE_ELSE_NETWORK else WebSettings.LOAD_DEFAULT
         if (dataSaverCacheOn) webView.evaluateJavascript(DATA_SAVER_JS, null)
         Toast.makeText(this, if (dataSaverCacheOn) "Internet bachao on — cache se khulega, data kam lagega" else "Internet bachao off — normal mode", Toast.LENGTH_SHORT).show()
@@ -2203,6 +2224,7 @@ class MainActivity : AppCompatActivity() {
     // — Video autoplay band: video khud nahi chalega (tool se on/off) —
     private fun toggleVideoBlock() {
         videoBlockOn = !videoBlockOn
+        prefs.edit().putBoolean("vblock_manual", videoBlockOn).apply()
         if (videoBlockOn) webView.evaluateJavascript(VIDEO_BLOCK_JS, null)
         else webView.evaluateJavascript("(function(){try{if(window.__rbVidObs){window.__rbVidObs.disconnect();window.__rbVidObs=null}}catch(e){}})()", null)
         Toast.makeText(this, if (videoBlockOn) "Video autoplay band — video khud nahi chalega" else "Video autoplay chalu", Toast.LENGTH_SHORT).show()
@@ -2211,6 +2233,7 @@ class MainActivity : AppCompatActivity() {
     // — Ads band karo: app me hi on/off —
     private fun toggleAdBlock() {
         adBlockOn = !adBlockOn
+        prefs.edit().putBoolean("adblock_manual", adBlockOn).apply()
         if (adBlockOn) injectAdBlock(webView)
         else webView.evaluateJavascript("(function(){try{document.querySelectorAll('[data-w2a-ad]').forEach(function(e){e.style.display=''})}catch(e){}})()", null)
         Toast.makeText(this, if (adBlockOn) "Ads band on — banner ads chhupenge" else "Ads dikhne lagenge", Toast.LENGTH_SHORT).show()
@@ -2537,8 +2560,9 @@ class MainActivity : AppCompatActivity() {
     // ——— V12 ke tools — swipe, browser, shake, surprise theme, rating + V15 premium App Lock ———
     private var lastShakeMs = 0L
 
-    // ——— V16 premium App Lock v2 — full screen premium design: glass logo plate, capsule PIN dots,
-    //     soft keypad, galat PIN par error andar hi dikhta hai (neeche koi warning text nahi).
+    // ——— V17 premium App Lock v3 — welcome jaisa premium gradient + glow circles,
+    //     glass double-ring logo plate, capsule PIN dots, soft keypad,
+    //     galat PIN par error andar hi dikhta hai (neeche koi warning text nahi).
     //     Koi infinite animation nahi — bilkul smooth ———
     private fun showAppLockDialog() { showPremiumLock("unlock") }
     private fun setupAppPinDialog() { showPremiumLock("set") }
@@ -2559,11 +2583,23 @@ class MainActivity : AppCompatActivity() {
         val root = LinearLayout(this)
         root.orientation = LinearLayout.VERTICAL
         root.gravity = Gravity.CENTER_HORIZONTAL
-        val rootBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, -0.68f), shade(themeColorInt, -0.42f), shade(splashColorInt, -0.05f)))
+        // V3: welcome jaisa 4-stop premium gradient —
+        val rootBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, -0.46f), shade(themeColorInt, -0.22f), shade(themeColorInt, 0.12f), shade(themeColorInt, -0.38f)))
         root.background = rootBg
         root.setPadding(dp(28), dp(52), dp(28), dp(34))
+        // V3: keypad bhi chhote phone par poora dikhe — scroll ho sake —
+        val rootWrap = FrameLayout(this)
+        val rootScroll = android.widget.ScrollView(this)
+        rootScroll.isVerticalScrollBarEnabled = false
 
-        // glass logo plate — bilkul static, koi pulse nahi (smooth) —
+        // glass logo plate — double ring + static halo, koi pulse nahi (smooth) —
+        val plateWrap = FrameLayout(this)
+        val halo2 = View(this)
+        val halo2Bg = GradientDrawable()
+        halo2Bg.shape = GradientDrawable.OVAL
+        halo2Bg.setStroke(dp(6), Color.argb(26, 255, 255, 255))
+        halo2.background = halo2Bg
+        plateWrap.addView(halo2, FrameLayout.LayoutParams(dp(116), dp(116), Gravity.CENTER))
         val plate = FrameLayout(this)
         val plateBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(0x3DFFFFFF, 0x26FFFFFF))
         plateBg.shape = GradientDrawable.RECTANGLE
@@ -2577,8 +2613,20 @@ class MainActivity : AppCompatActivity() {
         logoMark.setImageResource(if (fullRes != 0) fullRes else R.mipmap.ic_launcher)
         logoMark.scaleType = ImageView.ScaleType.FIT_CENTER
         plate.addView(logoMark, FrameLayout.LayoutParams(dp(78), dp(78), Gravity.CENTER))
-        val plateLp = LinearLayout.LayoutParams(dp(100), dp(100))
-        root.addView(plate, plateLp)
+        plateWrap.addView(plate, FrameLayout.LayoutParams(dp(100), dp(100), Gravity.CENTER))
+        val plateLp = LinearLayout.LayoutParams(dp(116), dp(116))
+        root.addView(plateWrap, plateLp)
+
+        // V3: app ka naam bhi lock par — kon si app lock hai, saaf dikhe —
+        val lockAppName = TextView(this)
+        lockAppName.text = APP_NAME
+        lockAppName.textSize = 13f
+        lockAppName.setTextColor(0xB3FFFFFF.toInt())
+        lockAppName.gravity = Gravity.CENTER
+        lockAppName.letterSpacing = 0.08f
+        val lockNameLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lockNameLp.topMargin = dp(8)
+        root.addView(lockAppName, lockNameLp)
 
         val title = TextView(this)
         title.textSize = 21f
@@ -2714,7 +2762,9 @@ class MainActivity : AppCompatActivity() {
 
         applyLabels()
         updateDots()
-        dlg.setContentView(root)
+        rootScroll.addView(root, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        rootWrap.addView(rootScroll, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        dlg.setContentView(rootWrap)
         dlg.window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
         dlg.show()
         dlg.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -3406,6 +3456,85 @@ class MainActivity : AppCompatActivity() {
         }
         dlg.setOnDismissListener { running = false; handler.removeCallbacks(tick) }
         dlg.show()
+    }
+
+
+    // ——— V17 ke 4 naye tools — alarm, calendar, contact save, ulta rang ———
+
+    // — Alarm lagao: page padhte waqt yaad dilaane ka alarm —
+    private fun alarmToolDialog() {
+        val cal = java.util.Calendar.getInstance()
+        val tp = android.app.TimePickerDialog(this, { _, h, m ->
+            try {
+                val ac = java.util.Calendar.getInstance()
+                ac.set(java.util.Calendar.HOUR_OF_DAY, h)
+                ac.set(java.util.Calendar.MINUTE, m)
+                ac.set(java.util.Calendar.SECOND, 0)
+                if (ac.timeInMillis <= System.currentTimeMillis()) ac.add(java.util.Calendar.DAY_OF_YEAR, 1)
+                val am = getSystemService(android.content.Context.ALARM_SERVICE) as android.app.AlarmManager
+                val pi = android.app.PendingIntent.getBroadcast(this, 4701, android.content.Intent(this, javaClass).setAction("appbanao.ALARM"), android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE)
+                try {
+                    am.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, ac.timeInMillis, pi)
+                } catch (e: Exception) {
+                    am.set(android.app.AlarmManager.RTC_WAKEUP, ac.timeInMillis, pi)
+                }
+                toastTop(String.format(java.util.Locale.US, "⏰ Alarm lagi %02d:%02d par", h, m))
+            } catch (e: Exception) {
+                Toast.makeText(this, "Alarm nahi lag payi", Toast.LENGTH_SHORT).show()
+            }
+        }, cal.get(java.util.Calendar.HOUR_OF_DAY), cal.get(java.util.Calendar.MINUTE), true)
+        tp.setMessage("Kitne baje alarm?")
+        tp.show()
+    }
+
+    // — Calendar me jodo: page ki baat ya reminder calendar event ban jaye —
+    private fun calendarToolDialog() {
+        val input = android.widget.EditText(this)
+        input.hint = "kya yaad rakhna hai? (jaise: kal 6 baje meeting)"
+        input.setSingleLine(true)
+        val wrap = FrameLayout(this)
+        wrap.setPadding(dp(16), dp(10), dp(16), 0)
+        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("📅 Calendar me jodo")
+            .setMessage("Event ka naam likho — phone ke calendar me chala jayega")
+            .setView(wrap)
+            .setPositiveButton("Jodo") { _, _ ->
+                val title = input.text.toString().trim()
+                if (title.isEmpty()) { Toast.makeText(this, "Kuch likho pehle", Toast.LENGTH_SHORT).show(); return@setPositiveButton }
+                try {
+                    val start = System.currentTimeMillis() + 3600000L
+                    val end = start + 1800000L
+                    val ev = android.content.Intent(android.content.Intent.ACTION_INSERT).setData(android.provider.CalendarContract.Events.CONTENT_URI).putExtra(android.provider.CalendarContract.EXTRA_EVENT_BEGIN_TIME, start).putExtra(android.provider.CalendarContract.EXTRA_EVENT_END_TIME, end).putExtra(android.provider.CalendarContract.Events.TITLE, title)
+                    startActivity(ev)
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Calendar nahi khula — phone me calendar app check karo", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Contact save karo: app ka naam/number phone ke contact me —
+    private fun contactSaveDialog() {
+        val name = APP_NAME.ifBlank { SITE_LABEL.ifBlank { "Meri App" } }
+        val num = CALL_NUMBER
+        try {
+            val i = android.content.Intent(android.content.Intent.ACTION_INSERT).setType(android.provider.ContactsContract.RawContacts.CONTENT_TYPE).putExtra(android.provider.ContactsContract.Intents.Insert.NAME, name)
+            if (num.length >= 6) i.putExtra(android.provider.ContactsContract.Intents.Insert.PHONE, num)
+            startActivity(i)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Contact save nahi khula", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Ulta rang: photo/graphics ke liye soft dark — direct dark jaisa —
+    private var invertOn = false
+    private fun toggleInvertColors() {
+        invertOn = !invertOn
+        val js = if (invertOn) "(function(){if(!document.getElementById('appbanaoInv')){var s=document.createElement('style');s.id='appbanaoInv';s.textContent='html{filter:invert(1) hue-rotate(180deg)}img,video,iframe,svg{filter:invert(1) hue-rotate(180deg)}';document.head.appendChild(s)}})()" else "(function(){var s=document.getElementById('appbanaoInv');if(s)s.remove()})()"
+        webView.evaluateJavascript(js, null)
+        Toast.makeText(this, if (invertOn) "Ulta rang on — aankhon ko aaram" else "Ulta rang off", Toast.LENGTH_SHORT).show()
     }
 
 

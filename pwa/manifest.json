@@ -6,7 +6,7 @@
   "scope": "https://rbstudiosmusic.kliv.site/",
   "display": "standalone",
   "background_color": "#2B0A1D",
-  "theme_color": "#FF69B4",
+  "theme_color": "#EC4899",
   "icons": [
     {
       "src": "icons/icon-192.png",
