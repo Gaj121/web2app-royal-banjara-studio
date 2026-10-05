@@ -3,7 +3,10 @@
   "productName": "Royal Banjara Studio",
   "version": "1.0.0",
   "description": "Royal Banjara Studio — official desktop app (Windows + Mac)",
-  "author": "Royal Banjara Studio",
+  "author": {
+    "name": "Royal Banjara Studio",
+    "email": "support@rbstudiosmusic.site"
+  },
   "homepage": "https://rbstudiosmusic.site",
   "license": "MIT",
   "main": "main.js",
