@@ -24,7 +24,6 @@ npm run dist
 
 Ye repo GitHub par push karo — `.github/workflows/build-desktop.yml` khud build karta hai:
 - **Windows**: `windows-v1` release me `*-Setup.exe`
-- **Windows .msix**: `windows-msix-v1` release me Store-style `.msix`
 - **Mac**: `macos-v1` release me universal `.dmg` (Intel + M1/M2/M3 dono)
 - **iPhone**: `ios-v1` release me unsigned `.ipa` — Sideloadly se iPhone par install karo
 - **Linux**: `linux-v1` release me `.deb` — Ubuntu/Debian me install karo

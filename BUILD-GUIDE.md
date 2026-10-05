@@ -54,7 +54,6 @@ Is ZIP ka `ios/` folder **asli Xcode project** hai — apne iPhone par 10 minute
 
 Repo me `.github/workflows/build-desktop.yml` bhi hai — push hone par GitHub khud sab banata hai:
 - **Windows**: `windows-v1` release me `*-Setup.exe` — double-click se install
-- **Windows .msix**: `windows-msix-v1` release me Store-style `.msix`
 - **Mac**: `macos-v1` release me universal `.dmg` (Intel + M1/M2/M3) — kholo, app ko Applications me drag karo
 - **iPhone**: `ios-v1` release me `.ipa` — [Sideloadly](https://sideloadly.net) se apne Apple ID par install (free, 7 din)
 - **Linux**: `linux-v1` release me `.deb` — Ubuntu/Debian me `sudo dpkg -i` se install
