@@ -82,6 +82,8 @@ class ToolItem(val icon: Int, val label: String, val sub: String, val accent: In
 class MainActivity : AppCompatActivity() {
 
     companion object {
+        const val BUILD_TAG = "v155"
+        const val CRASH_URL = "https://app-banao.kliv.site/api/crash-log"
         const val HOME_URL = "https://rbstudiosmusic.kliv.site/"
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio "
@@ -269,6 +271,9 @@ class MainActivity : AppCompatActivity() {
     private var dataSaverCacheOn = prefs.getBoolean("dsaver_manual", DATA_SAVER_ON)
     private var videoBlockOn = prefs.getBoolean("vblock_manual", VIDEO_BLOCK_ON)
     private var adBlockOn = prefs.getBoolean("adblock_manual", AD_BLOCK_ON)
+    // V19 crash-guard: pichhli launch par start hote hi crash hua tha to ye baar
+    // app SAFE MODE me khulegi — sirf website, saare overlays/fabs skip
+    private var safeMode = false
 
     private val navEntries: Array<NavEntry> = arrayOf(
         NavEntry("Home", "https://example.com/", R.drawable.ic_nav_home),
@@ -279,6 +284,41 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // ——— V19.1 crash-guard + crash report ———
+        // Koi bhi uncaught crash aaye to: (1) crash ki poori detail server par report,
+        // (2) safe-mode flag — agli launch seedha website khulegi. Crash-loop khatam.
+        try {
+            val prevHandler = Thread.getDefaultUncaughtExceptionHandler()
+            Thread.setDefaultUncaughtExceptionHandler { t, e ->
+                try {
+                    prefs.edit().putBoolean("rb_safe_mode", true).apply()
+                    val sw = java.io.StringWriter()
+                    e.printStackTrace(java.io.PrintWriter(sw))
+                    val crashText = sw.toString().take(3000)
+                    prefs.edit().putString("rb_last_crash", crashText).apply()
+                    try {
+                        Thread {
+                            try {
+                                val q = "app=" + java.net.URLEncoder.encode(APP_NAME, "UTF-8") + "&v=" + BUILD_TAG + "&d=" + java.net.URLEncoder.encode("" + Build.MANUFACTURER + " " + Build.MODEL + " SDK" + Build.VERSION.SDK_INT, "UTF-8")
+                                val cn = java.net.URL(CRASH_URL + "?" + q).openConnection() as java.net.HttpURLConnection
+                                cn.requestMethod = "POST"
+                                cn.doOutput = true
+                                cn.connectTimeout = 4000
+                                cn.readTimeout = 4000
+                                cn.setRequestProperty("Content-Type", "text/plain; charset=utf-8")
+                                cn.outputStream.use { os -> os.write(crashText.toByteArray()) }
+                                try { cn.responseCode } catch (e5: Exception) { }
+                                cn.disconnect()
+                            } catch (e4: Exception) { }
+                        }.start()
+                        Thread.sleep(700)
+                    } catch (e3: Exception) { }
+                } catch (e2: Exception) { }
+                prevHandler?.uncaughtException(t, e)
+            }
+        } catch (e: Exception) { }
+        safeMode = try { prefs.getBoolean("rb_safe_mode", false) } catch (e: Exception) { false }
+
         accentColor = run {
             val idx = prefs.getInt("theme_idx", -1)
             if (idx >= 0 && idx < THEME_PRESETS.size) {
@@ -287,10 +327,10 @@ class MainActivity : AppCompatActivity() {
         }
         fullScreenOn = FULLSCREEN_ON
 
-        if (KEEP_SCREEN_ON) {
+        if (KEEP_SCREEN_ON && !safeMode) {
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-        if (FULLSCREEN_ON) {
+        if (FULLSCREEN_ON && !safeMode) {
             supportActionBar?.hide()
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         }
@@ -322,7 +362,7 @@ class MainActivity : AppCompatActivity() {
         }
         content.addView(swipeRefresh, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
 
-        if (SHOW_NAV) {
+        if (SHOW_NAV && !safeMode) {
             val bar = buildNavBar()
             navBar = bar
             val barLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM)
@@ -332,14 +372,14 @@ class MainActivity : AppCompatActivity() {
             root.addView(bar, barLp)
         }
 
-        if (SHOW_NAV) {
+        if (SHOW_NAV && !safeMode) {
             webView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
                 val dy = scrollY - oldScrollY
                 if (dy > 8) hideNavBar() else if (dy < -8) showNavBar()
             }
         }
 
-        if (TOOLS_ON) {
+        if (TOOLS_ON && !safeMode) {
             val fab = buildMoreButton()
             val fabLp = FrameLayout.LayoutParams(dp(46), dp(46), Gravity.BOTTOM or Gravity.END)
             fabLp.rightMargin = dp(14)
@@ -347,7 +387,7 @@ class MainActivity : AppCompatActivity() {
             root.addView(fab, fabLp)
         }
 
-        if (WHATSAPP_ON) {
+        if (WHATSAPP_ON && !safeMode) {
             val wa = buildWhatsappButton()
             whatsappFab = wa
             val waLp = FrameLayout.LayoutParams(dp(52), dp(52), Gravity.BOTTOM or Gravity.END)
@@ -356,7 +396,7 @@ class MainActivity : AppCompatActivity() {
             root.addView(wa, waLp)
         }
 
-        if (THEME_FAB_ON) {
+        if (THEME_FAB_ON && !safeMode) {
             val tb = buildThemeButton()
             themeFab = tb
             val tbLp = FrameLayout.LayoutParams(dp(48), dp(48), Gravity.BOTTOM or Gravity.END)
@@ -371,13 +411,13 @@ class MainActivity : AppCompatActivity() {
 
         root.addView(content, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
-        if (INTRO_ON) {
+        if (INTRO_ON && !safeMode) {
             val intro = buildIntro()
             introOverlay = intro
             root.addView(intro, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
         }
 
-        if (WELCOME_ON) {
+        if (WELCOME_ON && !safeMode) {
             val welcome = buildWelcomeSlider()
             welcomeOverlay = welcome
             welcome.translationY = -resources.displayMetrics.heightPixels.toFloat()
@@ -388,21 +428,36 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(root)
 
-        if (APP_LOCK_ON && !prefs.getString("app_pin", null).isNullOrEmpty()) showAppLockDialog()
-        else if (APP_LOCK_ON) setupAppPinDialog()
-        if (SWIPE_NAV_ON) setupSwipeNav()
+        // safe mode me pichhla crash report dikhao — asli wajah pakdne ke liye
+        if (safeMode) {
+            val lastCrash = try { prefs.getString("rb_last_crash", null) } catch (e: Exception) { null }
+            if (!lastCrash.isNullOrEmpty()) {
+                try {
+                    AlertDialog.Builder(this)
+                        .setTitle("Problem ka report — fix ke liye bhej diya gaya")
+                        .setMessage(lastCrash.take(1200))
+                        .setPositiveButton("Theek hai", null)
+                        .show()
+                    prefs.edit().putString("rb_last_crash", null).apply()
+                } catch (e: Exception) { }
+            }
+        }
+
+        if (!safeMode && APP_LOCK_ON && !prefs.getString("app_pin", null).isNullOrEmpty()) showAppLockDialog()
+        else if (!safeMode && APP_LOCK_ON) setupAppPinDialog()
+        if (SWIPE_NAV_ON && !safeMode) setupSwipeNav()
         ssBlockCache = prefs.getBoolean("ss_block", SS_BLOCK_ON)
         applyScreenshotBlock()
-        if (SHAKE_REFRESH_ON) setupShakeRefresh()
-        if (FAST_START_ON) fastStartWarmUp()
-        if (USAGE_TIMER_ON) startUsageTimer()
+        if (SHAKE_REFRESH_ON && !safeMode) setupShakeRefresh()
+        if (FAST_START_ON && !safeMode) fastStartWarmUp()
+        if (USAGE_TIMER_ON && !safeMode) startUsageTimer()
 
-        setupWebView()
-        if (NIGHT_MODE_ON && prefs.getBoolean("night_on", false)) {
+        try { setupWebView() } catch (e: Throwable) { }
+        if (!safeMode && NIGHT_MODE_ON && prefs.getBoolean("night_on", false)) {
             nightOn = true
             applyNight(true)
         }
-        if (NIGHT_MODE_ON && AUTO_NIGHT_ON && !nightOn) {
+        if (!safeMode && NIGHT_MODE_ON && AUTO_NIGHT_ON && !nightOn) {
             val hr = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
             if (hr >= 19 || hr < 6) {
                 nightOn = true
@@ -412,9 +467,9 @@ class MainActivity : AppCompatActivity() {
         }
         textZoomLevel = prefs.getInt("text_zoom", 100)
         if (textZoomLevel != 100) webView.settings.textZoom = textZoomLevel
-        selectNav(0)
+        try { selectNav(0) } catch (e: Throwable) { }
         webView.loadUrl(HOME_URL)
-        registerDownloadReceiver()
+        try { registerDownloadReceiver() } catch (e: Throwable) { }
         webView.addJavascriptInterface(BlobBridge(), "AndroidDownloads")
         if (LONGPRESS_DL_ON) {
             webView.setOnLongClickListener {
@@ -1003,8 +1058,6 @@ class MainActivity : AppCompatActivity() {
             PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.06f, 1f)
         )
         pulse.duration = 800
-        pulse.repeatCount = ObjectAnimator.INFINITE
-        pulse.repeatMode = ObjectAnimator.REVERSE
         pulse.start()
 
         holder.setOnClickListener { bounce(holder); showThemeSheet() }
@@ -4477,6 +4530,8 @@ class MainActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 swipeRefresh.isRefreshing = false
+                // website khul gayi — safe mode ka flag hata do, agli launch normal
+                try { prefs.edit().putBoolean("rb_safe_mode", false).apply() } catch (e: Exception) { }
                 if (HIDE_ON) injectHideEngine(view)
                 if (REPLACE_JS.isNotEmpty()) view.evaluateJavascript(REPLACE_JS, null)
                 if (DATA_SAVER_JS.isNotEmpty() && dataSaverCacheOn) view.evaluateJavascript(DATA_SAVER_JS, null)
