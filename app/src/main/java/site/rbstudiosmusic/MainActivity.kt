@@ -149,6 +149,13 @@ class MainActivity : AppCompatActivity() {
         const val STORAGE_TOOL_ON = true
         const val CLEAR_HIST_ON = true
         const val DND_TOOL_ON = true
+        const val ROTLOCK_TOOL_ON = true
+        const val DATA_USAGE_ON = true
+        const val NET_STATUS_ON = true
+        const val CLIP_VIEW_ON = true
+        const val QUICK_SEARCH_ON = true
+        const val HARD_RELOAD_ON = true
+        const val STOPWATCH_ON = true
         const val THEME_COLOR = "#F472B6"
         const val SPLASH_COLOR = "#2B0B1C"
         const val HIDE_ON = true
@@ -370,7 +377,7 @@ class MainActivity : AppCompatActivity() {
             welcome.translationY = -resources.displayMetrics.heightPixels.toFloat()
             welcome.alpha = 0f
             root.addView(welcome, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-            welcome.postDelayed({ showWelcome() }, if (INTRO_ON) 1950L else 350L)
+            welcome.postDelayed({ showWelcome() }, if (INTRO_ON) 1150L else 350L)
         }
 
         setContentView(root)
@@ -435,7 +442,7 @@ class MainActivity : AppCompatActivity() {
                         finish()
                     } else {
                         lastBackAt = now
-                        Toast.makeText(this@MainActivity, "Ek baar aur back dabao — app band ho jayega", Toast.LENGTH_SHORT).show()
+                        toastTop("Ek baar aur back dabao — app band ho jayega")
                     }
                 }
             }
@@ -474,6 +481,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
 
+    // — Warning/notice text ab screen ke NEECHE nahi — UPAR dikhta hai (clean look) —
+    private fun toastTop(msg: String) {
+        try {
+            val t = Toast.makeText(this, msg, Toast.LENGTH_SHORT)
+            t.setGravity(Gravity.TOP, 0, dp(56))
+            t.show()
+        } catch (e: Exception) {
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun shade(color: Int, factor: Float): Int {
         val r = Color.red(color)
         val g = Color.green(color)
@@ -491,8 +509,8 @@ class MainActivity : AppCompatActivity() {
         bg.setGradientCenter(0.5f, 0.35f)
         overlay.background = bg
 
-        // — floating soft circles — background me halke se chalte rehte hain
-        fun addFloat(sizeDp: Int, color: Int, alphaInt: Int, x: Int, y: Int, driftMs: Long) {
+        // — static soft circles — bilkul still, koi motion nahi —
+        fun addStatic(sizeDp: Int, color: Int, alphaInt: Int, x: Int, y: Int) {
             val dot = View(this)
             val dotBg = GradientDrawable()
             dotBg.shape = GradientDrawable.OVAL
@@ -502,46 +520,29 @@ class MainActivity : AppCompatActivity() {
             overlay.addView(dot, FrameLayout.LayoutParams(dp(sizeDp), dp(sizeDp)))
             dot.translationX = x.toFloat()
             dot.translationY = y.toFloat()
-            val rise = ObjectAnimator.ofFloat(dot, View.TRANSLATION_Y, y.toFloat(), y - dp(46).toFloat(), y.toFloat())
-            rise.duration = driftMs
-            rise.repeatCount = ObjectAnimator.INFINITE
-            rise.startDelay = (driftMs / 3)
-            rise.start()
         }
-        addFloat(130, shade(themeColorInt, 0.15f), 36, -dp(30), dp(80), 3400)
-        addFloat(90, Color.WHITE, 26, dp(230), dp(120), 4200)
-        addFloat(160, shade(themeColorInt, 0.4f), 30, dp(40), dp(430), 5000)
-        addFloat(70, Color.WHITE, 22, -dp(10), dp(380), 3800)
+        addStatic(150, shade(themeColorInt, 0.15f), 30, -dp(34), dp(70))
+        addStatic(96, Color.WHITE, 22, dp(228), dp(118))
+        addStatic(180, shade(themeColorInt, 0.4f), 24, dp(36), dp(430))
+        addStatic(78, Color.WHITE, 18, -dp(12), dp(380))
 
         val stack = LinearLayout(this)
         stack.orientation = LinearLayout.VERTICAL
         stack.gravity = Gravity.CENTER
 
+        // logo — bilkul static, koi bounce/shine nahi (smooth) —
         val logoCard = FrameLayout(this)
         val cardBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(Color.WHITE, shade(themeColorInt, 0.72f)))
-        cardBg.cornerRadius = dp(34).toFloat()
+        cardBg.cornerRadius = dp(30).toFloat()
         cardBg.setStroke(dp(2), 0x66FFFFFF)
         logoCard.background = cardBg
         logoCard.clipToOutline = true
-        logoCard.elevation = dp(24).toFloat()
-        logoCard.setPadding(dp(14), dp(14), dp(14), dp(14))
+        logoCard.elevation = dp(18).toFloat()
+        logoCard.setPadding(dp(12), dp(12), dp(12), dp(12))
         val logo = ImageView(this)
         val fullRes = resources.getIdentifier("ic_brand_full", "drawable", packageName)
         logo.setImageResource(if (fullRes != 0) fullRes else R.mipmap.ic_launcher)
-        logoCard.addView(logo, FrameLayout.LayoutParams(dp(104), dp(104), Gravity.CENTER))
-
-        // — shine sweep — logo ke upar se roshani ka pass jata hai
-        val shine = View(this)
-        val shineBg = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(0x00FFFFFF, 0x73FFFFFF, 0x00FFFFFF))
-        shine.background = shineBg
-        shine.rotation = 22f
-        logoCard.addView(shine, FrameLayout.LayoutParams(dp(30), dp(150), Gravity.CENTER))
-        shine.translationX = -dp(80).toFloat()
-        val sweep = ObjectAnimator.ofFloat(shine, View.TRANSLATION_X, -dp(80).toFloat(), dp(80).toFloat())
-        sweep.duration = 850
-        sweep.startDelay = 620
-        sweep.interpolator = OvershootInterpolator(0.9f)
-        sweep.start()
+        logoCard.addView(logo, FrameLayout.LayoutParams(dp(92), dp(92), Gravity.CENTER))
 
         val name = TextView(this)
         name.text = APP_NAME
@@ -553,82 +554,70 @@ class MainActivity : AppCompatActivity() {
         name.setShadowLayer(dp(6).toFloat(), 0f, dp(2).toFloat(), 0x66000000)
 
         val tagline = TextView(this)
-        tagline.text = "Loading ho raha hai..."
+        tagline.text = "Taiyaar ho raha hai…"
         tagline.textSize = 13f
         tagline.setTextColor(0xB3FFFFFF.toInt())
         tagline.gravity = Gravity.CENTER
         tagline.letterSpacing = 0.04f
 
-        val spinner = ProgressBar(this)
-        spinner.indeterminateTintList = ColorStateList.valueOf(accentColor)
+        val bar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal)
+        bar.progressTintList = ColorStateList.valueOf(accentColor)
+        bar.progressBackgroundTintList = ColorStateList.valueOf(0x33FFFFFF)
+        bar.max = 100
+        bar.progress = 72
 
-        val ring = FrameLayout(this)
-        val ringBg = GradientDrawable()
-        ringBg.shape = GradientDrawable.OVAL
-        ringBg.setColor(0x2EFFFFFF)
-        ring.background = ringBg
-        ring.addView(spinner, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER))
-
-        stack.addView(logoCard, LinearLayout.LayoutParams(dp(132), dp(132)))
+        stack.addView(logoCard, LinearLayout.LayoutParams(dp(118), dp(118)))
         val nameLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        nameLp.topMargin = dp(24)
+        nameLp.topMargin = dp(22)
         stack.addView(name, nameLp)
         val tagLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         tagLp.topMargin = dp(7)
         stack.addView(tagline, tagLp)
-        val spLp = LinearLayout.LayoutParams(dp(46), dp(46))
-        spLp.topMargin = dp(20)
-        stack.addView(ring, spLp)
+        val barLp = LinearLayout.LayoutParams(dp(120), LinearLayout.LayoutParams.WRAP_CONTENT)
+        barLp.topMargin = dp(20)
+        stack.addView(bar, barLp)
 
         overlay.addView(stack, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
-        logoCard.scaleX = 0.3f
-        logoCard.scaleY = 0.3f
-        logoCard.alpha = 0f
-        name.alpha = 0f
-        name.translationY = dp(16).toFloat()
-        tagline.alpha = 0f
-
-        logoCard.animate().scaleX(1f).scaleY(1f).alpha(1f).setDuration(500).setInterpolator(OvershootInterpolator(1.6f)).start()
-        logoCard.postDelayed({
-            logoCard.animate().scaleX(1.05f).scaleY(1.05f).setDuration(320).withEndAction {
-                logoCard.animate().scaleX(1f).scaleY(1f).setDuration(260).start()
-            }.start()
-        }, 560)
-        logoCard.postDelayed({
-            name.animate().alpha(1f).translationY(0f).setDuration(380).start()
-            tagline.animate().alpha(1f).setDuration(380).start()
-        }, 330)
+        // sirf ek halki entrance — phir sab still —
+        stack.alpha = 0f
+        stack.scaleX = 0.96f
+        stack.scaleY = 0.96f
+        stack.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(240).setInterpolator(DecelerateInterpolator()).start()
 
         overlay.postDelayed({
-            overlay.animate().translationY(-overlay.height.toFloat()).alpha(0f).setDuration(450)
+            overlay.animate().alpha(0f).setDuration(340)
                 .withEndAction { overlay.visibility = View.GONE }.start()
-        }, 1500)
+        }, 1000)
 
         return overlay
     }
 
+    // ——— WELCOME_V6: premium static design — company logo ki animation hata di gayi.
+    //     Koi bhi infinite animation nahi — welcome bilkul smooth chalta hai, hang nahi hota ———
+
+// ——— WELCOME_V6: premium static design — company logo ki animation hata di gayi.
+    //     Koi bhi infinite animation nahi — welcome bilkul smooth chalta hai, hang nahi hota ———
     private fun showWelcome() {
         val ov = welcomeOverlay ?: return
         ov.alpha = 1f
         ov.visibility = View.VISIBLE
-        ov.translationY = -dp(90).toFloat()
-        ov.animate().translationY(0f).setDuration(620).setInterpolator(DecelerateInterpolator(1.7f)).start()
+        ov.translationY = -dp(70).toFloat()
+        ov.animate().translationY(0f).setDuration(480).setInterpolator(DecelerateInterpolator(1.6f)).start()
         welcomeHeader?.let { h ->
             h.alpha = 0f
-            h.translationY = -dp(30).toFloat()
-            h.animate().alpha(1f).translationY(0f).setDuration(420).setStartDelay(60).setInterpolator(DecelerateInterpolator(1.3f)).start()
+            h.animate().alpha(1f).setDuration(300).setStartDelay(40).start()
         }
         welcomeCenter?.let { c ->
             c.alpha = 0f
-            c.scaleX = 0.74f
-            c.scaleY = 0.74f
-            c.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(600).setStartDelay(160).setInterpolator(OvershootInterpolator(1.15f)).start()
+            c.scaleX = 0.92f
+            c.scaleY = 0.92f
+            c.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(420).setStartDelay(110).setInterpolator(DecelerateInterpolator(1.2f)).start()
         }
         welcomeBottom?.let { b ->
             b.alpha = 0f
-            b.translationY = dp(26).toFloat()
-            b.animate().alpha(1f).translationY(0f).setDuration(460).setStartDelay(240).setInterpolator(DecelerateInterpolator(1.3f)).start()
+            b.translationY = dp(18).toFloat()
+            b.animate().alpha(1f).translationY(0f).setDuration(320).setStartDelay(190).start()
         }
     }
 
@@ -639,59 +628,39 @@ class MainActivity : AppCompatActivity() {
             .scaleX(0.93f)
             .scaleY(0.93f)
             .translationY(-dp(40).toFloat())
-            .setDuration(340)
+            .setDuration(320)
             .setInterpolator(AccelerateInterpolator())
             .withEndAction { ov.visibility = View.GONE }
             .start()
     }
 
-    // — Welcome v3: premium animated welcome — glow ring, floating bubbles, feature chips —
+    // — Welcome v6: ek hi static premium design — logo bilkul still, poora focus content par —
     private fun buildWelcomeSlider(): FrameLayout {
         val overlay = FrameLayout(this)
         overlay.isClickable = true
 
         val bgGrad = GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
-            intArrayOf(shade(themeColorInt, -0.44f), shade(themeColorInt, -0.20f), shade(themeColorInt, 0.12f), shade(themeColorInt, -0.36f))
+            intArrayOf(shade(themeColorInt, -0.46f), shade(themeColorInt, -0.22f), shade(themeColorInt, 0.12f), shade(themeColorInt, -0.38f))
         )
         overlay.background = bgGrad
 
-        val glowRing = View(this)
-        val ringDrawable = GradientDrawable()
-        ringDrawable.shape = GradientDrawable.OVAL
-        ringDrawable.setStroke(dp(30), Color.argb(24, 255, 255, 255))
-        glowRing.background = ringDrawable
-        val ringSize = dp(320)
-        overlay.addView(glowRing, FrameLayout.LayoutParams(ringSize, ringSize, Gravity.CENTER))
-        val ringSpin = ObjectAnimator.ofFloat(glowRing, View.ROTATION, 0f, 360f)
-        ringSpin.duration = 26000
-        ringSpin.repeatCount = ObjectAnimator.INFINITE
-        ringSpin.start()
-
-        val bubbleSpecs = arrayOf(
-            intArrayOf(dp(34), 0x26FFFFFF, 6200, 12, 8),
-            intArrayOf(dp(24), 0x33FFFFFF, 7800, 70, 14),
-            intArrayOf(dp(18), 0x2EFFFFFF, 5600, 28, 62),
-            intArrayOf(dp(46), 0x1FFFFFFF, 8400, 78, 72),
-            intArrayOf(dp(14), 0x3DFFFFFF, 5000, 50, 30),
-            intArrayOf(dp(58), 0x14FFFFFF, 9000, 8, 80)
-        )
-        bubbleSpecs.forEachIndexed { i, spec ->
-            val bubble = View(this)
-            val bubbleDrawable = GradientDrawable()
-            bubbleDrawable.shape = GradientDrawable.OVAL
-            bubbleDrawable.setColor(spec[1])
-            bubble.background = bubbleDrawable
-            val lp = FrameLayout.LayoutParams(spec[0], spec[0])
-            lp.leftMargin = (resources.displayMetrics.widthPixels * spec[3]) / 100
-            lp.topMargin = (resources.displayMetrics.heightPixels * spec[4]) / 100
-            overlay.addView(bubble, lp)
-            val drift = ObjectAnimator.ofFloat(bubble, View.TRANSLATION_Y, 0f, -(dp(24) + i * 4).toFloat())
-            drift.duration = spec[2].toLong()
-            drift.repeatCount = ObjectAnimator.INFINITE
-            drift.repeatMode = ObjectAnimator.REVERSE
-            drift.start()
+        // — static soft glow circles — na ghoomti hain, na udti hain — phir bhi premium —
+        fun staticGlow(sizeDp: Int, alphaInt: Int, x: Int, y: Int) {
+            val dot = View(this)
+            val dotBg = GradientDrawable()
+            dotBg.shape = GradientDrawable.OVAL
+            dotBg.setColor(Color.WHITE)
+            dot.background = dotBg
+            dot.alpha = alphaInt.toFloat()
+            overlay.addView(dot, FrameLayout.LayoutParams(dp(sizeDp), dp(sizeDp)))
+            dot.translationX = x.toFloat()
+            dot.translationY = y.toFloat()
         }
+        staticGlow(300, 14, -dp(70), dp(60))
+        staticGlow(210, 18, dp(140), dp(380))
+        staticGlow(160, 12, -dp(30), dp(560))
+        staticGlow(120, 16, dp(190), dp(120))
 
         val header = LinearLayout(this)
         header.orientation = LinearLayout.VERTICAL
@@ -716,25 +685,15 @@ class MainActivity : AppCompatActivity() {
         center.orientation = LinearLayout.VERTICAL
         center.gravity = Gravity.CENTER
 
-        // ——— V15: company logo ka premium center hero — double halo ring, glow, sparkle ———
+        // ——— company logo ab bilkul STATIC — koi halo-spin, sparkle ya pulse nahi — smooth premium ———
         val heroWrap = FrameLayout(this)
-        val heroSize = dp(150)
-        val haloOuter = View(this)
-        val haloOuterBg = GradientDrawable()
-        haloOuterBg.shape = GradientDrawable.OVAL
-        haloOuterBg.setStroke(dp(10), Color.argb(26, 255, 255, 255))
-        haloOuter.background = haloOuterBg
-        heroWrap.addView(haloOuter, FrameLayout.LayoutParams(dp(150), dp(150), Gravity.CENTER))
-        val haloInner = View(this)
-        val haloInnerBg = GradientDrawable()
-        haloInnerBg.shape = GradientDrawable.OVAL
-        haloInnerBg.setStroke(dp(4), Color.argb(64, 255, 255, 255))
-        haloInner.background = haloInnerBg
-        heroWrap.addView(haloInner, FrameLayout.LayoutParams(dp(126), dp(126), Gravity.CENTER))
-        val haloSpin = ObjectAnimator.ofFloat(heroWrap, View.ROTATION, 0f, 360f)
-        haloSpin.duration = 34000
-        haloSpin.repeatCount = ObjectAnimator.INFINITE
-        haloSpin.start()
+        val heroSize = dp(148)
+        val halo = View(this)
+        val haloBg = GradientDrawable()
+        haloBg.shape = GradientDrawable.OVAL
+        haloBg.setStroke(dp(8), Color.argb(22, 255, 255, 255))
+        halo.background = haloBg
+        heroWrap.addView(halo, FrameLayout.LayoutParams(dp(148), dp(148), Gravity.CENTER))
 
         val logoRing = FrameLayout(this)
         val ringBg = GradientDrawable()
@@ -751,36 +710,15 @@ class MainActivity : AppCompatActivity() {
         cardBg.cornerRadius = dp(24).toFloat()
         cardBg.setColor(Color.WHITE)
         logoCard.background = cardBg
-        logoCard.elevation = dp(14).toFloat()
-        // — Asli company logo (ic_brand_full) — warna launcher icon — hamesha dikhta hai —
+        logoCard.elevation = dp(12).toFloat()
         val logoMark = ImageView(this)
         val fullRes = resources.getIdentifier("ic_brand_full", "drawable", packageName)
         logoMark.setImageResource(if (fullRes != 0) fullRes else R.mipmap.ic_launcher)
         logoMark.scaleType = ImageView.ScaleType.FIT_CENTER
         logoCard.setPadding(dp(8), dp(8), dp(8), dp(8))
-        logoCard.addView(logoMark, FrameLayout.LayoutParams(dp(86), dp(86), Gravity.CENTER))
-        // — logo ke soft glow pulse —
-        val logoPulse = ObjectAnimator.ofPropertyValuesHolder(
-            logoCard,
-            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.06f, 1f),
-            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.06f, 1f))
-        logoPulse.duration = 2600
-        logoPulse.repeatCount = ObjectAnimator.INFINITE
-        logoPulse.start()
+        logoCard.addView(logoMark, FrameLayout.LayoutParams(dp(84), dp(84), Gravity.CENTER))
         logoRing.addView(logoCard, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT))
         heroWrap.addView(logoRing, FrameLayout.LayoutParams(heroSize, heroSize, Gravity.CENTER))
-
-        // — chhota sparkle dot jo logo ke ghumta hai —
-        val sparkle = View(this)
-        val sparkleBg = GradientDrawable()
-        sparkleBg.shape = GradientDrawable.OVAL
-        sparkleBg.setColor(0xCCFFFFFF.toInt())
-        sparkle.background = sparkleBg
-        heroWrap.addView(sparkle, FrameLayout.LayoutParams(dp(12), dp(12), Gravity.TOP or Gravity.CENTER_HORIZONTAL))
-        val sparkleOrbit = ObjectAnimator.ofFloat(sparkle, View.ROTATION, 0f, 360f)
-        sparkleOrbit.duration = 6000
-        sparkleOrbit.repeatCount = ObjectAnimator.INFINITE
-        sparkleOrbit.start()
         center.addView(heroWrap, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
         val name = TextView(this)
@@ -814,11 +752,10 @@ class MainActivity : AppCompatActivity() {
             center.addView(sitePill, pillLp)
         }
 
-
         val flipper = ViewFlipper(this)
         flipper.setInAnimation(this, android.R.anim.fade_in)
         flipper.setOutAnimation(this, android.R.anim.fade_out)
-        flipper.flipInterval = 3800
+        flipper.flipInterval = 3600
         flipper.isAutoStart = true
 
         val slides = arrayOf(
@@ -833,14 +770,14 @@ class MainActivity : AppCompatActivity() {
             page.setPadding(dp(10), 0, dp(10), 0)
 
             val bubble = FrameLayout(this)
-            val bubbleSize = dp(132)
+            val bubbleSize = dp(120)
             val bubbleBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(0xFFFFFFFF.toInt(), 0xCCFFFFFF.toInt(), 0x99FFFFFF.toInt()))
             bubbleBg.shape = GradientDrawable.OVAL
             bubbleBg.setStroke(dp(4), 0x80FFFFFF.toInt())
             bubble.background = bubbleBg
             val emo = TextView(this)
             emo.text = slide.first
-            emo.textSize = 52f
+            emo.textSize = 46f
             emo.gravity = Gravity.CENTER
             bubble.addView(emo, FrameLayout.LayoutParams(bubbleSize, bubbleSize))
             val shine = View(this)
@@ -848,12 +785,12 @@ class MainActivity : AppCompatActivity() {
             shineBg.shape = GradientDrawable.OVAL
             shineBg.setColor(0x73FFFFFF)
             shine.background = shineBg
-            bubble.addView(shine, FrameLayout.LayoutParams(dp(26), dp(26), Gravity.TOP or Gravity.START))
+            bubble.addView(shine, FrameLayout.LayoutParams(dp(24), dp(24), Gravity.TOP or Gravity.START))
             page.addView(bubble, LinearLayout.LayoutParams(bubbleSize, bubbleSize))
 
             val title = TextView(this)
             title.text = slide.second
-            title.textSize = 23f
+            title.textSize = 22f
             title.setTextColor(Color.WHITE)
             title.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
             title.letterSpacing = 0.02f
@@ -861,7 +798,7 @@ class MainActivity : AppCompatActivity() {
             title.maxLines = 2
             title.setShadowLayer(dp(8).toFloat(), 0f, dp(2).toFloat(), 0x66000000)
             val titleLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            titleLp.topMargin = dp(18)
+            titleLp.topMargin = dp(16)
             page.addView(title, titleLp)
 
             val sub = TextView(this)
@@ -876,7 +813,9 @@ class MainActivity : AppCompatActivity() {
 
             flipper.addView(page)
         }
-        center.addView(flipper)
+        val flipLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        flipLp.topMargin = dp(20)
+        center.addView(flipper, flipLp)
 
         val chips = LinearLayout(this)
         chips.orientation = LinearLayout.HORIZONTAL
@@ -906,7 +845,7 @@ class MainActivity : AppCompatActivity() {
         val bottom = LinearLayout(this)
         bottom.orientation = LinearLayout.VERTICAL
         bottom.gravity = Gravity.CENTER_HORIZONTAL
-        bottom.setPadding(dp(20), 0, dp(20), dp(26))
+        bottom.setPadding(dp(20), 0, dp(20), dp(30))
 
         val dots = LinearLayout(this)
         dots.orientation = LinearLayout.HORIZONTAL
@@ -944,30 +883,12 @@ class MainActivity : AppCompatActivity() {
         btnBg.cornerRadius = dp(32).toFloat()
         btnBg.setStroke(dp(1), 0x66FFFFFF)
         startBtn.background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), btnBg, null)
-        startBtn.elevation = dp(14).toFloat()
+        startBtn.elevation = dp(12).toFloat()
         val btnLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         btnLp.topMargin = dp(18)
         bottom.addView(startBtn, btnLp)
-        val glow = ObjectAnimator.ofFloat(startBtn, View.ALPHA, 1f, 0.86f)
-        glow.duration = 1300
-        glow.repeatCount = ObjectAnimator.INFINITE
-        glow.repeatMode = ObjectAnimator.REVERSE
-        glow.start()
 
-        val tag = TextView(this)
-        tag.text = "Made in India 🇮🇳"
-        tag.textSize = 11.5f
-        tag.setTextColor(0xB3FFFFFF.toInt())
-        tag.gravity = Gravity.CENTER
-        tag.setPadding(dp(12), dp(6), dp(12), dp(6))
-        val tagBg = GradientDrawable()
-        tagBg.shape = GradientDrawable.RECTANGLE
-        tagBg.cornerRadius = dp(14).toFloat()
-        tagBg.setColor(0x26FFFFFF)
-        tag.background = tagBg
-        val tagLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        tagLp.topMargin = dp(12)
-        bottom.addView(tag, tagLp)
+        // NOTE: purana neeche wala faltu tag hata diya gaya — ab welcome ke neeche koi warning/faltu text nahi dikhta.
 
         overlay.addView(bottom, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM))
 
@@ -988,11 +909,11 @@ class MainActivity : AppCompatActivity() {
             override fun run() {
                 if (overlay.visibility == View.VISIBLE) {
                     updateDots(flipper.displayedChild)
-                    flipper.postDelayed(this, 3800)
+                    flipper.postDelayed(this, 3600)
                 }
             }
         }
-        flipper.postDelayed(sync, 3800)
+        flipper.postDelayed(sync, 3600)
 
         return overlay
     }
@@ -1850,6 +1771,221 @@ class MainActivity : AppCompatActivity() {
         sheet.animate().translationY(0f).alpha(1f).setDuration(300).setInterpolator(OvershootInterpolator(1.05f)).start()
     }
 
+
+    // ——— V16 ke 7 naye tools — ghuma-lock, data kharch, net haal, clipboard, google search, taaaza load, stopwatch ———
+
+    // — Ghumao lock: portrait/landscape runtime par toggle — video dekhne ke liye —
+    private fun rotationLockToggle() {
+        try {
+            val portrait = requestedOrientation == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            requestedOrientation = if (portrait) android.content.pm.ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            toastTop(if (portrait) "Ghumao lock khula — ab phone ghumao to screen bhi ghumegi" else "Ghumao lock lagi — ab screen seedhi rahegi")
+        } catch (e: Exception) {
+            Toast.makeText(this, "Rotation lock nahi badal paya", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Data kitna kharch: is app ne kitna MB upar/neeche kiya —
+    private fun dataUsageDialog() {
+        try {
+            val mb = 1024.0 * 1024.0
+            val rx = android.net.TrafficStats.getUidRxBytes(applicationInfo.uid)
+            val tx = android.net.TrafficStats.getUidTxBytes(applicationInfo.uid)
+            if (rx < 0 && tx < 0) {
+                Toast.makeText(this, "Data ka hisaab phone ne nahi diya", Toast.LENGTH_SHORT).show()
+            } else {
+                val down = rx / mb
+                val up = tx / mb
+                val total = down + up
+                AlertDialog.Builder(this)
+                    .setTitle("📶 Data ka hisaab")
+                    .setMessage(String.format(java.util.Locale.US, "⬇ Down: %.1f MB\n⬆ Up: %.1f MB\n\nKul: %.1f MB", down, up, total))
+                    .setPositiveButton("Theek hai", null)
+                    .show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Data ki jaankari nahi mili", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Internet ka haal: WiFi / Mobile data / band —
+    private fun netStatusDialog() {
+        try {
+            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+            val nw = cm.activeNetwork
+            val caps = if (nw != null) cm.getNetworkCapabilities(nw) else null
+            val msg = when {
+                caps == null -> "🔴 Internet band hai\n\nWiFi ya mobile data on karo, phir dobara kholo"
+                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) -> "🟢 WiFi se juda ho\n\nPoori speed ka mazaa lo"
+                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR) -> "🟢 Mobile data se juda ho\n\nVideo dekhna ho to WiFi behtar hai"
+                else -> "🟡 Network juda hai par type pata nahi"
+            }
+            AlertDialog.Builder(this)
+                .setTitle("🌐 Internet ka haal")
+                .setMessage(msg)
+                .setPositiveButton("Theek hai", null)
+                .show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Internet ki jaankari nahi mili", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Copy kiya hua dekho: clipboard ka text — kholo ya search karo —
+    private fun clipboardViewDialog() {
+        try {
+            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val txt = cm.primaryClip?.getItemAt(0)?.text?.toString()?.trim() ?: ""
+            if (txt.isEmpty()) {
+                AlertDialog.Builder(this)
+                    .setTitle("📋 Copy kiya hua")
+                    .setMessage("Abhi clipboard khali hai — pehle kisi text/link par dabaa kar Copy karo")
+                    .setPositiveButton("Theek hai", null)
+                    .show()
+            } else {
+                val show = if (txt.length > 300) txt.substring(0, 300) + "…" else txt
+                val looksUrl = txt.startsWith("http://") || txt.startsWith("https://") || (txt.contains(".") && !txt.contains(" "))
+                AlertDialog.Builder(this)
+                    .setTitle("📋 Copy kiya hua")
+                    .setMessage(show)
+                    .setPositiveButton(if (looksUrl) "Kholo" else "Dhoondo") { _, _ ->
+                        if (looksUrl) {
+                            val u = if (txt.startsWith("http")) txt else "https://" + txt
+                            webView.loadUrl(u)
+                        } else {
+                            webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(txt, "UTF-8"))
+                        }
+                    }
+                    .setNegativeButton("Band", null)
+                    .show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Clipboard nahi padh paye", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // — Google me dhoondo: seedha Google search app ke andar —
+    private fun quickSearchDialog() {
+        val input = android.widget.EditText(this)
+        input.hint = "kya dhoondna hai?"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        input.setSingleLine(true)
+        val wrap = FrameLayout(this)
+        wrap.setPadding(dp(16), dp(10), dp(16), 0)
+        wrap.addView(input, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this)
+            .setTitle("🔎 Google me dhoondo")
+            .setView(wrap)
+            .setPositiveButton("Dhoondo") { _, _ ->
+                val q = input.text.toString().trim()
+                if (q.isNotEmpty()) webView.loadUrl("https://www.google.com/search?q=" + java.net.URLEncoder.encode(q, "UTF-8"))
+            }
+            .setNegativeButton("Band", null)
+            .show()
+    }
+
+    // — Taaaza load karo: purana cache chhod kar bilkul naya page —
+    private fun hardReloadNow() {
+        toastTop("Taaaza page laa rahe hain…")
+        try {
+            webView.settings.cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
+            webView.reload()
+            webView.postDelayed({ webView.settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT }, 4000)
+        } catch (e: Exception) {
+            webView.reload()
+        }
+    }
+
+    // — Stopwatch: simple timer — padhai/kaam ka hisaab —
+    private fun stopwatchDialog() {
+        val time = TextView(this)
+        time.text = "00:00.0"
+        time.textSize = 40f
+        time.typeface = Typeface.create("monospace", Typeface.BOLD)
+        time.setTextColor(0xFF111827.toInt())
+        time.gravity = Gravity.CENTER
+        val wrap = LinearLayout(this)
+        wrap.orientation = LinearLayout.VERTICAL
+        wrap.gravity = Gravity.CENTER_HORIZONTAL
+        wrap.setPadding(dp(10), dp(18), dp(10), dp(6))
+        wrap.addView(time, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        val startBtn = TextView(this)
+        startBtn.text = "▶ Chalu karo"
+        startBtn.textSize = 14f
+        startBtn.typeface = Typeface.DEFAULT_BOLD
+        startBtn.setTextColor(Color.WHITE)
+        startBtn.gravity = Gravity.CENTER
+        startBtn.setPadding(dp(18), dp(10), dp(18), dp(10))
+        val startBg = GradientDrawable()
+        startBg.shape = GradientDrawable.RECTANGLE
+        startBg.cornerRadius = dp(22).toFloat()
+        startBg.setColor(0xFF16A34A.toInt())
+        startBtn.background = startBg
+        val resetBtn = TextView(this)
+        resetBtn.text = "↺ 0 karo"
+        resetBtn.textSize = 14f
+        resetBtn.typeface = Typeface.DEFAULT_BOLD
+        resetBtn.setTextColor(0xFF374151.toInt())
+        resetBtn.gravity = Gravity.CENTER
+        resetBtn.setPadding(dp(18), dp(10), dp(18), dp(10))
+        val resetBg = GradientDrawable()
+        resetBg.shape = GradientDrawable.RECTANGLE
+        resetBg.cornerRadius = dp(22).toFloat()
+        resetBg.setColor(0xFFE5E7EB.toInt())
+        resetBtn.background = resetBg
+        val btnRow = LinearLayout(this)
+        btnRow.orientation = LinearLayout.HORIZONTAL
+        btnRow.gravity = Gravity.CENTER
+        val btnLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        btnLp.topMargin = dp(14)
+        btnLp.marginEnd = dp(10)
+        btnRow.addView(startBtn, btnLp)
+        btnRow.addView(resetBtn, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(14) })
+        wrap.addView(btnRow)
+        val dlg = AlertDialog.Builder(this)
+            .setTitle("⏱️ Stopwatch")
+            .setView(wrap)
+            .setNegativeButton("Band", null)
+            .create()
+        var running = false
+        var base = 0L
+        val handler = android.os.Handler(android.os.Looper.getMainLooper())
+        fun fmt(ms: Long): String {
+            val tenth = (ms / 100) % 10
+            val totalSec = ms / 1000
+            val m = totalSec / 60
+            val s = totalSec % 60
+            return String.format(java.util.Locale.US, "%02d:%02d.%d", m, s, tenth)
+        }
+        val tick = object : Runnable {
+            override fun run() {
+                if (running) {
+                    time.text = fmt(System.currentTimeMillis() - base)
+                    handler.postDelayed(this, 200)
+                }
+            }
+        }
+        startBtn.setOnClickListener {
+            if (running) {
+                running = false
+                startBtn.text = "▶ Chalu karo"
+            } else {
+                running = true
+                if (base == 0L) base = System.currentTimeMillis()
+                startBtn.text = "⏸ Roko"
+                handler.post(tick)
+            }
+        }
+        resetBtn.setOnClickListener {
+            running = false
+            base = 0L
+            startBtn.text = "▶ Chalu karo"
+            time.text = "00:00.0"
+            handler.removeCallbacks(tick)
+        }
+        dlg.setOnDismissListener { running = false; handler.removeCallbacks(tick) }
+        dlg.show()
+    }
+
     // Saare Quick Tools — 7 sections me grouped: Padhai, Screen, Page, Files, Suraksha aur Bachat, App, Madad
     private fun buildToolItems(): List<ToolItem> {
         val items = mutableListOf<ToolItem>()
@@ -1942,6 +2078,13 @@ class MainActivity : AppCompatActivity() {
         if (WIFI_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_wifi, "WiFi settings", "internet jodne ke liye", 0xFF0284C7.toInt(), "Madad") { openWifiSettings() })
         if (BT_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_bluetooth, "Bluetooth settings", "headphone jodne ke liye", 0xFF2563EB.toInt(), "Madad") { openBluetoothSettings() })
         if (BACKUP_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_backup, "Backup banao", "bookmarks sambhal ke rakho", 0xFF7C3AED.toInt(), "Padhai ke Tools") { backupDialog() })
+        if (ROTLOCK_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_rotlock, if (requestedOrientation == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) "Ghumao lock kholo" else "Ghumao lock karo", "video ke liye screen ghumao", 0xFF475569.toInt(), "Screen ke Tools") { rotationLockToggle() })
+        if (DATA_USAGE_ON) items.add(ToolItem(R.drawable.ic_tool_datausage, "Data kitna kharch", "app ka MB hisaab", 0xFF0E7490.toInt(), "Suraksha aur Bachat") { dataUsageDialog() })
+        if (NET_STATUS_ON) items.add(ToolItem(R.drawable.ic_tool_netstatus, "Internet ka haal", "WiFi ya data — turant", 0xFF0369A1.toInt(), "App aur Madad") { netStatusDialog() })
+        if (CLIP_VIEW_ON) items.add(ToolItem(R.drawable.ic_tool_clipboard, "Copy kiya hua dekho", "clipboard ka text", 0xFF7C2D12.toInt(), "Page ke Tools") { clipboardViewDialog() })
+        if (QUICK_SEARCH_ON) items.add(ToolItem(R.drawable.ic_tool_websearch, "Google me dhoondo", "seedha Google search", 0xFF1D4ED8.toInt(), "Padhai ke Tools") { quickSearchDialog() })
+        if (HARD_RELOAD_ON) items.add(ToolItem(R.drawable.ic_tool_reload, "Taaaza load karo", "cache chhod kar naya page", 0xFF15803D.toInt(), "Page ke Tools") { hardReloadNow() })
+        if (STOPWATCH_ON) items.add(ToolItem(R.drawable.ic_tool_stopwatch, "Stopwatch chalao", "time gino — padhai/kaam", 0xFFB45309.toInt(), "Padhai ke Tools") { stopwatchDialog() })
         return items
     }
 
@@ -2611,7 +2754,9 @@ class MainActivity : AppCompatActivity() {
     // ——— V12 ke tools — swipe, browser, shake, surprise theme, rating + V15 premium App Lock ———
     private var lastShakeMs = 0L
 
-    // ——— V15 premium App Lock — asli company logo, PIN dots, number pad — koi keyboard nahi ———
+    // ——— V16 premium App Lock v2 — full screen premium design: glass logo plate, capsule PIN dots,
+    //     soft keypad, galat PIN par error andar hi dikhta hai (neeche koi warning text nahi).
+    //     Koi infinite animation nahi — bilkul smooth ———
     private fun showAppLockDialog() { showPremiumLock("unlock") }
     private fun setupAppPinDialog() { showPremiumLock("set") }
 
@@ -2628,53 +2773,48 @@ class MainActivity : AppCompatActivity() {
         dlg.setCancelable(false)
         dlg.setCanceledOnTouchOutside(false)
 
-        val card = LinearLayout(this)
-        card.orientation = LinearLayout.VERTICAL
-        card.gravity = Gravity.CENTER_HORIZONTAL
-        card.setPadding(dp(24), dp(30), dp(24), dp(24))
-        val cardBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, -0.58f), shade(themeColorInt, -0.22f), shade(themeColorInt, 0.10f)))
-        cardBg.cornerRadius = dp(30).toFloat()
-        card.background = cardBg
+        val root = LinearLayout(this)
+        root.orientation = LinearLayout.VERTICAL
+        root.gravity = Gravity.CENTER_HORIZONTAL
+        val rootBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(shade(themeColorInt, -0.68f), shade(themeColorInt, -0.42f), shade(splashColorInt, -0.05f)))
+        root.background = rootBg
+        root.setPadding(dp(28), dp(52), dp(28), dp(34))
 
-        val logoCard = FrameLayout(this)
-        val logoBg = GradientDrawable()
-        logoBg.shape = GradientDrawable.RECTANGLE
-        logoBg.cornerRadius = dp(26).toFloat()
-        logoBg.setColor(Color.WHITE)
-        logoCard.background = logoBg
-        logoCard.elevation = dp(12).toFloat()
-        logoCard.setPadding(dp(8), dp(8), dp(8), dp(8))
+        // glass logo plate — bilkul static, koi pulse nahi (smooth) —
+        val plate = FrameLayout(this)
+        val plateBg = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(0x3DFFFFFF, 0x26FFFFFF))
+        plateBg.shape = GradientDrawable.RECTANGLE
+        plateBg.cornerRadius = dp(32).toFloat()
+        plateBg.setStroke(dp(1), 0x66FFFFFF)
+        plate.background = plateBg
+        plate.elevation = dp(10).toFloat()
+        plate.setPadding(dp(10), dp(10), dp(10), dp(10))
         val logoMark = ImageView(this)
         val fullRes = resources.getIdentifier("ic_brand_full", "drawable", packageName)
         logoMark.setImageResource(if (fullRes != 0) fullRes else R.mipmap.ic_launcher)
         logoMark.scaleType = ImageView.ScaleType.FIT_CENTER
-        logoCard.addView(logoMark, FrameLayout.LayoutParams(dp(74), dp(74), Gravity.CENTER))
-        val logoLp = LinearLayout.LayoutParams(dp(90), dp(90))
-        card.addView(logoCard, logoLp)
-        val logoPulse = ObjectAnimator.ofPropertyValuesHolder(
-            logoCard,
-            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.05f, 1f),
-            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.05f, 1f))
-        logoPulse.duration = 2400
-        logoPulse.repeatCount = ObjectAnimator.INFINITE
-        logoPulse.start()
+        plate.addView(logoMark, FrameLayout.LayoutParams(dp(78), dp(78), Gravity.CENTER))
+        val plateLp = LinearLayout.LayoutParams(dp(100), dp(100))
+        root.addView(plate, plateLp)
 
         val title = TextView(this)
-        title.textSize = 20f
+        title.textSize = 21f
         title.setTextColor(Color.WHITE)
         title.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
         title.gravity = Gravity.CENTER
+        title.letterSpacing = 0.02f
         val titleLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        titleLp.topMargin = dp(14)
-        card.addView(title, titleLp)
+        titleLp.topMargin = dp(18)
+        root.addView(title, titleLp)
         val sub = TextView(this)
         sub.textSize = 13f
         sub.setTextColor(0xD9FFFFFF.toInt())
         sub.gravity = Gravity.CENTER
         val subLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         subLp.topMargin = dp(3)
-        card.addView(sub, subLp)
+        root.addView(sub, subLp)
 
+        // PIN capsule dots — premium pill shape —
         val dots = LinearLayout(this)
         dots.orientation = LinearLayout.HORIZONTAL
         dots.gravity = Gravity.CENTER
@@ -2682,49 +2822,63 @@ class MainActivity : AppCompatActivity() {
         for (i in 0 until 4) {
             val d = View(this)
             val dBg = GradientDrawable()
-            dBg.shape = GradientDrawable.OVAL
-            dBg.setColor(0x33FFFFFF)
-            dBg.setStroke(dp(1), 0x66FFFFFF)
+            dBg.shape = GradientDrawable.RECTANGLE
+            dBg.cornerRadius = dp(8).toFloat()
+            dBg.setColor(0x2EFFFFFF)
+            dBg.setStroke(dp(1), 0x59FFFFFF)
             d.background = dBg
-            val dLp = LinearLayout.LayoutParams(dp(16), dp(16))
-            dLp.marginEnd = dp(12)
+            val dLp = LinearLayout.LayoutParams(dp(30), dp(14))
+            dLp.marginEnd = dp(10)
             dots.addView(d, dLp)
             dotViews.add(d)
         }
         val dotsLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        dotsLp.topMargin = dp(18)
-        card.addView(dots, dotsLp)
+        dotsLp.topMargin = dp(24)
+        root.addView(dots, dotsLp)
+
+        // galat PIN ka error — yahin dikhega, neeche toast/warning text nahi —
+        val err = TextView(this)
+        err.textSize = 12.5f
+        err.setTextColor(0xCCFFB4B9.toInt())
+        err.gravity = Gravity.CENTER
+        err.setPadding(dp(4), dp(8), dp(4), dp(2))
+        err.visibility = View.GONE
+        root.addView(err, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
         fun labelsFor(s: String): Pair<String, String> = when (s) {
-            "unlock" -> Pair("🔒 App lock hai", "PIN daalo — app khulegi")
+            "unlock" -> Pair("🔒 App lock lagi hai", "PIN daalo — app khulegi")
             "set" -> Pair("🔒 Naya PIN banao", "4 digit ka PIN chuno")
-            "confirm" -> Pair("✅ PIN dobara likho", "confirm karne ke liye wahi PIN")
+            "confirm" -> Pair("✅ PIN dobara likho", "confirm ke liye wahi PIN")
             "change-old" -> Pair("🔒 PIN badlo", "pehle purana PIN daalo")
             "change-new" -> Pair("🔒 Naya PIN chuno", "naya 4 digit PIN")
-            else -> Pair("🔒 PIN dobara likho", "confirm karne ke liye wahi PIN")
+            else -> Pair("🔒 PIN dobara likho", "confirm ke liye wahi PIN")
         }
         fun applyLabels() { val p = labelsFor(stage); title.text = p.first; sub.text = p.second }
-        fun updateDots() {
-            for (i in 0 until 4) {
-                val dv = dotViews[i]
-                val nb = GradientDrawable()
-                nb.shape = GradientDrawable.OVAL
-                nb.setColor(if (i < typed.length) Color.WHITE else 0x33FFFFFF)
-                nb.setStroke(dp(1), 0x66FFFFFF)
-                dv.background = nb
-            }
+        fun fillDot(dv: View, filled: Boolean, red: Boolean) {
+            val nb = GradientDrawable()
+            nb.shape = GradientDrawable.RECTANGLE
+            nb.cornerRadius = dp(8).toFloat()
+            if (filled && red) { nb.setColor(0xCCFF8A93.toInt()); nb.setStroke(dp(1), 0x99FFB4B9.toInt()) }
+            else if (filled) { nb.setColor(Color.WHITE); nb.setStroke(dp(1), 0x66FFFFFF) }
+            else { nb.setColor(0x2EFFFFFF); nb.setStroke(dp(1), 0x59FFFFFF) }
+            dv.background = nb
+        }
+        fun updateDots(red: Boolean = false) {
+            for (i in 0 until 4) fillDot(dotViews[i], i < typed.length, red)
         }
         fun shakeWrong() {
             typed.clear()
-            updateDots()
+            updateDots(true)
+            err.text = "✗ Galat PIN — dobara try karo"
+            err.visibility = View.VISIBLE
             val sh = ObjectAnimator.ofFloat(dots, View.TRANSLATION_X, 0f, dp(-12).toFloat(), dp(12).toFloat(), dp(-8).toFloat(), dp(8).toFloat(), 0f)
             sh.duration = 420
             sh.start()
-            Toast.makeText(this, "Galat PIN — dobara try karo", Toast.LENGTH_SHORT).show()
+            dots.postDelayed({ err.visibility = View.GONE; updateDots(false) }, 1500)
         }
         fun savePin(pin: String) {
             prefs.edit().putString("app_pin", pin).apply()
-            Toast.makeText(this, "App lock lag gaya 🔒", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "App lock lag gayi 🔒", Toast.LENGTH_SHORT).show()
             dlg.dismiss()
         }
         fun handleFull() {
@@ -2745,30 +2899,43 @@ class MainActivity : AppCompatActivity() {
             if (typed.length == 4) handleFull()
         }
 
-        val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫")
+        val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "·", "0", "⌫")
         keys.chunked(3).forEach { rowKeys ->
             val row = LinearLayout(this)
             row.orientation = LinearLayout.HORIZONTAL
             row.gravity = Gravity.CENTER
             val rowLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            rowLp.topMargin = dp(10)
+            rowLp.topMargin = dp(12)
             rowKeys.forEach { k ->
                 val btn = TextView(this)
                 btn.text = k
-                btn.textSize = 21f
+                btn.textSize = 22f
                 btn.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
                 btn.setTextColor(Color.WHITE)
                 btn.gravity = Gravity.CENTER
-                val btnBg = GradientDrawable()
-                btnBg.shape = GradientDrawable.OVAL
-                btnBg.setColor(0x2EFFFFFF)
-                btnBg.setStroke(dp(1), 0x59FFFFFF)
-                btn.background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), btnBg, null)
-                val btnLp = LinearLayout.LayoutParams(dp(62), dp(62))
-                btnLp.marginEnd = dp(12)
+                if (k != "·") {
+                    val btnBg = GradientDrawable()
+                    btnBg.shape = GradientDrawable.OVAL
+                    if (k == "⌫") { btnBg.setColor(0x3DFFFFFF); btnBg.setStroke(dp(1), 0x66FFFFFF) }
+                    else { btnBg.setColor(0x24FFFFFF); btnBg.setStroke(dp(1), 0x47FFFFFF) }
+                    btn.background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), btnBg, null)
+                }
+                val btnLp = LinearLayout.LayoutParams(dp(64), dp(64))
+                btnLp.marginEnd = dp(14)
                 row.addView(btn, btnLp)
-                if (k.isNotEmpty() && k != "⌫") btn.setOnClickListener { bounce(btn); pressDigit(k) }
+                if (k != "·" && k != "⌫") btn.setOnClickListener { bounce(btn); pressDigit(k) }
                 if (k == "⌫") btn.setOnClickListener { bounce(btn); if (typed.isNotEmpty()) { typed.deleteCharAt(typed.length - 1); updateDots() } }
+            }
+            root.addView(row, rowLp)
+        }
+
+        applyLabels()
+        updateDots()
+        dlg.setContentView(root)
+        dlg.window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+        dlg.show()
+        dlg.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+    }
             }
             card.addView(row, rowLp)
         }
