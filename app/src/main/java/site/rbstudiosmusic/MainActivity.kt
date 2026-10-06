@@ -89,8 +89,8 @@ class MainActivity : AppCompatActivity() {
         const val HOME_HOST = "rbstudiosmusic.kliv.site"
         const val APP_NAME = "Royal Banjara Studio"
         // App me dikhne wala site ka naam (jaise www.mysite.com) — Quick Tools header aur share text me
-        const val SITE_LABEL = "www.rbstudiosmusic.site"
-        const val REPLACE_JS = "(function(){\nvar FROM=\"rbstudiosmusic.kliv.site\",TO=\"www.rbstudiosmusic.site\";\nfunction rp(s){return s.split(FROM).join(TO);}\nfunction fix(root){try{\n if(!root){return;}\n var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);\n var n,b=[];\n while((n=w.nextNode())){if(n.nodeValue&&n.nodeValue.indexOf(FROM)!==-1){b.push(n);}}\n for(var i=0;i<b.length;i++){b[i].nodeValue=rp(b[i].nodeValue);}\n if(root.querySelectorAll){var els=root.querySelectorAll('[placeholder],[title],[alt],[aria-label]');\n  for(var j=0;j<els.length;j++){var el=els[j];var ats=['placeholder','title','alt','aria-label'];\n   for(var k=0;k<ats.length;k++){var v=el.getAttribute(ats[k]);if(v&&v.indexOf(FROM)!==-1){el.setAttribute(ats[k],rp(v));}}}}\n}catch(err){}}\nfix(document.body);\ntry{if(document.title&&document.title.indexOf(FROM)!==-1){document.title=rp(document.title);}}catch(err){}\ntry{\n if(window.__rbTxtObs){window.__rbTxtObs.disconnect();}\n window.__rbTxtObs=new MutationObserver(function(ms){\n  for(var i=0;i<ms.length;i++){var ad=ms[i].addedNodes;\n   for(var j=0;j<ad.length;j++){var nd=ad[j];\n    if(nd.nodeType===3){if(nd.nodeValue&&nd.nodeValue.indexOf(FROM)!==-1){nd.nodeValue=rp(nd.nodeValue);}}\n    else{fix(nd);}}}});\n window.__rbTxtObs.observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\n})();"
+        const val SITE_LABEL = "Royal Banjara Studio"
+        const val REPLACE_JS = "(function(){\nvar FROM=\"rbstudiosmusic.kliv.site\",TO=\"Royal Banjara Studio\";\nfunction rp(s){return s.split(FROM).join(TO);}\nfunction fix(root){try{\n if(!root){return;}\n var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);\n var n,b=[];\n while((n=w.nextNode())){if(n.nodeValue&&n.nodeValue.indexOf(FROM)!==-1){b.push(n);}}\n for(var i=0;i<b.length;i++){b[i].nodeValue=rp(b[i].nodeValue);}\n if(root.querySelectorAll){var els=root.querySelectorAll('[placeholder],[title],[alt],[aria-label]');\n  for(var j=0;j<els.length;j++){var el=els[j];var ats=['placeholder','title','alt','aria-label'];\n   for(var k=0;k<ats.length;k++){var v=el.getAttribute(ats[k]);if(v&&v.indexOf(FROM)!==-1){el.setAttribute(ats[k],rp(v));}}}}\n}catch(err){}}\nfix(document.body);\ntry{if(document.title&&document.title.indexOf(FROM)!==-1){document.title=rp(document.title);}}catch(err){}\ntry{\n if(window.__rbTxtObs){window.__rbTxtObs.disconnect();}\n window.__rbTxtObs=new MutationObserver(function(ms){\n  for(var i=0;i<ms.length;i++){var ad=ms[i].addedNodes;\n   for(var j=0;j<ad.length;j++){var nd=ad[j];\n    if(nd.nodeType===3){if(nd.nodeValue&&nd.nodeValue.indexOf(FROM)!==-1){nd.nodeValue=rp(nd.nodeValue);}}\n    else{fix(nd);}}}});\n window.__rbTxtObs.observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\n})();"
         const val KEEPCR_ON = true
         const val BRIGHTNESS_ON = true
         const val AUTOSCROLL_ON = true
@@ -164,9 +164,9 @@ class MainActivity : AppCompatActivity() {
         const val CONTACT_SAVE_ON = true
         const val INVERT_TOOL_ON = true
         const val SHORTCUT_TOOL_ON = true
-        const val SS_BLOCK_ON = true
-        const val THEME_COLOR = "#3DDC84"
-        const val SPLASH_COLOR = "#0C0F14"
+        const val SS_BLOCK_ON = false
+        const val THEME_COLOR = "#F472B6"
+        const val SPLASH_COLOR = "#2B0B1C"
         const val HIDE_ON = true
         const val HIDE_CSS = "footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\"kliv-badge\"]{display:none !important;}[id*=\"kliv-badge\"]{display:none !important;}a[href*=\"kliv.site\"]{display:none !important;}a[href*=\"kliv.com\"]{display:none !important;}a[href*=\"kliv.dev\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\"kliv-footer\"]{display:none !important;}[id*=\"kliv-footer\"]{display:none !important;}"
         const val HIDE_JS = "(function(){\nif(window.__web2appHide){window.__web2appHide();return;}\nvar CSS=\"footer{display:none !important;}.footer{display:none !important;}#footer{display:none !important;}.site-footer{display:none !important;}#powered-by{display:none !important;}.powered-by{display:none !important;}#credit{display:none !important;}[data-kliv-badge]{display:none !important;}.kliv-badge{display:none !important;}#kliv-badge{display:none !important;}[class*=\\\"kliv-badge\\\"]{display:none !important;}[id*=\\\"kliv-badge\\\"]{display:none !important;}a[href*=\\\"kliv.site\\\"]{display:none !important;}a[href*=\\\"kliv.com\\\"]{display:none !important;}a[href*=\\\"kliv.dev\\\"]{display:none !important;}[data-kliv-footer]{display:none !important;}[class*=\\\"kliv-footer\\\"]{display:none !important;}[id*=\\\"kliv-footer\\\"]{display:none !important;}\";\nvar PATTERNS=[\"created with kliv\",\"made with kliv\",\"powered by kliv\",\"built with kliv\",\"made with wix\",\"created with wix\",\"this site was made with wix\",\"powered by wix\",\"powered by wordpress\",\"proudly powered by wordpress\",\"powered by wordpress.com\",\"built on godaddy\",\"created with godaddy\",\"powered by shopify\",\"made in webflow\",\"made with webflow\",\"made with carrd\",\"made on carrd\",\"powered by squarespace\",\"powered by weebly\",\"powered by jimdo\",\"made with tilda\",\"built on tilda\",\"powered by blogger\",\"website created with\",\"website made with\",\"this site was created with\",\"this website was created with\",\"created by kliv\",\"made by kliv\",\"built by kliv\",\"designed by kliv\",\"website by kliv\",\"site by kliv\",\"hosted on kliv\",\"kliv.site\"];\nvar MAX=200;\nfunction applyCss(){\n var s=document.getElementById('web2app-hide-css');\n if(!s){s=document.createElement('style');s.id='web2app-hide-css';(document.head||document.documentElement).appendChild(s);}\n s.textContent=CSS;\n}\nfunction hit(t){for(var i=0;i<PATTERNS.length;i++){if(t.indexOf(PATTERNS[i])!==-1){return true;}}return false;}\nfunction fullText(e){return (e.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();}\nfunction hideEl(e){e.setAttribute('data-web2app-hidden','1');e.style.setProperty('display','none','important');\n var p=e.parentElement,k=0;\n while(p&&p!==document.body&&k<4){var pt=fullText(p);\n  if(p.children.length<=2&&pt&&pt.length<=MAX&&hit(pt)){p.setAttribute('data-web2app-hidden','1');p.style.setProperty('display','none','important');p=p.parentElement;k++;}else{break;}}}\nfunction hideByText(){if(!PATTERNS.length){return;}\n var n=document.querySelectorAll('a,div,span,p,small,li,section,aside,footer,i,b,em,strong,label,h1,h2,h3,h4,h5,h6,button');\n for(var i=0;i<n.length;i++){var e=n[i];\n  if(e.getAttribute('data-web2app-hidden')){continue;}\n  var t=fullText(e);\n  if(t&&t.length<=MAX&&hit(t)){hideEl(e);}\n }}\nfunction run(){try{applyCss();hideByText();}catch(err){}}\nwindow.__web2appHide=run;\nrun();\nvar tmr=null;\ntry{\n new MutationObserver(function(){if(tmr){clearTimeout(tmr);}tmr=setTimeout(run,150);}).observe(document.documentElement||document.body,{childList:true,subtree:true});\n}catch(err){}\nwindow.addEventListener('load',function(){run();});\n})();"
@@ -182,23 +182,23 @@ class MainActivity : AppCompatActivity() {
         const val DOWNLOADS_ON = true
         const val GALLERY_ON = true
         const val DL_LIST_ON = true
-        const val PINCH_ZOOM = true
-        const val KEEP_SCREEN_ON = true
-        const val FULLSCREEN_ON = true
-        const val WHATSAPP_ON = true
-        const val WHATSAPP_NUMBER = "919370612297"
+        const val PINCH_ZOOM = false
+        const val KEEP_SCREEN_ON = false
+        const val FULLSCREEN_ON = false
+        const val WHATSAPP_ON = false
+        const val WHATSAPP_NUMBER = ""
         const val WHATSAPP_MESSAGE = "Hello! Mujhe jaankari chahiye"
         const val NIGHT_MODE_ON = true
         const val TEXT_SIZE_ON = true
         const val BACK_TWICE_ON = true
         const val CLEAR_CACHE_ON = true
-        const val EXIT_ITEM_ON = true
+        const val EXIT_ITEM_ON = false
         const val LONGPRESS_DL_ON = true
         const val DESKTOP_VIEW_ON = true
         const val AD_BLOCK_ON = true
         const val THEME_PICKER_ON = true
         const val FULLSCREEN_TOOL_ON = true
-        const val THEME_FAB_ON = true
+        const val THEME_FAB_ON = false
         const val GO_TOP_ON = true
         const val ROTATE_TOOL_ON = true
         const val FIND_TOOL_ON = true
@@ -210,13 +210,13 @@ class MainActivity : AppCompatActivity() {
         const val MAP_QUERY = "Royal Banjara Studio Music Distribution"
         const val TRANSLATE_TOOL_ON = true
         const val HISTORY_TOOL_ON = true
-        const val CALL_TOOL_ON = true
-        const val CALL_NUMBER = "+919370612297"
+        const val CALL_TOOL_ON = false
+        const val CALL_NUMBER = ""
         const val SCREENSHOT_ON = true
         const val SHARE_APP_ON = true
         const val HISTORY_NAV_ON = true
         const val OFFLINE_SAVE_ON = true
-        const val AUTO_NIGHT_ON = true
+        const val AUTO_NIGHT_ON = false
         const val READING_MODE_ON = true
         const val MUTE_TOOL_ON = true
         const val DATA_SAVE_ON = true
@@ -495,8 +495,6 @@ class MainActivity : AppCompatActivity() {
         if (!safeMode && APP_LOCK_ON && !prefs.getString("app_pin", null).isNullOrEmpty()) showAppLockDialog()
         else if (!safeMode && APP_LOCK_ON) setupAppPinDialog()
         if (SWIPE_NAV_ON && !safeMode) setupSwipeNav()
-        ssBlockCache = prefs.getBoolean("ss_block", SS_BLOCK_ON)
-        applyScreenshotBlock()
         if (SHAKE_REFRESH_ON && !safeMode) setupShakeRefresh()
         if (FAST_START_ON && !safeMode) fastStartWarmUp()
         if (USAGE_TIMER_ON && !safeMode) startUsageTimer()
@@ -1973,7 +1971,6 @@ class MainActivity : AppCompatActivity() {
         if (CONTACT_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_contactadd, "Contact save karo", "number phone me jodo", 0xFF059669.toInt(), "Madad") { contactSaveDialog() })
         if (INVERT_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_invert, if (invertOn) "Ulta rang off" else "Ulta rang", "dark jaisa aaram", 0xFF475569.toInt(), "Screen ke Tools") { toggleInvertColors() })
         if (SHORTCUT_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_shortcut, "Home par icon lagao", "site ka shortcut — Chrome ki zaroorat nahi", 0xFF0EA5E9.toInt(), "App") { addHomeScreenShortcut() })
-        if (SS_BLOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (ssBlockCache) "Screenshot lock off" else "Screenshot lock", "app ki photo na bane — privacy", 0xFFDC2626.toInt(), "Suraksha aur Bachat") { toggleScreenshotBlock() })
         if (BATTERY_SAVE_ON) items.add(ToolItem(R.drawable.ic_tool_battery, if (batteryOn) "Battery bachao band" else "Battery bachao", "ek tap me sab bachat", 0xFF65A30D.toInt(), "Suraksha aur Bachat") { batterySaverToggle() })
         if (INCOGNITO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_incognito, if (noHistoryOn) "Chhupa mode band" else "Chhupa mode", "history me kuch nahi likhe", 0xFF334155.toInt(), "Suraksha aur Bachat") { toggleNoHistory() })
         if (APP_LOCK_ON) items.add(ToolItem(R.drawable.ic_tool_locktool, if (prefs.getString("app_pin", null) == null) "App lock lagao" else "App lock kholo", "PIN se app ki suraksha", 0xFF0F172A.toInt(), "Suraksha aur Bachat") { if (prefs.getString("app_pin", null) == null) setupAppPinDialog() else showAppLockDialog() })
@@ -1991,10 +1988,8 @@ class MainActivity : AppCompatActivity() {
         if (DATETIME_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_datetime, "Aaj ki tareekh", "din, date aur time", 0xFFCA8A04.toInt(), "Madad") { dateTimeDialog() })
         if (CALC_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_calc, "Calculator kholo", "seedha khulega", 0xFF2563EB.toInt(), "App") { openCalculatorApp() })
         if (RESET_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_reset, "Sab reset karo", "saare settings normal", 0xFF64748B.toInt(), "App") { resetAllSettings() })
-        if (EXIT_ITEM_ON) items.add(ToolItem(R.drawable.ic_tool_power, "App band karo", "seedha close", 0xFFDC2626.toInt(), "App") { finishAffinity() })
         if (SUPPORT_EMAIL.isNotBlank()) items.add(ToolItem(R.drawable.ic_tool_mail, "Email karo", "seedha message likho", 0xFFEA580C.toInt(), "Madad") { emailSupport() })
         items.add(ToolItem(R.drawable.ic_tool_pin, "Direction pao", "Maps me pahuncho", 0xFF16A34A.toInt(), "Madad") { openDirectionsTool() })
-        items.add(ToolItem(R.drawable.ic_tool_phone, "Call karo", "seedha dial karo", 0xFF2563EB.toInt(), "Madad") { callSupport() })
         if (APPINFO_TOOL_ON) items.add(ToolItem(R.drawable.ic_tool_info, "App ki jaankari", "version aur settings", 0xFF475569.toInt(), "Madad") { openAppSettings() })
         if (WIFI_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_wifi, "WiFi settings", "internet jodne ke liye", 0xFF0284C7.toInt(), "Madad") { openWifiSettings() })
         if (BT_SETTINGS_ON) items.add(ToolItem(R.drawable.ic_tool_bluetooth, "Bluetooth settings", "headphone jodne ke liye", 0xFF2563EB.toInt(), "Madad") { openBluetoothSettings() })
